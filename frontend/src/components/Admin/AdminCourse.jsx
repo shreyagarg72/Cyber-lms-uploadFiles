@@ -13,6 +13,11 @@ const AdminCourse = () => {
     setShowDropdown(!showDropdown);
   };
 
+  const handleNavigate = (path) => {
+    setShowDropdown(false); // Close the dropdown when navigating
+    navigate(path);
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className='flex justify-center'>
@@ -41,7 +46,7 @@ const AdminCourse = () => {
           <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Sort By:</span>
-              <select className="focus:outline-non cursor-pointer text-sm">
+              <select className="focus:outline-none cursor-pointer text-sm">
                 <option>Last Active</option>
                 <option>Newest</option>
                 <option>Oldest</option>
@@ -63,8 +68,8 @@ const AdminCourse = () => {
               </button>
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50">
-                  <button onClick={() => navigate('/upload')} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Upload</button>
-                  <button onClick={() => navigate('/secure-upload')} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Secure Upload</button>
+                  <button onClick={() => handleNavigate('/upload')} className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Upload</button>
+                  <button onClick={() => handleNavigate('/secure-upload')} className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Secure Upload</button>
                 </div>
               )}
             </div>
