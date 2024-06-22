@@ -21,22 +21,47 @@
 //     next(error);
 //   }
 // };
+// import Resource from '../models/video.js';
+
+// export const addResource = async (req, res, next) => {
+//     const { imgUrl, videoUrl } = req.body;
+
+//     try {
+//         const resource = new Resource({
+//             imgUrl,
+//             videoUrl,
+//         });
+
+//         await resource.save();
+
+//         res.status(201).json({ success: true, message: 'Resource URLs saved successfully', resource });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ success: false, message: 'Failed to save resource URLs' });
+//     }
+// };
+// controllers/video.js
 import Resource from '../models/video.js';
 
 export const addResource = async (req, res, next) => {
-    const { imgUrl, videoUrl } = req.body;
+  const { imgUrl, videoUrl } = req.body;
 
-    try {
-        const resource = new Resource({
-            imgUrl,
-            videoUrl,
-        });
+  if (!imgUrl || !videoUrl) {
+    res.status(400).json({ success: false, message: 'imgUrl and videoUrl are required' });
+    return;
+  }
 
-        await resource.save();
+  try {
+    const newResource = new Resource({
+      imgUrl,
+      videoUrl,
+    });
 
-        res.status(201).json({ success: true, message: 'Resource URLs saved successfully', resource });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Failed to save resource URLs' });
-    }
+    await newResource.save();
+
+    res.status(201).json({ success: true, message: 'Resource created successfully', data: newResource });
+  } catch (error) {
+    console.error('Error saving resource:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
 };
