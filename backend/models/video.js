@@ -68,13 +68,80 @@
 
 // export default Course;
 
+// import mongoose from 'mongoose';
+
+// const contentSchema = new mongoose.Schema({
+//   title: { type: String, required: true },
+//   description: { type: String, required: true },
+//   pdfUrl: { type: String },
+//   videoUrl: { type: String },
+// });
+
+// const courseSchema = new mongoose.Schema({
+//   courseName: { type: String, required: true },
+//   description: { type: String, required: true },
+//   trainerName: { type: String, required: true },
+//   level: { type: String, required: true },
+//   tools: { type: String, required: true },
+//   imgUrl: { type: String, required: true },
+//   content: [contentSchema],
+// }, {
+//   timestamps: true,
+// });
+
+// const Course = mongoose.model('Course', courseSchema);
+
+// export default Course;
+
+
+// import mongoose from 'mongoose';
+
+// const submoduleSchema = new mongoose.Schema({
+//   title: { type: String, required: true },
+//   description: { type: String, required: true },
+//   pdfUrl: { type: String },
+//   videoUrl: { type: String },
+// });
+
+// const contentSchema = new mongoose.Schema({
+//   title: { type: String, required: true },
+//   description: { type: String, required: true },
+//   pdfUrl: { type: String },
+//   videoUrl: { type: String },
+//   submodules: [submoduleSchema],
+// });
+
+// const courseSchema = new mongoose.Schema({
+//   courseName: { type: String, required: true },
+//   description: { type: String, required: true },
+//   trainerName: { type: String, required: true },
+//   level: { type: String, required: true },
+//   tools: { type: String, required: true },
+//   imgUrl: { type: String, required: true },
+//   content: [contentSchema],
+// }, {
+//   timestamps: true,
+// });
+
+// const Course = mongoose.model('Course', courseSchema);
+
+// export default Course;
+
 import mongoose from 'mongoose';
+
+const submoduleSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  pdfUrl: { type: String },
+  videoUrl: { type: String },
+});
 
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   pdfUrl: { type: String },
   videoUrl: { type: String },
+  submodules: [submoduleSchema],
 });
 
 const courseSchema = new mongoose.Schema({

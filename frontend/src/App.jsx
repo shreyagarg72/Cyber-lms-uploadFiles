@@ -13,6 +13,7 @@ import AdminCourse from './components/Admin/AdminCourse';
 import AdminCommunity from './components/Admin/AdminCommunity';
 import Upload from './components/Admin/Upload';
 import SecureUpload from './components/Admin/SecureUpload';
+import EditCourse from './components/Admin/EditCourse';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/profile" element={<Layout><Profile /></Layout>} />
         <Route path="/upload" element={<LayoutAdmin><Upload /></LayoutAdmin>} />
         <Route path="/secure-upload" element={<LayoutAdmin><SecureUpload /></LayoutAdmin>} />
+        <Route path="/edit-course" element={<LayoutAdmin><EditCourse /></LayoutAdmin>} />
       </Routes>
     </Router>
   );
