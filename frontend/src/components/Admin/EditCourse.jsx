@@ -17,8 +17,9 @@ const EditCourse = () => {
     {
       title: "Week 1 - Introduction",
       description: "Lorem ipsum dolor sit amet",
-      pdf: null,
+      doc: null,
       video: null,
+      submodules: []
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -40,8 +41,14 @@ const EditCourse = () => {
   const addNewSection = () => {
     setContent([
       ...content,
-      { title: "", description: "", pdf: null, video: null },
+      { title: "", description: "", doc: null, video: null, submodules: [] },
     ]);
+  };
+
+  const addNewSubmodule = (index) => {
+    const newContent = [...content];
+    newContent[index].submodules.push({ title: "", description: "" });
+    setContent(newContent);
   };
 
   const uploadFile = async (type, file) => {
@@ -91,13 +98,13 @@ const EditCourse = () => {
 
       const contentWithUrls = await Promise.all(
         content.map(async (section) => {
-          const pdfUrl = section.pdf instanceof File
-            ? await uploadFile("pdf", section.pdf)
-            : section.pdf;
+          const docUrl = section.doc instanceof File
+            ? await uploadFile("raw", section.doc)
+            : section.doc;
           const videoUrl = section.video instanceof File
             ? await uploadFile("video", section.video)
             : section.video;
-          return { ...section, pdf: pdfUrl, video: videoUrl };
+          return { ...section, doc: docUrl, video: videoUrl };
         })
       );
 
@@ -111,33 +118,19 @@ const EditCourse = () => {
         content: contentWithUrls,
       };
 
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`,
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/${initialCourseData._id}`,
         courseData
       );
 
-      setSuccessMessage("Course created successfully!");
+      setSuccessMessage("Course updated successfully!");
       setLoading(false);
-      setImg(null);
-      setCourseName("");
-      setDescription("");
-      setTrainerName("");
-      setLevel("Medium");
-      setTools("");
-      setContent([
-        {
-          title: "Week 1 - Introduction",
-          description: "Lorem ipsum dolor sit amet",
-          pdf: null,
-          video: null,
-        },
-      ]);
 
       setTimeout(() => setSuccessMessage(""), 5000);
     } catch (error) {
       console.error(error);
       setLoading(false);
-      setSuccessMessage("Error creating course. Please try again.");
+      setSuccessMessage("Error updating course. Please try again.");
       setTimeout(() => setSuccessMessage(""), 5000);
     }
   };
@@ -151,8 +144,22 @@ const EditCourse = () => {
     }
   };
 
+  const handleSubmoduleChange = (e, sectionIndex, submoduleIndex, field) => {
+    const newContent = [...content];
+    newContent[sectionIndex].submodules[submoduleIndex][field] = e.target.value;
+    setContent(newContent);
+  };
+
   const deleteSection = (index) => {
     const newContent = content.filter((_, i) => i !== index);
+    setContent(newContent);
+  };
+
+  const deleteSubmodule = (sectionIndex, submoduleIndex) => {
+    const newContent = [...content];
+    newContent[sectionIndex].submodules = newContent[sectionIndex].submodules.filter(
+      (_, i) => i !== submoduleIndex
+    );
     setContent(newContent);
   };
 
@@ -197,6 +204,11 @@ const EditCourse = () => {
             onChange={handleImageChange}
             className="w-full"
           />
+          {img && (
+            <div className="mt-2">
+              <img src={typeof img === 'string' ? img : URL.createObjectURL(img)} alt="Course Image" className="w-32 h-32 object-cover" />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -250,17 +262,27 @@ const EditCourse = () => {
               }}
               className="w-full p-2 mb-2 border border-gray-300 rounded h-24 resize-none"
             />
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-2">
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
               <div className="w-full sm:w-1/3">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  PDF File
+                  Document File
                 </label>
                 <input
                   type="file"
-                  accept=".pdf"
-                  onChange={(e) => handleFileChange(e, index, "pdf")}
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => handleFileChange(e, index, "doc")}
                   className="w-full"
                 />
+                {section.doc && (
+                  <a
+                    href={typeof section.doc === 'string' ? section.doc : URL.createObjectURL(section.doc)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 text-sm mt-1 inline-block"
+                  >
+                    View Document
+                  </a>
+                )}
               </div>
               <div className="w-full sm:w-1/3">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -272,49 +294,90 @@ const EditCourse = () => {
                   onChange={(e) => handleFileChange(e, index, "video")}
                   className="w-full"
                 />
+                {section.video && (
+                  <a
+                    href={typeof section.video === 'string' ? section.video : URL.createObjectURL(section.video)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 text-sm mt-1 inline-block"
+                  >
+                    View Video
+                  </a>
+                )}
               </div>
-              <div className="w-full sm:w-1/3">
+              <button
+                type="button"
+                onClick={() => deleteSection(index)}
+                className="w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded"
+              >
+                Delete Section
+              </button>
+            </div>
+            
+            <h3 className="text-lg font-semibold mb-2">Submodules</h3>
+            {section.submodules.map((submodule, submoduleIndex) => (
+              <div key={submoduleIndex} className="mb-4 p-2 bg-gray-100 rounded">
+                <input
+                  type="text"
+                  placeholder="Submodule title"
+                  value={submodule.title}
+                  onChange={(e) =>
+                    handleSubmoduleChange(e, index, submoduleIndex, "title")
+                  }
+                  className="w-full p-2 mb-2 border border-gray-300 rounded"
+                />
+                <textarea
+                  placeholder="Submodule description"
+                  value={submodule.description}
+                  onChange={(e) =>
+                    handleSubmoduleChange(e, index, submoduleIndex, "description")
+                  }
+                  className="w-full p-2 mb-2 border border-gray-300 rounded h-24 resize-none"
+                />
                 <button
                   type="button"
-                  className="w-fullsm:w-1/3  p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                  onClick={() => deleteSection(index)}
+                  onClick={() => deleteSubmodule(index, submoduleIndex)}
+                  className="w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded"
                 >
-                  Delete Section
+                  Delete Submodule
                 </button>
               </div>
-            </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addNewSubmodule(index)}
+              className="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Add New Submodule
+            </button>
           </div>
         ))}
 
         <button
           type="button"
           onClick={addNewSection}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+          className="mb-6 px-4 py-2 bg-blue-500 text-white rounded"
         >
-          Add new section
+          Add New Section
         </button>
-<div>
-        <button
-          type="submit"
-          className="w-full sm:w-1/2 mt-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-          disabled={loading}
-        >
-          {loading ? (
-            <div className="flex justify-center">
+
+        <div className="text-center">
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded"
+            disabled={loading}
+          >
+            {loading ? (
               <ThreeDots
                 height="24"
-                width="50"
-                radius="9"
-                color="#ffffff"
-                ariaLabel="three-dots-loading"
-                visible={true}
+                width="24"
+                color="white"
+                ariaLabel="loading"
               />
-            </div>
-          ) : (
-            "Save Course"
-          )}
-        </button>
-        <button className="w-full sm:w-1/2 mt-4  py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors">Delete Course</button>
+            ) : (
+              "Update Course"
+            )}
+          </button>
         </div>
       </form>
     </div>

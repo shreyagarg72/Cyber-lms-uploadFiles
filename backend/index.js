@@ -35,7 +35,7 @@ import { errorHandler } from './middlewares/error.js';
 import videoRoutes from './routes/video.js';
 import signUploadRoutes from './routes/sign-upload.js';
 import courseRoutes from './routes/course.js'; // Add this line
-
+import Course from './models/video.js';
 dotenv.config();
 
 const app = express();
@@ -50,7 +50,14 @@ app.use(express.json());
 app.use('/api/videos', videoRoutes);
 app.use('/api/sign-upload', signUploadRoutes);
 app.use('/api/courses', courseRoutes); // Add this line
-
+app.get('/api/courses', async (req, res) => {
+    try {
+      const courses = await Course.find();
+      res.json(courses);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
 // Error handler middleware
 app.use(errorHandler);
 
