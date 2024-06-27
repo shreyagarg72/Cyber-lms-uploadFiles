@@ -4,6 +4,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
+import  Axios  from "../helper/Axios";
+
 function SignInForm() {
   const navigate = useNavigate(); // Initialize useNavigate hook
   const [state, setState] = useState({
@@ -25,15 +27,34 @@ function SignInForm() {
     e.preventDefault();
     const { email, password, userType } = state; // Destructure email, password, and userType from state
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const sendingData = {
+        email: email,
+        password: password,
+      }
+
+      const axiosConfig = {
+        url: "/api/login",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: JSON.stringify(sendingData),
+      };
+
+      const response = await Axios(axiosConfig);
+      const data = await response.data;
+      // console.log(data);
       // Store the email and userType in session storage
-      sessionStorage.setItem('userEmail', email);
-      sessionStorage.setItem('userType', userType);
-      // Retrieve the name from session storage
-      const userName = sessionStorage.getItem('userName');
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('userType', data.userType);
+
+      if(data.userType !== userType && userType== 'admin') {
+        alert('You do not have admin access');
+      }
       
       // Navigate to the appropriate dashboard
-      if (userType === "admin") {
+      if (data.userType === "admin") {
         navigate("/AdminDashboard");
       } else {
         navigate("/Dashboard");
