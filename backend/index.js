@@ -36,6 +36,8 @@ import videoRoutes from './routes/video.js';
 import signUploadRoutes from './routes/sign-upload.js';
 import courseRoutes from './routes/course.js'; // Add this line
 import Course from './models/video.js';
+import loginRegRoutes from './routes/login-reg.js'; // Add these
+
 dotenv.config();
 
 const app = express();
@@ -58,6 +60,10 @@ app.get('/api/courses', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
+
+// login routes
+app.use("/api", loginRegRoutes);
+
 // Error handler middleware
 app.use(errorHandler);
 

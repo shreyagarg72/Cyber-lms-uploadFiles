@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { auth, firestore } from '../firebase';
 import { doc, setDoc } from "firebase/firestore";
 
+import Axios from "../helper/Axios.js";
+
 function SignUpForm() {
   const navigate = useNavigate();
   const [state, setState] = useState({
@@ -33,25 +35,33 @@ function SignUpForm() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Store the name, email, and userType in Firestore
-      await setDoc(doc(firestore, "users", user.uid), {
+    
+      const sendingData = {
         name: name,
         email: email,
+        password: password,
         userType: userType
-      });
+      }
 
-      // Store the name and email in session storage
-      sessionStorage.setItem('userName', name);
-      sessionStorage.setItem('userEmail', email);
+      const axiosConfig = {
+        url: "/api/register",
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: JSON.stringify(sendingData),
+      };
 
-      // Navigate to the appropriate dashboard
-      if (userType === "admin") {
-        navigate("/AdminDashboard");
+      const response = await Axios(axiosConfig);
+      const data = await response.data;
+      // console.log(data);
+      if (data.message === "User registered successfully") {
+        alert("Registration Successful! Please proceed to login.");
+       
       } else {
-        navigate("/Dashboard");
+        
+        alert("Registration failed. Please try again.");
       }
     } catch (error) {
       const errorCode = error.code;
