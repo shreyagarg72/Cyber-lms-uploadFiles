@@ -2710,18 +2710,84 @@ const Upload = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+
+  //     const imgUrl = await uploadFile("image", img);
+
+  //     const contentWithUrls = await Promise.all(
+  //       content.map(async (section) => {
+  //         const docUrl = section.doc ? await uploadFile("doc", section.doc) : null;
+  //         const videoUrl = section.video ? await uploadFile("video", section.video) : null;
+      
+  //         const submodulesWithUrls = await Promise.all(
+  //           section.submodules.map(async (submodule) => {
+  //             const submoduleDocUrl = submodule.doc ? await uploadFile("doc", submodule.doc) : null;
+  //             const submoduleVideoUrl = submodule.video ? await uploadFile("video", submodule.video) : null;
+  //             return {
+  //               title: submodule.title,
+  //               description: submodule.description,
+  //               docUrl: submoduleDocUrl,
+  //               videoUrl: submoduleVideoUrl,
+  //             };
+  //           })
+  //         );
+      
+  //         return {
+  //           title: section.title,
+  //           description: section.description,
+  //           docUrl,
+  //           videoUrl,
+  //           submodules: submodulesWithUrls,
+  //         };
+  //       })
+  //     );
+
+  //     const courseData = {
+  //       courseName,
+  //       description,
+  //       trainerName,
+  //       level,
+  //       tools,
+  //       imgUrl,
+  //       content: contentWithUrls,
+  //     };
+
+  //     await axios.post(
+  //       `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`,
+  //       courseData
+  //     );
+
+  //     setSuccessMessage("Course created successfully!");
+  //     setLoading(false);
+  //     resetForm();
+
+  //     setTimeout(() => setSuccessMessage(""), 5000);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //     setSuccessMessage("Error creating course. Please try again.");
+  //     setTimeout(() => setSuccessMessage(""), 5000);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-
+  
+      // Upload course image
       const imgUrl = await uploadFile("image", img);
-
+  
+      // Upload module content with submodules
       const contentWithUrls = await Promise.all(
         content.map(async (section) => {
+          // Upload module document and video
           const docUrl = section.doc ? await uploadFile("doc", section.doc) : null;
           const videoUrl = section.video ? await uploadFile("video", section.video) : null;
-      
+  
+          // Upload submodules documents and videos
           const submodulesWithUrls = await Promise.all(
             section.submodules.map(async (submodule) => {
               const submoduleDocUrl = submodule.doc ? await uploadFile("doc", submodule.doc) : null;
@@ -2734,7 +2800,7 @@ const Upload = () => {
               };
             })
           );
-      
+  
           return {
             title: section.title,
             description: section.description,
@@ -2744,7 +2810,8 @@ const Upload = () => {
           };
         })
       );
-
+  
+      // Construct course data with all uploaded URLs
       const courseData = {
         courseName,
         description,
@@ -2754,16 +2821,18 @@ const Upload = () => {
         imgUrl,
         content: contentWithUrls,
       };
-
+  
+      // Send courseData to backend API to save in MongoDB
       await axios.post(
         `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`,
         courseData
       );
-
+  
+      // Display success message, reset form and loading state
       setSuccessMessage("Course created successfully!");
       setLoading(false);
       resetForm();
-
+  
       setTimeout(() => setSuccessMessage(""), 5000);
     } catch (error) {
       console.error(error);
@@ -2772,6 +2841,7 @@ const Upload = () => {
       setTimeout(() => setSuccessMessage(""), 5000);
     }
   };
+  
 
   const resetForm = () => {
     setImg(null);

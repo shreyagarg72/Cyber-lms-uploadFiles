@@ -5,6 +5,27 @@ import Course from '../models/video.js'; // Ensure you have a Course model
 
 const router = express.Router();
 
+
+router.put('/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updatedCourse = req.body;
+  
+      // Find the course by ID and update it with the new data
+      const course = await Course.findByIdAndUpdate(id, updatedCourse, { new: true });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      res.json(course);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  
 // POST /api/courses
 router.post('/', async (req, res) => {
     try {
