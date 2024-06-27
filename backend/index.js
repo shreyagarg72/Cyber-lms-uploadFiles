@@ -35,6 +35,7 @@ import { errorHandler } from './middlewares/error.js';
 import videoRoutes from './routes/video.js';
 import signUploadRoutes from './routes/sign-upload.js';
 import courseRoutes from './routes/course.js'; // Add this line
+import loginRegRoutes from './routes/login-reg.js'; // Add these
 
 dotenv.config();
 
@@ -50,6 +51,9 @@ app.use(express.json());
 app.use('/api/videos', videoRoutes);
 app.use('/api/sign-upload', signUploadRoutes);
 app.use('/api/courses', courseRoutes); // Add this line
+
+// login routes
+app.use("/api", loginRegRoutes);
 
 // Error handler middleware
 app.use(errorHandler);
