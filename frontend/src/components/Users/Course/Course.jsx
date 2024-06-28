@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBell } from "@fortawesome/free-solid-svg-icons";
 import ProfileBoy from "../../../assets/Profile.webp";
 
-const AdminCourse = () => {
+const   AdminCourse = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
