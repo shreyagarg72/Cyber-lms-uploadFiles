@@ -78,13 +78,12 @@ const Profile = () => {
           <ul className="mt-2 text-gray-700 space-y-4">
             <li><strong>Mobile No:</strong> {formData.mobile}</li>
             <li><strong>Email:</strong> {formData.email}</li>
-            <li><strong>Living City/Village/Town:</strong> {formData.city}</li>
+            <li><strong>Region:</strong> {formData.city}</li>
           </ul>
         </div>
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Course Details</h3>
           <ul className="mt-2 text-gray-700 space-y-4">
-            <li><strong>Language:</strong> English</li>
             <li><strong>No. of Courses:</strong> 12</li>
             <li><strong>Courses:</strong> name of courses</li>
           </ul>
