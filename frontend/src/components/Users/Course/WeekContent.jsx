@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const WeekContent = ({ weekTitle, content }) => {
-    console.log(content);
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleOpen = () => {

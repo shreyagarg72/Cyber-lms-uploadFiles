@@ -156,7 +156,7 @@ const CoursePage = () => {
           <img src={image01} alt="Enrollment card" className="rounded-lg" />
           {isEnrolled ? (
             <>
-              <Link to="/course/coursePage/coursePreview">
+              <Link to="/course/coursePage/coursePreview" state={{course:course}}>
                 <button className="w-full bg-blue-500 text-white py-2 rounded mt-4">
                   Preview
                 </button>
