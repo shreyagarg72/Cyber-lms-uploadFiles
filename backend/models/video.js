@@ -184,7 +184,7 @@ const CourseSchema = new mongoose.Schema({
   trainerName: { type: String, required: true },
   level: { type: String, required: true },
   tools: { type: String, required: true },
-  imgUrl: { type: String, required: true },
+  imgUrl: { type: String },
   content: [ContentSchema],
 }, {
   timestamps: true,
