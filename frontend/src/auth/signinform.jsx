@@ -54,7 +54,7 @@ function SignInForm() {
       }
       
       // Navigate to the appropriate dashboard
-      if (data.userType === "admin") {
+      if (data.userType === "admin" && data.userType == userType ) {
         navigate("/AdminDashboard");
       } else {
         navigate("/Dashboard");

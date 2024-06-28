@@ -153,7 +153,7 @@ const CoursePage = () => {
           </div>
         </div>
         <div className="mt-6 md:mt-0 md:ml-6 bg-white p-6 w-5/6 md:w-1/3 rounded-lg shadow-md">
-          <img src={image01} alt="Enrollment card" className="rounded-lg" />
+          <img src={course.imgUrl} alt="Enrollment card" className="rounded-lg" />
           {isEnrolled ? (
             <>
               <Link to="/course/coursePage/coursePreview" state={{course:course}}>
