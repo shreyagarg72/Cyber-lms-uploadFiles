@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCamera, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ProfileBoy from "../../assets/Profile.webp";
+
+import Axios from "../../helper/Axios";
 
 const Profile = () => {
   const [photo, setPhoto] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: 'First Name',
-    lastName: 'Last Name',
-    gender: 'Male',
-    mobile: '',
-    email: 'Email',
-    state: 'Select State',
-    city: 'City',
+    name: '',
+    email: '',
+    region:''
   });
+
+  const [userData, setUserData] = useState({})
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = sessionStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await Axios.get('/api/userDetails');
+          setUserData(response.data);
+          console.log(response.data);
+        } catch (error) {
+          console.error('Failed to fetch user:', error);
+        }
+      }
+      // setLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
@@ -66,7 +85,7 @@ const Profile = () => {
             onChange={handlePhotoChange} />
         </div>
         <div className="text-center">
-          <h2 className="text-xl font-semibold">{`${formData.firstName} ${formData.lastName}`}</h2>
+          <h2 className="text-xl font-semibold">{`${userData.name}`}</h2>
         </div>
         <button className="text-blue-500 hover:underline mt-4" onClick={handleEditClick}>
           <FontAwesomeIcon icon={faEdit} /> Edit
@@ -76,9 +95,9 @@ const Profile = () => {
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Personal Details</h3>
           <ul className="mt-2 text-gray-700 space-y-4">
-            <li><strong>Mobile No:</strong> {formData.mobile}</li>
-            <li><strong>Email:</strong> {formData.email}</li>
-            <li><strong>Region:</strong> {formData.city}</li>
+     
+            <li><strong>Email:</strong> {userData.email}</li>
+            <li><strong>Region:</strong> {userData.region}</li>
           </ul>
         </div>
         <div className="mb-6">

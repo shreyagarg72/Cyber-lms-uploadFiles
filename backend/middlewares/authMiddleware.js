@@ -1,24 +1,24 @@
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-const jwt = require('jsonwebtoken');
-// const user = require('../models/user');
+dotenv.config();
 
-module.exports = (req, res, next) => {
-  // Get token from header
-  const token = req.header('x-auth-token');
+const jwtKey = process.env.JWT_SECRET;
 
-  // Check if token does not exist
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res.status(401).json({ message: 'No token provided' });
   }
 
   try {
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Add user from payload
-    req.user = decoded;
+    const decoded = jwt.verify(token, jwtKey);
+    req.userId = decoded.userId;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
+    res.status(401).json({ message: 'Invalid token' });
   }
 };
+
+export default verifyToken;
