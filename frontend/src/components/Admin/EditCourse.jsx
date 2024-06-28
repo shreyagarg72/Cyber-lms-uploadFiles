@@ -1017,7 +1017,7 @@ const EditCourse = () => {
         trainerName,
         level,
         tools,
-        img: imgUrl,
+        imgUrl: imgUrl,
         content: updatedContent,
       };
   
