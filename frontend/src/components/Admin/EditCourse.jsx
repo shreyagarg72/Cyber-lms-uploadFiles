@@ -914,52 +914,135 @@ const EditCourse = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     setLoading(true);
+
+  //     const imgUrl = img instanceof File ? await uploadFile("image", img) : img;
+
+  //     const contentWithUrls = await Promise.all(
+  //       content.map(async (section) => {
+  //         const docUrl = section.doc instanceof File
+  //           ? await uploadFile("raw", section.doc)
+  //           : section.doc;
+  //         const videoUrl = section.video instanceof File
+  //           ? await uploadFile("video", section.video)
+  //           : section.video;
+  //         return { ...section, doc: docUrl, video: videoUrl };
+  //       })
+  //     );
+
+  //     const courseData = {
+  //       courseName,
+  //       description,
+  //       trainerName,
+  //       level,
+  //       tools,
+  //       img: imgUrl,
+  //       content: contentWithUrls,
+  //     };
+
+  //     await axios.put(
+  //       `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/${initialCourseData._id}`,
+  //       courseData
+  //     );
+
+  //     setSuccessMessage("Course updated successfully!");
+  //     setLoading(false);
+
+  //     setTimeout(() => setSuccessMessage(""), 5000);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //     setSuccessMessage("Error updating course. Please try again.");
+  //     setTimeout(() => setSuccessMessage(""), 5000);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-
-      const imgUrl = img instanceof File ? await uploadFile("image", img) : img;
-
-      const contentWithUrls = await Promise.all(
+  
+      // Upload course image if changed
+      let imgUrl = initialCourseData.img;
+      if (img instanceof File) {
+        imgUrl = await uploadFile("image", img);
+      }
+  
+      // Update content with new file URLs
+      const updatedContent = await Promise.all(
         content.map(async (section) => {
-          const docUrl = section.doc instanceof File
-            ? await uploadFile("raw", section.doc)
-            : section.doc;
-          const videoUrl = section.video instanceof File
-            ? await uploadFile("video", section.video)
-            : section.video;
-          return { ...section, doc: docUrl, video: videoUrl };
+          const updatedSection = { ...section };
+  
+          // Upload section document if changed
+          if (section.doc instanceof File) {
+            updatedSection.doc = await uploadFile("raw", section.doc);
+          }
+  
+          // Upload section video if changed
+          if (section.video instanceof File) {
+            updatedSection.video = await uploadFile("video", section.video);
+          }
+  
+          // Update submodules with new file URLs
+          const updatedSubmodules = await Promise.all(
+            section.submodules.map(async (submodule) => {
+              const updatedSubmodule = { ...submodule };
+  
+              // Upload submodule document if changed
+              if (submodule.doc instanceof File) {
+                updatedSubmodule.doc = await uploadFile("raw", submodule.doc);
+              }
+  
+              // Upload submodule video if changed
+              if (submodule.video instanceof File) {
+                updatedSubmodule.video = await uploadFile("video", submodule.video);
+              }
+  
+              return updatedSubmodule;
+            })
+          );
+  
+          updatedSection.submodules = updatedSubmodules;
+          return updatedSection;
         })
       );
-
-      const courseData = {
+  
+      // Construct updated course data
+      const updatedCourseData = {
         courseName,
         description,
         trainerName,
         level,
         tools,
         img: imgUrl,
-        content: contentWithUrls,
+        content: updatedContent,
       };
-
-      await axios.put(
+  
+      // Send PUT request to update course in backend
+      const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/${initialCourseData._id}`,
-        courseData
+        updatedCourseData
       );
-
-      setSuccessMessage("Course updated successfully!");
-      setLoading(false);
-
-      setTimeout(() => setSuccessMessage(""), 5000);
+  
+      // Check response status and handle accordingly
+      if (response.status === 200) {
+        setSuccessMessage("Course updated successfully!");
+        setLoading(false);
+        setTimeout(() => setSuccessMessage(""), 5000);
+      } else {
+        throw new Error(`Failed to update course: ${response.statusText}`);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error updating course:", error);
       setLoading(false);
       setSuccessMessage("Error updating course. Please try again.");
       setTimeout(() => setSuccessMessage(""), 5000);
     }
   };
-
+  
   const handleFileChange = (e, index, type) => {
     const file = e.target.files[0];
     if (file) {
