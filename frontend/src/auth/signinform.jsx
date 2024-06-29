@@ -149,7 +149,7 @@ function SignInForm() {
       }
 
       const axiosConfig = {
-        url: "https://cyber-lms-server.vercel.app/api/login",
+        url: "/api/login",
         method: "post",
         headers: {
           "Content-Type": "application/json",
