@@ -45,7 +45,11 @@ const port = process.env.VITE_PORT || 5000;
 
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ["https://cyber-lms-upload-files-frontend.vercel.app"],
+  methods: ["POST","GET"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
