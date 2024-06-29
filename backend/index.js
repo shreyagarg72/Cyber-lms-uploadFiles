@@ -150,6 +150,10 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 
 // Routes
 app.use('/api/videos', videoRoutes);
@@ -163,10 +167,6 @@ app.get('/api/courses', async (req, res) => {
   }
 });
 app.use('/api', loginRegRoutes);
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
 
 // Error handler middleware
 app.use(errorHandler);
