@@ -61,6 +61,9 @@ app.get('/api/courses', async (req, res) => {
     }
   });
 
+  app.get('/',(req,res)=>{
+    res.json("hello");
+  })
 // login routes
 app.use("/api", loginRegRoutes);
 
