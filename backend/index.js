@@ -146,20 +146,14 @@ const port = process.env.VITE_PORT || 5000;
 
 
 // Configure the CORS middleware
-app.use(cors({
-  origin: 'https://cyber-lms-upload-files-frontend.vercel.app',
-  credentials: true
-}));
-
-app.use(express.json());
-
-app.use(function (req, res, next) {
-  //Enabling CORS
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
-    next();
-  });
+const corsOptions = {
+  origin: 'https://cyber-lms-upload-files-frontend.vercel.app', // Replace with your frontend URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
+};
+app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);

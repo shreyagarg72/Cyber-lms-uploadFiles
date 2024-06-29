@@ -149,7 +149,7 @@ function SignInForm() {
       }
 
       const axiosConfig = {
-        url: "/api/login",
+        url: "/login",
         method: "post",
         headers: {
           "Content-Type": "application/json",
