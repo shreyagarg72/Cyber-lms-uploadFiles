@@ -143,12 +143,14 @@ dotenv.config();
 const app = express();
 const port = process.env.VITE_PORT || 5000;
 
-// Middleware
-const corsOptions = {
-  origin: 'https://cyber-lms-upload-files-frontend.vercel.app', // your frontend URL
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+
+
+// Configure the CORS middleware
+app.use(cors({
+  origin: 'https://cyber-lms-upload-files-frontend.vercel.app',
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use(function (req, res, next) {
