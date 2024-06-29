@@ -84,6 +84,50 @@
 // });
 
 
+// import express from 'express';
+// import cors from 'cors';
+// import dotenv from 'dotenv';
+// import { connectDB } from './config/db.js';
+// import { errorHandler } from './middlewares/error.js';
+// import videoRoutes from './routes/video.js';
+// import courseRoutes from './routes/course.js';
+// import loginRegRoutes from './routes/login-reg.js';
+// import Course from './models/video.js';
+
+// dotenv.config();
+
+// const app = express();
+// const port = process.env.VITE_PORT || 5000;
+
+// // Middleware
+// const corsOptions = {
+//   origin: 'https://cyber-lms-upload-files-frontend.vercel.app', // your frontend URL
+//   optionsSuccessStatus: 200,
+// };
+// app.use(cors(corsOptions));
+// app.use(express.json());
+
+// // Routes
+// app.use('/api/videos', videoRoutes);
+// app.use('/api/courses', courseRoutes);
+// app.get('/api/courses', async (req, res) => {
+//   try {
+//     const courses = await Course.find();
+//     res.json(courses);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+// app.use('/api', loginRegRoutes);
+
+// // Error handler middleware
+// app.use(errorHandler);
+
+// // Start server
+// app.listen(port, () => {
+//   connectDB();
+//   console.log(`Server is running on port ${port}`);
+// });
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
