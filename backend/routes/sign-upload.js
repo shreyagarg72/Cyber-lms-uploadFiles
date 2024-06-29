@@ -1,9 +1,9 @@
-import express from 'express';
-import {generateSignature} from "../controllers/sign-upload.js";
+// import express from 'express';
+// import {generateSignature} from "../controllers/sign-upload.js";
 
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post("/",generateSignature);
+// router.post("/",generateSignature);
 
-export default router;
+// export default router;

@@ -2,7 +2,7 @@
 import express from "express";
 import Course from "../models/video.js"; // Ensure you have a Course model
 import upload from '../middlewares/upload.js';
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary  from 'cloudinary';
 
 const router = express.Router();
 

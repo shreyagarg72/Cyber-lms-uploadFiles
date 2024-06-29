@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import dotenv from 'dotenv';
 
@@ -25,3 +25,4 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 export default upload;
+

@@ -33,7 +33,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middlewares/error.js';
 import videoRoutes from './routes/video.js';
-import signUploadRoutes from './routes/sign-upload.js';
+//import signUploadRoutes from './routes/sign-upload.js';
 import courseRoutes from './routes/course.js'; // Add this line
 import Course from './models/video.js';
 import loginRegRoutes from './routes/login-reg.js'; // Add these
@@ -50,7 +50,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/videos', videoRoutes);
-app.use('/api/sign-upload', signUploadRoutes);
+//app.use('/api/sign-upload', signUploadRoutes);
 app.use('/api/courses', courseRoutes); // Add this line
 app.get('/api/courses', async (req, res) => {
     try {
