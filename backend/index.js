@@ -248,7 +248,7 @@ import Course from './models/video.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.VITE_PORT || 5000;
+const port = import.meta.env.VITE_PORT || 5000;
 
 // Configure the CORS middleware
 const corsOptions = {
@@ -260,14 +260,22 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.url}`);
+//   next();
+// });
 
 // Middleware
+
 app.use(express.json());
 
+// Increase the default timeout for all routes
+app.use((req, res, next) => {
+  req.setTimeout(10000, () => { // Set timeout to 10 seconds
+    res.status(504).json({ message: 'Request timed out' });
+  });
+  next();
+});
 // Routes
 app.use('/api/videos', videoRoutes);
 app.use('/api/courses', courseRoutes);
