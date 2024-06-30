@@ -261,7 +261,7 @@ function SignInForm() {
     const { email, password, userType } = state;
 
     try {
-      const response = await Axios.post("/api/login", {
+      const response = await Axios.post("https://cyber-lms-server.vercel.app/api/login", {
         email,
         password
       });
