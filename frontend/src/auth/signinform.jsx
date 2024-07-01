@@ -141,13 +141,19 @@ function SignInForm() {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    const { email, password, userType } = state; // Destructure email, password, and userType from state
+    const { email, password, userType } = state;
+    console.log(
+      "reached login.jsx"
+    )// Destructure email, password, and userType from state
     try {
       const sendingData = {
         email: email,
         password: password,
       }
-
+      
+      console.log(
+        "try sending data"
+      )
       const axiosConfig = {
         url: "/api/login", // Make sure this is the correct endpoint
         method: "post",
@@ -158,9 +164,14 @@ function SignInForm() {
         data: JSON.stringify(sendingData),
       };
       
-
+      console.log(
+        "waiting start"
+      )
       const response = await Axios(axiosConfig);
       const data = await response.data;
+      console.log(
+        "wait oover"
+      )
 
       // Store the email and userType in session storage
       sessionStorage.setItem('token', data.token);
