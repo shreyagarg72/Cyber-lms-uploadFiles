@@ -6,39 +6,71 @@ import User from "../models/user.js";
 
 dotenv.config();
 
-const jwtKey = process.env.JWT_SECRET;
+const jwtKey = import.meta.env.VITE_JWT_SECRET;
 
 // console.log("jwt key"+jwtKey);
 
 // Function to handle user login
+// const login = async (req, res) => {
+//   const { email, password } = req.body;
+
+//   try {
+//     // Find user in database
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // Validate password
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       { userId: user._id },
+//       jwtKey,
+//       { expiresIn: "1h" } // Token expires in 1 hour
+//     );
+
+//     res
+//       .status(200)
+//       .json({ message: "logged in", token: token, userType: user.userType });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("Received login request:", email, password);
+
   try {
-    // Find user in database
     const user = await User.findOne({ email });
     if (!user) {
+      console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("Invalid credentials");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user._id },
       jwtKey,
-      { expiresIn: "1h" } // Token expires in 1 hour
+      { expiresIn: "1h" }
     );
 
-    res
-      .status(200)
-      .json({ message: "logged in", token: token, userType: user.userType });
+    console.log("User logged in:", token);
+    res.status(200).json({ message: "logged in", token: token, userType: user.userType });
   } catch (error) {
-    console.error(error);
+    console.error("Server error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
