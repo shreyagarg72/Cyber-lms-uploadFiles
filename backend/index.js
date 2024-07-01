@@ -287,7 +287,14 @@ app.get('/api/courses', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+console.log(
+  "reached index.js"
+)
 app.use('/api', loginRegRoutes);
+console.log(
+  "got route in index.js"
+)
 
 app.get('/', (req, res) => {
   res.send('Server is up and running!');

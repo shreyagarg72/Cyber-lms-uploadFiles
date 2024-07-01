@@ -5,7 +5,13 @@ import verifyToken from '../middlewares/authMiddleware.js';
 const router = express.Router();
 
 // Login route
+console.log(
+  "reached login.js"
+)
 router.post('/login', authController.login);
+console.log(
+  "going from index.js"
+)
 
 // Route to register a new user
 router.post('/register', authController.register);
