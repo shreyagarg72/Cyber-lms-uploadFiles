@@ -269,13 +269,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// Increase the default timeout for all routes
-app.use((req, res, next) => {
-  req.setTimeout(10000, () => { // Set timeout to 10 seconds
-    res.status(504).json({ message: 'Request timed out' });
-  });
-  next();
-});
+
 // Routes
 app.use('/api/videos', videoRoutes);
 app.use('/api/courses', courseRoutes);
