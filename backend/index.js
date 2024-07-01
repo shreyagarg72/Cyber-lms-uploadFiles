@@ -289,6 +289,9 @@ app.get('/api/courses', async (req, res) => {
 });
 app.use('/api', loginRegRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Server is up and running!');
+});
 // Error handler middleware
 app.use(errorHandler);
 
