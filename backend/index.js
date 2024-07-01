@@ -287,7 +287,7 @@ app.get('/api/courses', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-app.use('/api', loginRegRoutes);
+app.use('/', loginRegRoutes);
 
 // Error handler middleware
 app.use(errorHandler);
