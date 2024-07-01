@@ -6,7 +6,7 @@ import User from "../models/user.js";
 
 dotenv.config();
 
-const jwtKey = import.meta.env.VITE_JWT_SECRET;
+const jwtKey = process.env.JWT_SECRET;
 
 // console.log("jwt key"+jwtKey);
 

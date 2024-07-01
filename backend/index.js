@@ -248,7 +248,7 @@ import Course from './models/video.js';
 dotenv.config();
 
 const app = express();
-const port = import.meta.env.VITE_PORT || 5000;
+const port = process.env.PORT || 5000;
 
 // Configure the CORS middleware
 const corsOptions = {
