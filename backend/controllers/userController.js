@@ -43,36 +43,74 @@ const jwtKey = process.env.JWT_SECRET;
 //   }
 // };
 
-const login = async (req, res) => {
+// const login = async (req, res) => {
+//   const { email, password } = req.body;
+
+//   console.log("Received login request:", email, password);
+
+//   try {
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       console.log("User not found");
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       console.log("Invalid credentials");
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const token = jwt.sign(
+//       { userId: user._id },
+//       jwtKey,
+//       { expiresIn: "1h" }
+//     );
+
+//     console.log("User logged in:", token);
+//     res.status(200).json({ message: "logged in", token: token, userType: user.userType });
+//   } catch (error) {
+//     console.error("Server error:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
+const login = (req, res) => {
   const { email, password } = req.body;
 
-  console.log("Received login request:", email, password);
+  console.log("Received login request:", email);
 
-  try {
-    const user = await User.findOne({ email });
+  // Find user in the database
+  User.findOne({ email: email }).lean().then(user => {
     if (!user) {
       console.log("User not found");
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      console.log("Invalid credentials");
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // Validate password
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (!isMatch) {
+        console.log("Invalid credentials");
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
 
-    const token = jwt.sign(
-      { userId: user._id },
-      jwtKey,
-      { expiresIn: "1h" }
-    );
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: user._id },
+        jwtKey,
+        { expiresIn: "1h" }
+      );
 
-    console.log("User logged in:", token);
-    res.status(200).json({ message: "logged in", token: token, userType: user.userType });
-  } catch (error) {
+      console.log("User logged in:", token);
+      res.status(200).json({ message: "logged in", token, userType: user.userType });
+    }).catch(error => {
+      console.error("Password validation error:", error);
+      res.status(500).json({ message: "Server error" });
+    });
+  }).catch(error => {
     console.error("Server error:", error);
     res.status(500).json({ message: "Server error" });
-  }
+  });
 };
 
 // Function to add a new user

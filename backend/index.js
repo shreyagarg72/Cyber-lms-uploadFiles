@@ -268,6 +268,12 @@ app.use(cors(corsOptions));
 // Middleware
 
 app.use(express.json());
+app.use((req, res, next) => {
+  req.setTimeout(30000, () => { // Set timeout to 10 seconds
+    res.status(504).json({ message: 'Request timed out' });
+  });
+  next();
+});
 
 
 // Routes
@@ -287,7 +293,9 @@ app.use('/api', loginRegRoutes);
 app.use(errorHandler);
 
 // Start server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   connectDB();
   console.log(`Server is running on port ${port}`);
 });
+
+server.timeout=30000;
