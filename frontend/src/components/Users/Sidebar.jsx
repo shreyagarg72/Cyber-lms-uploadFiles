@@ -10,7 +10,8 @@ import {
   faComments,
   faTimes,
   faBars,
-  faPeopleGroup
+  faPeopleGroup,
+  faCalendar
 } from "@fortawesome/free-solid-svg-icons";
 import dashlogo from "../../assets/dashboard.svg";
 import image01 from "../../assets/CyberPeace Logo Verticle-03.png"
@@ -34,6 +35,7 @@ const Sidebar = () => {
     { to: "/Dashboard", icon: dashlogo, label: "Dashboard" },
     { to: "/course", icon: faBook, label: "Courses" },
     { to: "/community", icon: faPeopleGroup, label: "Community" },
+    { to: "/calendar", icon: faCalendar, label: "Calendar" },
     // { to: "/doubt", icon: faQuestionCircle, label: "Doubts" },
     // { to: "/feedback", icon: faComments, label: "Feedback" },
     // { to: "/report", icon: faFile, label: "Report" },
