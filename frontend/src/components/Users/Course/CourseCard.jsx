@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faUsers, faCalendarDays, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 
 const CourseCard = ({ course }) => {
+  const numberOfModules = course.content.length;
+  const numberOfSubmodules = course.content.reduce((acc, module) => acc + module.submodules.length, 0);
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 w-64 mb-4 cursor-pointer hover:scale-105 transition duration-200">
       <div className="relative">
@@ -20,15 +22,15 @@ const CourseCard = ({ course }) => {
       <div className="flex flex-row gap-3 items-center mt-2">
         <div className="flex items-center space-x-1 text-xs mr-2">
           <FontAwesomeIcon icon={faFolderOpen} className="text-gray-600 mr-1" />
-          <span className="text-gray-600">5 modules</span>
+          <span className="text-gray-600">{numberOfModules} modules</span>
         </div>
         <div className="flex items-center space-x-1 text-xs mr-2">
           <FontAwesomeIcon icon={faCalendarDays} />
-          <span className="text-gray-600">12 days</span>
+          <span className="text-gray-600">{numberOfSubmodules} days</span>
         </div>
         <div className="flex items-center space-x-1 text-xs">
           <FontAwesomeIcon icon={faUsers} className="text-gray-600 mr-1" />
-          <span className="text-gray-600">45</span>
+          <span className="text-gray-600">100+</span>
         </div>
       </div>
     </div>

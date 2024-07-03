@@ -5,40 +5,29 @@ import Course from '../models/video.js';
 
 const router = express.Router();
 
-router.post('/api/enroll', async (req, res) => {
+router.post("/", async (req, res) => {
+  console.log("Received request to enroll in course"); // Add this line
   const { courseId } = req.body;
-  const userId = req.user._id; // Assuming you have authentication middleware that sets req.user
+  const userId = req.user_id; // Assuming user is authenticated and user ID is accessible
 
   try {
-    const user = await User.findById(userId);
-    const course = await Course.findById(courseId);
+    console.log("User ID:", userId); // Add this line
+    console.log("Course ID:", courseId); // Add this line
 
-    if (!user || !course) {
-      return res.status(404).json({ message: 'User or Course not found' });
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { enrolledCourses: courseId } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if the user is already enrolled
-    const alreadyEnrolled = user.courses.some(c => c.course_id.equals(courseId));
-    if (alreadyEnrolled) {
-      return res.status(400).json({ message: 'Already enrolled in this course' });
-    }
-
-    // Add the course to the user's courses array
-    user.courses.push({
-      course_id: courseId,
-      total_no_of_modules: course.content.length,
-    });
-
-    // Add the user to the course's enrolledStudents array
-    course.enrolledStudents.push(userId);
-
-    await user.save();
-    await course.save();
-
-    res.status(200).json({ message: 'Enrolled successfully' });
+    res.status(200).json({ message: "Enrolled in course successfully" });
   } catch (error) {
-    console.error('Error enrolling:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error enrolling user:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

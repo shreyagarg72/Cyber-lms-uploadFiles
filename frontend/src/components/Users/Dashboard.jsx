@@ -93,75 +93,35 @@ const DashboardContent = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="py-2 px-4 border-b">
-                    Ethical Hacking Essentials
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <FontAwesomeIcon icon={faUser} className="mr-2" /> Prof Raj
-                    Sharma
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <span className="bg-yellow-400 text-black py-1 px-3 rounded-full text-xs">
-                      Medium
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 border-b">Jun 8, 2024 7:00pm</td>
-                  <td className="py-2 px-4 border-b">
-                    <div className="w-28 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-green-500 h-full rounded-full"
-                        style={{ width: "80%" }}
-                      ></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 border-b">
-                    Ethical Hacking Essentials
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <FontAwesomeIcon icon={faUser} className="mr-2" /> Prof Raj
-                    Sharma
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <span className="bg-red-400 text-black py-1 px-3 rounded-full text-xs">
-                      Hard
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 border-b">Jun 8, 2024 7:00pm</td>
-                  <td className="py-2 px-4 border-b">
-                    <div className="w-28 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-green-500 h-full rounded-full"
-                        style={{ width: "80%" }}
-                      ></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 border-b">
-                    Ethical Hacking Essentials
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <FontAwesomeIcon icon={faUser} className="mr-2" /> Prof Raj
-                    Sharma
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    <span className="bg-green-400 text-black py-1 px-3 rounded-full text-xs">
-                      Easy
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 border-b">Jun 8, 2024 7:00pm</td>
-                  <td className="py-2 px-4 border-b">
-                    <div className="w-28 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-green-500 h-full rounded-full"
-                        style={{ width: "80%" }}
-                      ></div>
-                    </div>
-                  </td>
-                </tr>
+              {courses.map((course) => (
+                  <tr key={course._id}>
+                    <td className="py-2 px-4 border-b">{course.courseName}</td>
+                    <td className="py-2 px-4 border-b">
+                      <FontAwesomeIcon icon={faUser} className="mr-2" />{" "}
+                      {course.trainerName}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      <span className={`py-1 px-3 rounded-full text-xs ${
+                        course.level === "Easy"
+                          ? "bg-green-400"
+                          : course.level === "Medium"
+                          ? "bg-yellow-400"
+                          : "bg-red-400"
+                      } text-black`}>
+                        {course.level}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4 border-b">{course.nextAssignment}</td>
+                    <td className="py-2 px-4 border-b">
+                      {/* <div className="w-28 bg-gray-200 rounded-full h-1.5">
+                         <div
+                          className="bg-green-500 h-full rounded-full"
+                          style={{ width: "80%" }}
+                        ></div> 
+                      </div> */}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
