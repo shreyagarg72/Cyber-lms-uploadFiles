@@ -307,7 +307,7 @@ function SignUpForm() {
     }
 
     try {
-      const response = await Axios.post("https://cyber-lms-server.vercel.app/api/register", {
+      const response = await Axios.post("/api/register", {
         name,
         email,
         password,
