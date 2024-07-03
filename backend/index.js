@@ -314,6 +314,7 @@ import { errorHandler } from './middlewares/error.js';
 import videoRoutes from './routes/video.js';
 import courseRoutes from './routes/course.js';
 import loginRegRoutes from './routes/login-reg.js';
+
 import Course from './models/video.js';
 
 
@@ -341,10 +342,11 @@ app.get('/api/courses', async (req, res) => {
 
 
 app.use('/api', loginRegRoutes);
-app.use('/api/courses', courseRoutes);
+
+
 
 // Error handler middleware
-app.use(errorHandler);
+ app.use(errorHandler);
 
 // Start server
 app.listen(port, () => {

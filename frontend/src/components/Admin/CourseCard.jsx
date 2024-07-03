@@ -240,15 +240,6 @@ const CourseCard = ({ course }) => {
           <span className="text-gray-600">45</span>
         </div>
       </div>
-      <div className="mt-4">
-        <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
-          <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '45%' }}></div>
-        </div>
-        <div className="flex justify-between mt-2 text-gray-600 text-xs">
-          <span>Completed: 45%</span>
-          <span>Days: 4/12</span>
-        </div>
-      </div>
     </div>
   );
 };

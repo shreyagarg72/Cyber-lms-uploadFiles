@@ -163,10 +163,6 @@
 
 import mongoose from 'mongoose';
 
-const generateUserId = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
 const SubmoduleSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
@@ -183,7 +179,6 @@ const ContentSchema = new mongoose.Schema({
 });
 
 const CourseSchema = new mongoose.Schema({
-  course_id: { type: String, default: generateUserId, unique: true },
   courseName: { type: String },
   description: { type: String},
   trainerName: { type: String, required: true },
@@ -191,7 +186,6 @@ const CourseSchema = new mongoose.Schema({
   tools: { type: String, required: true },
   imgUrl: { type: String },
   content: [ContentSchema],
-  enrolledStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, {
   timestamps: true,
 });
