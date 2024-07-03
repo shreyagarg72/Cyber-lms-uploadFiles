@@ -341,6 +341,7 @@ app.get('/api/courses', async (req, res) => {
 
 
 app.use('/api', loginRegRoutes);
+app.use('/api/courses', courseRoutes);
 
 // Error handler middleware
 app.use(errorHandler);

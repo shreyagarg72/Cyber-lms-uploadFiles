@@ -44,47 +44,7 @@ router.put('/:id', upload.single('file'), async (req, res) => {
   }
 });
 
-// router.put('/:id', async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       const updatedCourse = req.body;
 
-//       // Find the course by ID and update it with the new data
-//       const course = await Course.findByIdAndUpdate(id, updatedCourse, { new: true });
-
-//       if (!course) {
-//         return res.status(404).json({ message: 'Course not found' });
-//       }
-
-//       res.json(course);
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ message: 'Server error' });
-//     }
-//   });
-
-// router.put("/:id", async (req, res) => {
-//   try {
-//     const course = await Course.findById(req.params.id);
-
-//     const data = {
-//       courseName: req.body.courseName,
-//       description: req.body.description,
-//       trainerName: req.body.trainerName,
-//       level: req.body.level,
-//       tools: req.body.tools,
-//       imgUrl: req.body.imgUrl,
-//       content: req.body.content,
-//     }
-
-//     // modify image
-//     if(req.body.imgUrl != ''){
-//       const ImgId = currentCourse.imgUrl.
-//     }
-//   } catch (error) {}
-// });
-
-// POST /api/courses
 router.post("/", async (req, res) => {
   try {
     const {
@@ -114,5 +74,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+// export default router;
 
 export default router;
