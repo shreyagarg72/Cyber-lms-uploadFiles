@@ -119,7 +119,7 @@ const register = async (req, res) => {
 
   try {
     // Check if user with the same email exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).limit(1);
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
