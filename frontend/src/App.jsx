@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import DashboardContent from "./components/Users/Dashboard";
@@ -15,113 +16,140 @@ import SecureUpload from "./components/Admin/SecureUpload";
 import EditCourse from "./components/Admin/EditCourse";
 import CoursePage from "./components/Users/Course/CoursePage";
 import CoursePreviewPage from "./components/Users/Course/CoursesPreview";
-import Calendar from "./components/Users/Calendar"
+import Calendar from "./components/Users/Calendar";
+import { AuthProvider } from "./auth/AuthProvider"; // Adjust the import path as necessary
+import ProtectedRoute from "./hoc/ProtectedRoutes"; // Adjust the import path as necessary
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Auth />} />
-        <Route
-          path="/Dashboard"
-          element={
-            <Layout>
-              <DashboardContent />
-            </Layout>
-          }
-        />
-        <Route
-          path="/AdminDashboard"
-          element={
-            <LayoutAdmin>
-              <AdminDashboard />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/course"
-          element={
-            <Layout>
-              <Course />
-            </Layout>
-          }
-        />
-        <Route
-          path="/AdminCourse"
-          element={
-            <LayoutAdmin>
-              <AdminCourse />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/community"
-          element={
-            <Layout>
-              <Community />
-            </Layout>
-          }
-        />
-        <Route
-          path="/AdminCommunity"
-          element={
-            <LayoutAdmin>
-              <AdminCommunity />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <Layout>
-              <Profile />
-            </Layout>
-          }
-        />
-        <Route
-          path="/upload"
-          element={
-            <LayoutAdmin>
-              <Upload />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/secure-upload"
-          element={
-            <LayoutAdmin>
-              <SecureUpload />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/edit-course"
-          element={
-            <LayoutAdmin>
-              <EditCourse />
-            </LayoutAdmin>
-          }
-        />
-        <Route
-          path="/course/coursePage"
-          element={
-            <Layout>
-              <CoursePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/course/coursePage/coursePreview"
-          element={
-            <Layout>
-              <CoursePreviewPage />
-            </Layout>
-          }
-          
-        />
-        <Route path="/calendar" element={<Calendar />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Auth />} />
+          <Route
+            path="/Dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardContent />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/AdminDashboard"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <AdminDashboard />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Course />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/AdminCourse"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <AdminCourse />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/community"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Community />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/AdminCommunity"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <AdminCommunity />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <Upload />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/secure-upload"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <SecureUpload />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-course"
+            element={
+              <ProtectedRoute adminOnly>
+                <LayoutAdmin>
+                  <EditCourse />
+                </LayoutAdmin>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course/coursePage"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CoursePage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/course/coursePage/coursePreview"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <CoursePreviewPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

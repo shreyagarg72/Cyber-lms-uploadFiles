@@ -24,9 +24,16 @@ import WD from "../../assets/DashboardUI_malwaresymbolredisolatedonwhitebackgrou
 import CourseCard from "../Users/Course/DashCourseCard";
 import Notification from './Notification';
 import ToggleProfile from './ToggleProfile';
+import { useAuth } from "../../auth/AuthProvider";
 
 
 const DashboardContent = () => {
+  const { auth } = useAuth();
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
   const [courses, setCourses] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);

@@ -18,4 +18,10 @@ router.post('/register', authController.register);
 
 router.get('/userDetails',verifyToken,authController.getUser);
 
+
+router.get('/verifyToken', verifyToken, (req, res) => {
+  res.status(200).send({ isValid: true });
+});
+
+
 export default router;

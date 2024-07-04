@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Axios from "../helper/Axios";
+import { useAuth } from '../auth/AuthProvider';
 
 function SignInForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -39,6 +41,8 @@ function SignInForm() {
       const response = await Axios(axiosConfig);
       const data = await response.data;
 
+      login(data.token, data.userType);
+
       // Store the token and user type
       localStorage.setItem('token', data.token);
       localStorage.setItem('userType', data.userType);
@@ -54,6 +58,7 @@ function SignInForm() {
         navigate("/Dashboard");
       }
     } catch (error) {
+      console.error('Login failed:', error);
       setErrorMessage('Invalid email or password. Please try again.');
     } finally {
       setLoading(false);

@@ -5,6 +5,8 @@ import ProfileBoy from "../../assets/Profile.webp"
 import { faEye, faBook, faUsers, faStar, faClock, faSearch, faUser, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { useAuth } from '../../auth/AuthProvider';
+
 
 ChartJS.register(
   CategoryScale,
@@ -19,6 +21,12 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const { auth } = useAuth();
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
   const lineData = {
     labels: Array.from({ length: 10 }, (_, i) => i + 1),
     datasets: [
