@@ -2,6 +2,8 @@
 import authController from '../controllers/userController.js'
 import express from 'express';
 import verifyToken from '../middlewares/authMiddleware.js';
+
+
 const router = express.Router();
 
 // Login route
@@ -23,5 +25,7 @@ router.get('/verifyToken', verifyToken, (req, res) => {
   res.status(200).send({ isValid: true });
 });
 
+router.get('/enrolled-courses', verifyToken, authController.getEnrolledCourses);
 
+router.get('/check-enrollment/:courseId', verifyToken, authController.checkEnrollmentStatus);
 export default router;

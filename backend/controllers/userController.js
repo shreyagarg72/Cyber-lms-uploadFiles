@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
+import asyncHandler from 'express-async-handler';
 import User from "../models/user.js";
 
 dotenv.config();
@@ -161,9 +161,47 @@ const getUser = async (req, res) => {
   }
 };
 
+const getEnrolledCourses = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const user = await User.findById(userId).populate('courses.course_id');
+    if (user) {
+      const enrolledCourses = user.courses.map(course => course.course_id);
+      res.json({ enrolledCourses });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+const checkEnrollmentStatus = async (req, res) => {
+  const userId = req.userId;
+  const { courseId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isEnrolled = user.courses.some(course => course.course_id.toString() === courseId);
+    res.json({ isEnrolled });
+  } catch (error) {
+    console.error("Error checking enrollment status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export { login, register, getUser, getEnrolledCourses, checkEnrollmentStatus };
+
 
 export default {
   login,
   register,
   getUser,
+  getEnrolledCourses,
+  checkEnrollmentStatus,
 };
