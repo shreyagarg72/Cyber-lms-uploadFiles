@@ -19,7 +19,7 @@ const CourseCard = ({ course }) => {
         <FontAwesomeIcon icon={faUserCircle} className='text-sm' />
         <p className="text-gray-600 text-xs">by {course.trainerName}</p>
       </div>
-      <div className="flex flex-row gap-3 items-center mt-2">
+      <div className="flex flex-row gap-2 items-center mt-2">
         <div className="flex items-center space-x-1 text-xs mr-2">
           <FontAwesomeIcon icon={faFolderOpen} className="text-gray-600 mr-1" />
           <span className="text-gray-600">{numberOfModules} modules</span>

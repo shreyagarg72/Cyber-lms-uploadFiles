@@ -7,22 +7,22 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({ isAuthenticated: false, userType: null });
  
   const login = (token, userType) => {
-    // Save token to sessionStorage or cookies
-    sessionStorage.setItem('token', token);
-    sessionStorage.setItem('userType', userType);
+    // Save token to localStorage or cookies
+    localStorage.setItem('token', token);
+    localStorage.setItem('userType', userType);
     setAuth({ isAuthenticated: true, userType });
   };
 
   const logout = () => {
-    // Remove token from sessionStorage or cookies
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userType');
+    // Remove token from localStorage or cookies
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
     setAuth({ isAuthenticated: false, userType: null });
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    const userType = sessionStorage.getItem('userType');
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
     if (token && userType) {
       setAuth({ isAuthenticated: true, userType });
     }
