@@ -322,7 +322,6 @@ import Course from './models/video.js';
 import uploadRoutes from './routes/upload.js';
 
 
-
 dotenv.config();
 
 const app = express();

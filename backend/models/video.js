@@ -7,7 +7,7 @@ const SubmoduleSchema = new mongoose.Schema({
   description: { type: String },
   docUrl: { type: String }, // Adjust to match Cloudinary's URL for documents
   videoUrl: { type: String }, // Adjust to match Cloudinary's URL for videos
-  completed: { type: Boolean, default: false }
+  
 });
 
 const ContentSchema = new mongoose.Schema({

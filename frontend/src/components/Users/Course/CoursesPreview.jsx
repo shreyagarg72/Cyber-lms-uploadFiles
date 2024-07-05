@@ -87,7 +87,7 @@ const CoursePreviewPage = () => {
     }
   };
 
-
+  const token = localStorage.getItem('token');
   useEffect(() => {
     console.log('checkedSubmodules:', checkedSubmodules);
 
@@ -102,7 +102,9 @@ const CoursePreviewPage = () => {
         const axiosConfig = {
           url: '/api/updateCourseProgress', 
           method: 'put', 
-          
+          headers:{
+            'Authorization':  `Bearer ${token}`
+          },
           data: sendingData,
         };
 
