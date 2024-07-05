@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,22 +26,22 @@ import Notification from "../Notification";
 import { useLocation } from "react-router-dom";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 
+import Axios from "../../../helper/Axios"
+
 const CoursePreviewPage = () => {
   const location = useLocation();
 
   const { course } = location.state || {}; // Default to an empty object if state is undefined
 
   const weekContent = course.content || {};
-  // console.log(course.content[0].submodules[0].docUrl);
-  // const document = {
-  //     uri: course.content[0].submodules[0].docUrl, // Replace with your document URL
-  //     fileType: 'doc', // Specify the type of the document
-  //   };
-
+ 
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedSubmodule, setSelectedSubmodule] = useState(
     weekContent[0].submodules[0]
   );
+
+  const [checkedSubmodules, setCheckedSubmodules] = useState([]);
+
 
   const handleNotification = () => {
     setShowNotifications(!showNotifications);
@@ -50,6 +50,87 @@ const CoursePreviewPage = () => {
   const handleSubmoduleClick = (submodule) => {
     setSelectedSubmodule(submodule);
   };
+
+  const handleSubmoduleCheck = (e) => {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+  
+    // Check if the submodule with this ID already exists in checkedSubmodules
+    const submoduleExists = checkedSubmodules.some(item => item.id === value);
+  
+    if (isChecked) {
+      if (submoduleExists) {
+        // Update submodule in checkedSubmodules to set completed to true
+        const updatedSubmodules = checkedSubmodules.map(item => {
+          if (item.id === value) {
+            return { ...item, completed: true };
+          }
+          return item;
+        });
+        setCheckedSubmodules(updatedSubmodules);
+      } else {
+        // Add new submodule to checkedSubmodules with completed set to true initially
+        setCheckedSubmodules(prevCheckedSubmodules => [
+          ...prevCheckedSubmodules,
+          { id: value, completed: true }
+        ]);
+      }
+    } else {
+      // Update submodule in checkedSubmodules to set completed to false
+      const updatedSubmodules = checkedSubmodules.map(item => {
+        if (item.id === value) {
+          return { ...item, completed: false };
+        }
+        return item;
+      });
+      setCheckedSubmodules(updatedSubmodules);
+    }
+  };
+
+
+  useEffect(() => {
+    console.log('checkedSubmodules:', checkedSubmodules);
+
+    // Define your asynchronous update function
+    const updateBackendData = async (courseId, submodules) => {
+      try {
+        const sendingData = {
+          courseId: courseId,
+          submodules: submodules,
+        };
+
+        const axiosConfig = {
+          url: '/api/updateCourseProgress', 
+          method: 'put', 
+          
+          data: sendingData,
+        };
+
+        const response = await Axios(axiosConfig);
+        console.log('Backend update response:', response.data);
+
+        // Optionally return data from backend response
+        return response.data;
+      } catch (error) {
+        console.error('Error updating backend:', error);
+        throw error; // Propagate the error for handling in the calling function
+      }
+    };
+
+    // Example usage of the updateBackendData function
+    const courseId = course._id; 
+    updateBackendData(courseId, checkedSubmodules)
+      .then(data => {
+        // Handle success response from backend
+        console.log('Backend update successful:', data);
+      })
+      .catch(error => {
+        // Handle error from backend
+        console.error('Backend update failed:', error);
+      });
+
+  }, [checkedSubmodules]);
+
 
   let document = null;
   if (selectedSubmodule.docUrl !== null) {
@@ -185,9 +266,16 @@ const CoursePreviewPage = () => {
                     <summary className="font-semibold text-gray-800 cursor-pointer">
                       {week.title}
                     </summary>
-                    <ul className="mt-2 list-disc list-inside">
+                    <ul className="mt-2 list-inside">
                       {week.submodules.map((item, index) => (
                         <li key={index} className="text-gray-600">
+                          <input
+                            type="checkbox"
+                            value={item._id}
+                            onChange={handleSubmoduleCheck}
+                            className="mr-2"
+                          />
+
                           <button
                             onClick={() => handleSubmoduleClick(item)}
                             className={`pl-2 pr-2 rounded ${
