@@ -317,7 +317,7 @@ import loginRegRoutes from './routes/login-reg.js';
 import enrollRoutes from './routes/enroll.js';
 import authMiddleware from './middlewares/authMiddleware.js';
 import Course from './models/video.js';
-
+import uploadRoutes from './routes/upload.js';
 
 
 
@@ -346,6 +346,7 @@ app.get('/api/courses', async (req, res) => {
 app.use('/api', loginRegRoutes);
 
 app.use('/api', authMiddleware, enrollRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Error handler middleware
  app.use(errorHandler);
