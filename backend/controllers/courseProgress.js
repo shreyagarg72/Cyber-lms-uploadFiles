@@ -1,35 +1,60 @@
 import Course from '../models/video.js';
+import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
+
+import User from '../models/user.js';
+
+dotenv.config();
+
+const jwtKey = process.env.JWT_SECRET;
+
+console.log("heerreee course progresss");
 
 const courseProgress =async (req,res)=>{
    
-    const { courseId, submodules } = req.body; // courseId and submodules are sent in the request body
+    const { courseId, submodules ,userToken} = req.body; // courseId and submodules are sent in the request body
+  
+    const user_id = req.user_id;
+    // const user_id='610255';
 
     try {
-      // Find the course by courseId
-      const course = await Course.findById(courseId);
-  
-      if (!course) {
-        return res.status(404).json({ error: 'Course not found' });
-      }
-  
-      // Update each submodule's completed status in the content array
-      course.content.forEach(content => {
-        content.submodules.forEach(submodule => {
-          const updatedSubmodule = submodules.find(s => s.id === submodule.id);
-          if (updatedSubmodule) {
-            submodule.completed = updatedSubmodule.completed;
+
+        // Find the course by ID
+        const course = await Course.findById(courseId);
+        if (!course) {
+          throw new Error('Course not found');
+        }
+    
+        // Check if all submodules are completed
+        let allCompleted = submodules.every(submodule => submodule.completed);
+    
+        if (allCompleted) {
+          // Assuming you have a way to get user by token (e.g., JWT token)
+          const user = await User.findOne({ user_id: user_id });
+          if (!user) {
+            throw new Error('User not found');
           }
-        });
-      });
-  
-      // Save the updated course object
-      await course.save();
-  
-      return res.status(200).json({ message: 'Submodules updated successfully', course });
-    } catch (err) {
-      console.error('Error updating submodules:', err);
-      return res.status(500).json({ error: 'Server error, could not update submodules' });
-    }
+    
+          // Find the course in user's courses array
+          const userCourse = user.courses.find(c => c.course_id.equals(courseId));
+          if (!userCourse) {
+            throw new Error('Course not found in user data');
+          }
+          
+          // Increment the number of modules completed
+          userCourse.no_of_modules_completed += 1;
+          console.log(userCourse.no_of_modules_completed+"modules completed");
+    
+          // Save the user document
+          await user.save();
+          
+          console.log('User module completion status updated successfully');
+        } else {
+          console.log('Not all submodules are completed');
+        }
+      } catch (error) {
+        console.error('Error updating module completion:', error);
+      }
 
 
 }

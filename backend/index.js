@@ -322,7 +322,6 @@ import Course from './models/video.js';
 
 
 
-
 dotenv.config();
 
 const app = express();

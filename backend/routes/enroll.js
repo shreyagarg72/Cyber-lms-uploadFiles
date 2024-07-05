@@ -51,6 +51,7 @@ const router = express.Router();
 
 router.post('/enroll', authMiddleware, async (req, res) => {
   const { courseId } = req.body;
+  console.log(req);
   const userId = req.userId; // Using the corrected property from auth middleware
 
   try {
