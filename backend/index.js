@@ -315,6 +315,8 @@ import videoRoutes from './routes/video.js';
 import courseRoutes from './routes/course.js';
 import loginRegRoutes from './routes/login-reg.js';
 import enrollRoutes from './routes/enroll.js';
+import courseProgressRoutes from './routes/course-progress.js'
+
 import authMiddleware from './middlewares/authMiddleware.js';
 import Course from './models/video.js';
 
@@ -344,6 +346,8 @@ app.get('/api/courses', async (req, res) => {
 
 
 app.use('/api', loginRegRoutes);
+
+app.use('/api', courseProgressRoutes);
 
 app.use('/api', authMiddleware, enrollRoutes);
 
