@@ -20,6 +20,8 @@ import {
   faBackward,
   faForward,
 } from "@fortawesome/free-solid-svg-icons";
+import { useMediaQuery } from "react-responsive";
+import ToggleProfile from '../ToggleProfile';
 import image01 from "../../../assets/01.jpg";
 import ProfileBoy from "../../../assets/Profile.webp";
 import Notification from "../Notification";
@@ -41,7 +43,21 @@ const CoursePreviewPage = () => {
   );
 
   const [checkedSubmodules, setCheckedSubmodules] = useState([]);
+  const [showProfile, setShowProfile] = useState(false);
+  const isMobile = useMediaQuery({maxWidth : 450})
+  const isTablet = useMediaQuery({maxWidth : 768})
 
+  const toggleProfile = () => {
+    setShowProfile(!showProfile);
+  }
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const closeProfile = () => {
+    setShowProfile(false);
+  }
 
   const handleNotification = () => {
     setShowNotifications(!showNotifications);
@@ -155,22 +171,16 @@ const CoursePreviewPage = () => {
                 className="w-full bg-transparent focus:outline-none"
               />
             </div>
-            <div className="flex items-center space-x-10 mr-10">
-              <Link onClick={handleNotification}>
-                <FontAwesomeIcon
-                  icon={faBell}
-                  className="text-gray-700 text-3xl"
-                />
+            <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
+              <Link onClick={toggleNotifications}>
+                <FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" />
               </Link>
-              <Link to="/profile">
-                <img
-                  src={ProfileBoy} // Placeholder image
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
+              <Link onClick={toggleProfile}>
+                <img src={ProfileBoy} alt="Profile" className="w-10 h-10 rounded-full" />
               </Link>
+              {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
+              {showNotifications && (<Notification />)}
             </div>
-            {showNotifications && <Notification />}
           </div>
         </div>
         <div className="flex flex-col gap-6 md:flex-row">

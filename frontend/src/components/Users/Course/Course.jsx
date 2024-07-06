@@ -4,10 +4,27 @@ import UserCourseCard from "./CourseCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBell } from "@fortawesome/free-solid-svg-icons";
 import ProfileBoy from "../../../assets/Profile.webp";
-
+import { useMediaQuery } from "react-responsive";
+import Notification from '../Notification';
+import ToggleProfile from '../ToggleProfile';
 const   AdminCourse = () => {
   const [courses, setCourses] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const isMobile = useMediaQuery({maxWidth : 450})
+  const isTablet = useMediaQuery({maxWidth : 768})
 
+  const toggleProfile = () => {
+    setShowProfile(!showProfile);
+  }
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const closeProfile = () => {
+    setShowProfile(false);
+  }
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -40,21 +57,16 @@ const   AdminCourse = () => {
               className="w-full bg-transparent focus:outline-none"
             />
           </div>
-          <div className="flex items-center space-x-10 mr-10">
-            <Link>
-              <FontAwesomeIcon
-                icon={faBell}
-                className="text-gray-700 text-3xl"
-              />
-            </Link>
-            <Link to="/profile">
-              <img
-                src={ProfileBoy}
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-            </Link>
-          </div>
+          <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
+              <Link onClick={toggleNotifications}>
+                <FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" />
+              </Link>
+              <Link onClick={toggleProfile}>
+                <img src={ProfileBoy} alt="Profile" className="w-10 h-10 rounded-full" />
+              </Link>
+              {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
+              {showNotifications && (<Notification />)}
+            </div>
         </div>
       </div>
       <div className=" bg-white mt-6 rounded-lg shadow-md p-2 mb-4">

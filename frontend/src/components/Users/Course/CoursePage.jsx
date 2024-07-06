@@ -23,7 +23,7 @@
 // import Notification from "../Notification";
 // import { useLocation } from "react-router-dom";
 // import { useAuth } from "../../../auth/AuthProvider";
-
+// import axios from 'axios'
 // const enrollInCourse = async (courseId, token) => {
 //   try {
 //     const sendingData = { courseId };
@@ -52,32 +52,35 @@
 //   const [showNotifications, setShowNotifications] = useState(false);
  
 //   const { auth } = useAuth();
-  
-//   const location = useLocation();
-//   const { course } = location.state || {};
 
-//   const handleEnroll = async (courseId) => {
-//     if (!isAuthenticated || !token) {
+//   const handleEnroll = async () => {
+//     if (!auth.isAuthenticated || !auth.token) {
 //       console.error("No authentication token available. Please log in.");
-//       // Redirect to login or show a message
+//       navigate('/login');
+//       return;
+//     }
+
+//     if (!course || !course._id) {
+//       console.error("Course ID is not available");
 //       return;
 //     }
 
 //     try {
-//       const data = await enrollInCourse(courseId, token);
+//       const data = await enrollInCourse(course._id, auth.token);
 //       console.log("Enrolled successfully:", data);
 //       setIsEnrolled(true);
 //     } catch (error) {
 //       console.error("Failed to enroll:", error);
 //     }
 //   };
+
 //   const handleNotification = () => {
 //     setShowNotifications(!showNotifications);
 //   };
 
-//   // const location = useLocation();
+//   const location = useLocation();
 
-//   // const { course } = location.state || {}; // Default to an empty object if state is undefined
+//   const { course } = location.state || {}; // Default to an empty object if state is undefined
 
 //   const weekContent = course.content;
 
@@ -310,26 +313,26 @@
 //     }
 //   }, [course, navigate]);
 
-//   const handleEnroll = async () => {
-//     if (!auth.isAuthenticated || !auth.token) {
-//       console.error("No authentication token available. Please log in.");
-//       navigate('/login');
-//       return;
-//     }
+  // const handleEnroll = async () => {
+  //   if (!auth.isAuthenticated || !auth.token) {
+  //     console.error("No authentication token available. Please log in.");
+  //     navigate('/login');
+  //     return;
+  //   }
 
-//     if (!course || !course._id) {
-//       console.error("Course ID is not available");
-//       return;
-//     }
+  //   if (!course || !course._id) {
+  //     console.error("Course ID is not available");
+  //     return;
+  //   }
 
-//     try {
-//       const data = await enrollInCourse(course._id, auth.token);
-//       console.log("Enrolled successfully:", data);
-//       setIsEnrolled(true);
-//     } catch (error) {
-//       console.error("Failed to enroll:", error);
-//     }
-//   };
+  //   try {
+  //     const data = await enrollInCourse(course._id, auth.token);
+  //     console.log("Enrolled successfully:", data);
+  //     setIsEnrolled(true);
+  //   } catch (error) {
+  //     console.error("Failed to enroll:", error);
+  //   }
+  // };
 
 //   const handleNotification = () => {
 //     setShowNotifications(!showNotifications);
@@ -544,8 +547,9 @@ const CoursePage = () => {
     }
 
     const checkEnrollmentStatus = async () => {
-      if (auth.isAuthenticated && auth.token && course._id) {
+      if (auth.isAuthenticated && auth.token && course && course._id) {
         try {
+          console.log('Checking enrollment for course:', course._id);
           const response = await axios.get(
             `http://localhost:5000/api/check-enrollment/${course._id}`,
             {
@@ -554,10 +558,21 @@ const CoursePage = () => {
               },
             }
           );
+          console.log('Enrollment response:', response.data);
           setIsEnrolled(response.data.isEnrolled);
         } catch (error) {
-          console.error("Failed to fetch enrollment status:", error);
+          console.error('Failed to fetch enrollment status:', error);
+          if (error.response) {
+            console.error('Error response:', error.response.data);
+            console.error('Error status:', error.response.status);
+          } else if (error.request) {
+            console.error('No response received:', error.request);
+          } else {
+            console.error('Error setting up request:', error.message);
+          }
         }
+      } else {
+        console.log('Not checking enrollment:', { auth, course });
       }
     };
 

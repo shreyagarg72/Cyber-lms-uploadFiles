@@ -115,7 +115,7 @@ const DashboardContent = () => {
                 </tr>
               </thead>
               <tbody>
-              {courses.map((course) => (
+              {courses.slice(0,3).map((course) => (
                   <tr key={course._id}>
                     <td className="py-2 px-4 border-b">{course.courseName}</td>
                     <td className="py-2 px-4 border-b">
@@ -156,8 +156,13 @@ const DashboardContent = () => {
                 </button>
               </Link>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {courses.slice(0,3).map((course) => (
+                <Link
+                key={course._id}
+                to="/course/coursePage"
+                state={{course:course}}
+              >
                 <CourseCard
                   key={course._id}
                   imgUrl={course.imgUrl}
@@ -165,10 +170,11 @@ const DashboardContent = () => {
                   courseName={course.courseName}
                   trainerName={course.trainerName}
                   description={course.description}
-                  duration={course.duration}
+                  duration={course.content.reduce((acc, module) => acc + module.submodules.length, 0)}
                   students={course.students}
-                  modules={course.modules}
+                  modules={course.content.length}
                 />
+                 </Link>
               ))}
             </div>
             {/* <CourseCard/> */}

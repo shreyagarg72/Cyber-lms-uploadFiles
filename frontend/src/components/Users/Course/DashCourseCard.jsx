@@ -1,20 +1,50 @@
+// import React from 'react';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faUser, faClock } from '@fortawesome/free-solid-svg-icons';
+
+// const CourseCard = ({ imgUrl, level, courseName, trainerName, description, duration }) => {
+//   return (
+//     <div className="course-card bg-white shadow-md rounded-lg overflow-hidden">
+//       <img src={imgUrl || 'defaultImagePath.jpg'} alt={courseName || 'Course Image'} className="w-full h-32 sm:h-48 object-cover" />
+//       <div className="p-4">
+//         <h3 className="text-lg font-bold mb-2">{courseName || 'Course Name'}</h3>
+//         <p className="text-gray-700 mb-2">{description || 'Course Description'}</p>
+//         <div className="flex items-center justify-between">
+//           <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faUser} className="mr-1" /> {trainerName || 'Trainer Name'}</span>
+//           <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faClock} className="mr-1" /> {duration || 'Duration'}</span>
+//         </div>
+//         <div className="mt-2">
+//           <span className={`inline-block px-2 py-1 text-xs font-semibold text-white ${level === 'Easy' ? 'bg-green-500' : level === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'} rounded-full`}>{level || 'Level'}</span>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CourseCard;
+
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faClock, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
-const CourseCard = ({ imgUrl, level, courseName, trainerName, description, duration }) => {
+const CourseCard = ({ imgUrl, level, courseName, trainerName, description, duration, modules,submodules }) => {
+  // Calculate total submodules
+  //const totalSubmodules = course.content.reduce((acc, module) => acc + module.submodules.length, 0);
+
   return (
     <div className="course-card bg-white shadow-md rounded-lg overflow-hidden">
       <img src={imgUrl || 'defaultImagePath.jpg'} alt={courseName || 'Course Image'} className="w-full h-32 sm:h-48 object-cover" />
       <div className="p-4">
         <h3 className="text-lg font-bold mb-2">{courseName || 'Course Name'}</h3>
-        <p className="text-gray-700 mb-2">{description || 'Course Description'}</p>
+        {/* <p className="text-gray-700 mb-2">{description || 'Course Description'}</p> */}
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faUser} className="mr-1" /> {trainerName || 'Trainer Name'}</span>
-          <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faClock} className="mr-1" /> {duration || 'Duration'}</span>
+          <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faLayerGroup} className="mr-1" /> {modules} modules</span>
+          <span className="text-sm text-gray-600"><FontAwesomeIcon icon={faClock} className="mr-1" /> {duration || 'Duration'}days</span>
         </div>
-        <div className="mt-2">
+        <div className="mt-2 flex items-center justify-between">
           <span className={`inline-block px-2 py-1 text-xs font-semibold text-white ${level === 'Easy' ? 'bg-green-500' : level === 'Medium' ? 'bg-yellow-500' : 'bg-red-500'} rounded-full`}>{level || 'Level'}</span>
+        
         </div>
       </div>
     </div>
@@ -22,6 +52,7 @@ const CourseCard = ({ imgUrl, level, courseName, trainerName, description, durat
 };
 
 export default CourseCard;
+
 // CourseCard.jsx
 
 // import React from 'react';
