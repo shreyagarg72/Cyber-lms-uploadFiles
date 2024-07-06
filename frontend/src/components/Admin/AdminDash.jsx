@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProfileBoy from "../../assets/Profile.webp"
@@ -6,6 +6,9 @@ import { faEye, faBook, faUsers, faStar, faClock, faSearch, faUser, faBell } fro
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import { useAuth } from '../../auth/AuthProvider';
+import Notification from '../Users/Notification';
+import ToggleProfile from '../Users/ToggleProfile';
+import { useMediaQuery } from "react-responsive";
 
 
 ChartJS.register(
@@ -22,7 +25,21 @@ ChartJS.register(
 
 const AdminDashboard = () => {
   const { auth } = useAuth();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const isMobile = useMediaQuery({maxWidth : 450})
+  const isTablet = useMediaQuery({maxWidth : 768})
+  const toggleProfile = () => {
+    setShowProfile(!showProfile);
+  }
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const closeProfile = () => {
+    setShowProfile(false);
+  }
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
   }
@@ -66,21 +83,27 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <div className='flex justify-center'>
-        <div className=' bg-white px-2 rounded-3xl py-2 w-4/5 absolute top-11 flex items-center justify-between  shadow-xl'>
-          <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
-            <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full bg-transparent focus:outline-none"
-            />
-          </div>
-          <div className="flex items-center space-x-10 mr-10">
-            <Link><FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" /></Link>
-            <Link to="/profile"><img src={ProfileBoy} // Placeholder image
-              alt="Profile"
-              className="w-10 h-10 rounded-full" /></Link>
+     <div className={`flex justify-center ${isMobile ? 'p-2' : 'py-2'}`}>
+        <div className={`bg-white px-2 rounded-3xl ${isMobile ? 'py-2 w-full mx-2' : 'py-2 w-5/6 mr-3'} shadow-xl`}>
+          <div className='w-full flex flex-row justify-between'>
+            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-52">
+              <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
+              <input
+                type="text"
+                placeholder="Search"
+                className="w-full bg-transparent focus:outline-none"
+              />
+            </div>
+            <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
+              <Link onClick={toggleNotifications}>
+                <FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" />
+              </Link>
+              <Link onClick={toggleProfile}>
+                <img src={ProfileBoy} alt="Profile" className="w-10 h-10 rounded-full" />
+              </Link>
+              {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
+              {showNotifications && (<Notification />)}
+            </div>
           </div>
         </div>
       </div>

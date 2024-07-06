@@ -74,9 +74,13 @@ const DashboardContent = () => {
   return (
     <div className="min-h-full">
       {/* <Navbar /> */}
-      <div className={`flex justify-center ${isMobile ? 'p-2' : 'py-2'}`}>
-        <div className={`bg-white px-2 rounded-3xl ${isMobile ? 'py-2 w-full mx-2' : 'py-2 w-5/6 mr-3'} shadow-xl`}>
-          <div className='w-full flex flex-row justify-between'>
+      <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}>
+        <div
+          className={`bg-white px-2 rounded-3xl ${
+            isMobile ? "py-2 w-full mx-2" : "py-2 w-5/6 mr-3"
+          } shadow-xl`}
+        >
+          <div className="w-full flex flex-row justify-between">
             <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-52">
               <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
               <input
@@ -87,13 +91,20 @@ const DashboardContent = () => {
             </div>
             <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
               <Link onClick={toggleNotifications}>
-                <FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" />
+                <FontAwesomeIcon
+                  icon={faBell}
+                  className="text-gray-700 text-3xl"
+                />
               </Link>
               <Link onClick={toggleProfile}>
-                <img src={ProfileBoy} alt="Profile" className="w-10 h-10 rounded-full" />
+                <img
+                  src={ProfileBoy}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full"
+                />
               </Link>
-              {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
-              {showNotifications && (<Notification />)}
+              {showProfile && <ToggleProfile closeProfile={closeProfile} />}
+              {showNotifications && <Notification />}
             </div>
           </div>
         </div>
