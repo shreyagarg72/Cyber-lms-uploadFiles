@@ -56,6 +56,29 @@ const Upload = () => {
       submodules: [],
     },
   ]);
+  const [assignments, setAssignments] = useState([]);
+
+
+  const handleAddAssignment = () => {
+    const newAssignment = {
+      questionText: '',
+      options: ['', '', '', ''],
+      correctAnswer: '',
+      explanation: ''
+    };
+    setAssignments([...assignments, newAssignment]);
+  };
+ 
+  const handleAssignmentChange = (index, field, value, optionIndex = null) => {
+    const newAssignments = [...assignments];
+    if (field === 'options') {
+      newAssignments[index].options[optionIndex] = value;
+    } else {
+      newAssignments[index][field] = value;
+    }
+    setAssignments(newAssignments);
+  };
+
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -165,6 +188,7 @@ const Upload = () => {
         tools,
         imgUrl,
         content: contentWithUrls,
+        assignments,
       };
 
       // Send courseData to backend API to save in MongoDB
@@ -429,7 +453,61 @@ const Upload = () => {
         >
           Add New Module
         </button>
-
+        <div className="mb-6">
+        <h3 className="text-xl font-bold mb-4">Assignments</h3>
+        <button 
+          onClick={handleAddAssignment}
+          className="mb-4 p-2 bg-green-500 text-white rounded shadow"
+        >
+          Add Assignment
+        </button>
+        {assignments.map((assignment, index) => (
+          <div key={index} className="mb-6 p-4 bg-white rounded shadow">
+            <div className="mb-4">
+              <label className="block mb-2 font-bold">Question:</label>
+              <input
+                type="text"
+                placeholder="Question Text"
+                value={assignment.questionText}
+                onChange={(e) => handleAssignmentChange(index, 'questionText', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2 font-bold">Options:</label>
+              {assignment.options.map((option, optionIndex) => (
+                <input
+                  key={optionIndex}
+                  type="text"
+                  placeholder={`Option ${optionIndex + 1}`}
+                  value={option}
+                  onChange={(e) => handleAssignmentChange(index, 'options', e.target.value, optionIndex)}
+                  className="w-full p-2 mb-2 border border-gray-300 rounded"
+                />
+              ))}
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2 font-bold">Correct Answer:</label>
+              <input
+                type="text"
+                placeholder="Correct Answer"
+                value={assignment.correctAnswer}
+                onChange={(e) => handleAssignmentChange(index, 'correctAnswer', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2 font-bold">Explanation:</label>
+              <textarea
+                placeholder="Explanation for the correct answer"
+                value={assignment.explanation}
+                onChange={(e) => handleAssignmentChange(index, 'explanation', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded resize-none h-24"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
         <button
           type="submit"
           className={`w-full p-2 bg-blue-500 text-white rounded shadow ${

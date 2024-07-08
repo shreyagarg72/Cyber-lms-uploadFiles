@@ -62,6 +62,35 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// router.post("/", async (req, res) => {
+//   try {
+//     const {
+//       courseName,
+//       description,
+//       trainerName,
+//       level,
+//       tools,
+//       imgUrl,
+//       content,
+//     } = req.body;
+
+//     const newCourse = new Course({
+//       courseName,
+//       description,
+//       trainerName,
+//       level,
+//       tools,
+//       imgUrl,
+//       content,
+//     });
+
+//     const savedCourse = await newCourse.save();
+//     res.status(201).json(savedCourse);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// });
 router.post("/", async (req, res) => {
   try {
     const {
@@ -72,8 +101,12 @@ router.post("/", async (req, res) => {
       tools,
       imgUrl,
       content,
+      assignments
     } = req.body;
-
+    const assignmentsWithNumbers = assignments.map((assignment, index) => ({
+      ...assignment,
+      questionNo: index + 1
+    }));
     const newCourse = new Course({
       courseName,
       description,
@@ -82,13 +115,14 @@ router.post("/", async (req, res) => {
       tools,
       imgUrl,
       content,
+      assignments:assignmentsWithNumbers
     });
 
     const savedCourse = await newCourse.save();
     res.status(201).json(savedCourse);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 });
 
