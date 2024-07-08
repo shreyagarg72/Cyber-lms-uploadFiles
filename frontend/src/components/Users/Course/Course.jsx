@@ -81,11 +81,9 @@ const AdminCourse = () => {
     };
 
     fetchEnrolledCourses();
-
-    
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     const determineNonEnrolledCourses = () => {
       const enrolledCourseIds = new Set(
         enrolledCourses.map((course) => course.course_id._id)
@@ -99,8 +97,7 @@ const AdminCourse = () => {
     if (enrolledCourses.length && courses.length) {
       determineNonEnrolledCourses();
     }
-  }
-  ,[enrolledCourses.length,courses.length]);
+  }, [enrolledCourses.length, courses.length]);
   return (
     <div className="min-h-screen p-6">
       <div className="flex justify-center">
@@ -167,7 +164,7 @@ const AdminCourse = () => {
       <div>
         <h1 className="text-2xl font-bold mb-4">Courses</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {nonEnrolledCourses.map((course) => (
+          {nonEnrolledCourses.map((course) => (
             <Link
               key={course._id}
               to="/course/coursePage"
@@ -176,23 +173,27 @@ const AdminCourse = () => {
               <UserCourseCard course={course} />
             </Link>
           ))}
-          
-        
         </div>
         <div className="">
-        <h2 className="m-3 font-bold">My Courses</h2>
-        {enrolledCourses.map((course) => (
-            <Link
-              key={course.course_id._id}
-              to="/course/coursePage"
-              state={{ course: course.course_id }}
-            >
-              <UserCourseCard
-                course={course.course_id}
-                progress={course.progressPercentage}
-              />
-            </Link>
-          ))}
+          <h2 className="m-3 font-bold">My Courses</h2>
+          {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 ? (
+            enrolledCourses.map((course) =>
+              course && course.course_id && course.course_id._id ? (
+                <Link
+                  key={course.course_id._id}
+                  to="/course/coursePage"
+                  state={{ course: course.course_id }}
+                >
+                  <UserCourseCard
+                    course={course.course_id}
+                    progress={course.progressPercentage}
+                  />
+                </Link>
+              ) : null
+            )
+          ) : (
+            <p>No courses enrolled</p>
+          )}
         </div>
       </div>
     </div>
