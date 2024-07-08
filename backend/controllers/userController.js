@@ -167,7 +167,14 @@ const getEnrolledCourses = async (req, res) => {
   try {
     const user = await User.findById(userId).populate('courses.course_id');
     if (user) {
-      const enrolledCourses = user.courses.map(course => course.course_id);
+      const enrolledCourses = user.courses.map(course => {
+        const progressPercentage = (course.no_of_modules_completed / course.total_no_of_modules) * 100;
+        return {
+          course_id: course.course_id,
+          progressPercentage: isNaN(progressPercentage) ? 0 : progressPercentage.toFixed(2), // Handle division by zero and format to 2 decimal places
+          ...course.toObject() // Include other course details if necessary
+        };
+      });
       res.json({ enrolledCourses });
     } else {
       res.status(404).json({ message: 'User not found' });
