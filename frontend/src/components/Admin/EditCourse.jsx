@@ -1,11 +1,32 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { ThreeDots } from "react-loader-spinner";
 import { useLocation } from "react-router-dom";
 import Notification from '../Users/Notification';
 import ToggleProfile from '../Users/ToggleProfile';
 import { useMediaQuery } from "react-responsive";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faFileAlt,
+  faCheckCircle,
+  faTimesCircle,
+  faClock,
+  faSearch,
+  faUsers,
+  faBell,
+  faFolderOpen,
+  faCalendarDays,
+} from "@fortawesome/free-solid-svg-icons";
+import image01 from "../../assets/Screenshot 2024-06-19 001148.png";
+import ProfileBoy from "../../assets/Profile.webp";
+import PT from "../../assets/DashboardUI__109615071.png";
+import NS from "../../assets/DashboardUI_images1.png";
+import DC from "../../assets/DashboardUI__30764161.png";
+import DM from "../../assets/DashboardUI__183600437cryptographyiconblockchaintechnologyrelatedvectorillustration1.png";
+import WD from "../../assets/DashboardUI_malwaresymbolredisolatedonwhitebackgroundfreevector1.png";
 const EditCourse = () => {
   const location = useLocation();
   const initialCourseData = location.state || {};

@@ -21,7 +21,7 @@ const ContentSchema = new mongoose.Schema({
 const CourseSchema = new mongoose.Schema({
   courseName: { type: String },
   description: { type: String},
-  trainerName: { type: String, required: true },
+  trainerName: { type: String },
   level: { type: String, required: true },
   tools: { type: String},
   imgUrl: { type: String },
