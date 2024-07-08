@@ -1,8 +1,9 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faUsers, faCalendarDays, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import { ProgressBar } from '../ProgressBar';
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course ,progress}) => {
   const numberOfModules = course.content.length;
   const numberOfSubmodules = course.content.reduce((acc, module) => acc + module.submodules.length, 0);
   return (
@@ -32,7 +33,9 @@ const CourseCard = ({ course }) => {
           <FontAwesomeIcon icon={faUsers} className="text-gray-600 mr-1" />
           <span className="text-gray-600">100+</span>
         </div>
+       
       </div>
+      <ProgressBar progress={progress}></ProgressBar>
     </div>
   );
 };
