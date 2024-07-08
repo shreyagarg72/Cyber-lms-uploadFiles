@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import asyncHandler from 'express-async-handler';
+// import asyncHandler from 'express-async-handler';
 import User from "../models/user.js";
 
 dotenv.config();

@@ -21,35 +21,38 @@ import {
   faForward,
 } from "@fortawesome/free-solid-svg-icons";
 import { useMediaQuery } from "react-responsive";
-import ToggleProfile from '../ToggleProfile';
+import ToggleProfile from "../ToggleProfile";
 import image01 from "../../../assets/01.jpg";
 import ProfileBoy from "../../../assets/Profile.webp";
 import Notification from "../Notification";
 import { useLocation } from "react-router-dom";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 
-import Axios from "../../../helper/Axios"
+import Axios from "../../../helper/Axios";
 
 const CoursePreviewPage = () => {
   const location = useLocation();
 
   const { course } = location.state || {}; // Default to an empty object if state is undefined
 
+  // Example usage of the updateBackendData function
+  const courseId = course._id;
+
   const weekContent = course.content || {};
- 
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedSubmodule, setSelectedSubmodule] = useState(
     weekContent[0].submodules[0]
   );
 
-  const [checkedSubmodules, setCheckedSubmodules] = useState([]);
+  const [checkedSubmodules, setCheckedSubmodules] = useState(new Set());
   const [showProfile, setShowProfile] = useState(false);
-  const isMobile = useMediaQuery({maxWidth : 450})
-  const isTablet = useMediaQuery({maxWidth : 768})
+  const isMobile = useMediaQuery({ maxWidth: 450 });
+  const isTablet = useMediaQuery({ maxWidth: 768 });
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
-  }
+  };
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -57,7 +60,7 @@ const CoursePreviewPage = () => {
 
   const closeProfile = () => {
     setShowProfile(false);
-  }
+  };
 
   const handleNotification = () => {
     setShowNotifications(!showNotifications);
@@ -67,88 +70,103 @@ const CoursePreviewPage = () => {
     setSelectedSubmodule(submodule);
   };
 
-  const handleSubmoduleCheck = (e) => {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
+  //this is the useEffect that will run once when the react component is mounted
+  // useEffect(() => {
+  //   // Fetch completed submodules when the component mounts
+  //   // axios.get('/api/completedSubmodules')
+  //   //   .then(response => {
+  //   //     const completedSubmoduleIds = new Set(response.data); // Assuming the backend returns an array of completed submodule IDs
+  //   //     setSelectedSubmodules(completedSubmoduleIds);
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.error('Error fetching completed submodules:', error);
+  //   //   });
+
+   
+  // }, []);
+  useEffect(() => {
+    const fetchData = async (courseId) => {
+      try {
+        const axiosConfig = {
+          url: "/api/completedSubmodules",
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: { courseId }, // Pass courseId as a parameter in the URL query string
+        };
   
-    // Check if the submodule with this ID already exists in checkedSubmodules
-    const submoduleExists = checkedSubmodules.some(item => item.id === value);
+        const response = await Axios(axiosConfig);
+        const completedSubmoduleIds = new Set(response.data);
   
-    if (isChecked) {
-      if (submoduleExists) {
-        // Update submodule in checkedSubmodules to set completed to true
-        const updatedSubmodules = checkedSubmodules.map(item => {
-          if (item.id === value) {
-            return { ...item, completed: true };
-          }
-          return item;
-        });
-        setCheckedSubmodules(updatedSubmodules);
-      } else {
-        // Add new submodule to checkedSubmodules with completed set to true initially
-        setCheckedSubmodules(prevCheckedSubmodules => [
-          ...prevCheckedSubmodules,
-          { id: value, completed: true }
-        ]);
+        setCheckedSubmodules(completedSubmoduleIds);
+      } catch (error) {
+        console.error('Error fetching completed submodules:', error);
       }
-    } else {
-      // Update submodule in checkedSubmodules to set completed to false
-      const updatedSubmodules = checkedSubmodules.map(item => {
-        if (item.id === value) {
-          return { ...item, completed: false };
-        }
-        return item;
-      });
-      setCheckedSubmodules(updatedSubmodules);
-    }
+    };
+  
+    fetchData(courseId);
+  }, []);
+
+  const handleSubmoduleCheck = (e) => {
+    const { value } = e.target;
+
+    setCheckedSubmodules((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+
+      // Only add to the set if it's not already present
+      if (!newSelected.has(value)) {
+        newSelected.add(value);
+      }
+      return newSelected;
+    });
   };
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    console.log('checkedSubmodules:', checkedSubmodules);
+    
 
     // Define your asynchronous update function
     const updateBackendData = async (courseId, submodules) => {
       try {
         const sendingData = {
           courseId: courseId,
-          submodules: submodules,
+          submodules:[...submodules],
         };
+        console.log("sending data");
+        console.log(sendingData);
 
         const axiosConfig = {
-          url: '/api/updateCourseProgress', 
-          method: 'put', 
-          headers:{
-            'Authorization':  `Bearer ${token}`
+          url: "/api/updateCourseProgress",
+          method: "put",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
           data: sendingData,
         };
 
         const response = await Axios(axiosConfig);
-        console.log('Backend update response:', response.data);
+
+        console.log("Backend update response:", response.data);
 
         // Optionally return data from backend response
         return response.data;
       } catch (error) {
-        console.error('Error updating backend:', error);
+        console.error("Error updating backend:", error);
         throw error; // Propagate the error for handling in the calling function
       }
     };
-
-    // Example usage of the updateBackendData function
-    const courseId = course._id; 
+    console.log("checkedSubmodules:", checkedSubmodules);
     updateBackendData(courseId, checkedSubmodules)
-      .then(data => {
+      .then((data) => {
         // Handle success response from backend
-        console.log('Backend update successful:', data);
+        console.log("Backend update successful:", data);
       })
-      .catch(error => {
+      .catch((error) => {
         // Handle error from backend
-        console.error('Backend update failed:', error);
+        console.error("Backend update failed:", error);
       });
-
   }, [checkedSubmodules]);
-
 
   let document = null;
   if (selectedSubmodule.docUrl !== null) {
@@ -173,13 +191,20 @@ const CoursePreviewPage = () => {
             </div>
             <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
               <Link onClick={toggleNotifications}>
-                <FontAwesomeIcon icon={faBell} className="text-gray-700 text-3xl" />
+                <FontAwesomeIcon
+                  icon={faBell}
+                  className="text-gray-700 text-3xl"
+                />
               </Link>
               <Link onClick={toggleProfile}>
-                <img src={ProfileBoy} alt="Profile" className="w-10 h-10 rounded-full" />
+                <img
+                  src={ProfileBoy}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full"
+                />
               </Link>
-              {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
-              {showNotifications && (<Notification />)}
+              {showProfile && <ToggleProfile closeProfile={closeProfile} />}
+              {showNotifications && <Notification />}
             </div>
           </div>
         </div>
@@ -286,6 +311,10 @@ const CoursePreviewPage = () => {
                             value={item._id}
                             onChange={handleSubmoduleCheck}
                             className="mr-2"
+                            checked={checkedSubmodules.has(item._id.toString())}
+                            readOnly={checkedSubmodules.has(
+                              item._id.toString()
+                            )}
                           />
 
                           <button

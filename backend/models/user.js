@@ -15,7 +15,8 @@ const UserSchema = new mongoose.Schema({
     course_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
     no_of_modules_completed: { type: Number, default: 0 },
     date_of_course_enrollment: { type: Date, default: Date.now },
-    total_no_of_modules: { type: Number, default: 0 }
+    total_no_of_modules: { type: Number, default: 0 },
+    completed_submodules: { type: [String], default: [] }
   }],
   region: { type: String, default:'India' },
   userType: {
