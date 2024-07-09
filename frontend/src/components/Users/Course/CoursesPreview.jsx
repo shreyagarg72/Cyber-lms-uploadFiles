@@ -27,7 +27,7 @@ import ProfileBoy from "../../../assets/Profile.webp";
 import Notification from "../Notification";
 import { useLocation } from "react-router-dom";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
-
+import AssignmentSection from "./AssignmentSection";
 import Axios from "../../../helper/Axios";
 
 const CoursePreviewPage = () => {
@@ -38,6 +38,8 @@ const CoursePreviewPage = () => {
   // Example usage of the updateBackendData function
   const courseId = course._id;
 
+  const assignments = course.assignments;
+
   const weekContent = course.content || {};
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -47,6 +49,7 @@ const CoursePreviewPage = () => {
 
   const [checkedSubmodules, setCheckedSubmodules] = useState(new Set());
   const [showProfile, setShowProfile] = useState(false);
+  const [showAssignment, setShowAssignment] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
 
@@ -68,6 +71,7 @@ const CoursePreviewPage = () => {
 
   const handleSubmoduleClick = (submodule) => {
     setSelectedSubmodule(submodule);
+    setShowAssignment(false);
   };
 
   //this is the useEffect that will run once when the react component is mounted
@@ -121,6 +125,11 @@ const CoursePreviewPage = () => {
       return newSelected;
     });
   };
+
+  
+  const handleAssignment = () => {
+    setShowAssignment(true); // Show assignment view when button is clicked
+  }
 
   const token = localStorage.getItem("token");
   useEffect(() => {
@@ -218,7 +227,7 @@ const CoursePreviewPage = () => {
                   className="ml-3"
                   style={{ height: "50vh", width: "45vw", borderRadius: "20" }}
                 /> */}
-                {selectedSubmodule && selectedSubmodule.docUrl ? (
+                {/* {selectedSubmodule && selectedSubmodule.docUrl ? (
                   <DocViewer
                     pluginRenderers={DocViewerRenderers}
                     documents={[document]}
@@ -244,7 +253,36 @@ const CoursePreviewPage = () => {
                       Your browser does not support the video tag.
                     </video>
                   )
-                )}
+                )} */}
+                {showAssignment ? (
+                <AssignmentSection assignments={assignments} />
+              ) : selectedSubmodule && selectedSubmodule.docUrl ? (
+                <DocViewer
+                  pluginRenderers={DocViewerRenderers}
+                  documents={[document]}
+                  className="ml-3"
+                  style={{
+                    height: "50vh",
+                    width: "45vw",
+                    borderRadius: "20",
+                  }}
+                />
+              ) : (
+                selectedSubmodule &&
+                selectedSubmodule.videoUrl && (
+                  <video
+                    controls
+                    className="w-full h-auto rounded-lg m-auto "
+                    style={{ height: "50vh", width: "45vw" }}
+                  >
+                    <source
+                      src={selectedSubmodule.videoUrl}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                )
+              )}
                 <div className="absolute bottom-4 left-4 flex items-center space-x-2"></div>
                 {/* <div className="flex justify-between mt-4">
                   <button className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full">
@@ -333,6 +371,11 @@ const CoursePreviewPage = () => {
                   </details>
                 ))}
               </div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md mt-2">
+              <button className="" onClick={handleAssignment}>
+                View Assignment
+              </button>
             </div>
           </div>
         </div>

@@ -49,4 +49,33 @@
     margin-left: 0.5rem;
   }
 
+  .radio-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .radio-container input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #4a5568;
+    border-radius: 50%;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  
+  .radio-container input[type="radio"]:checked {
+    background-color: #4a5568;
+  }
+
+  .option-box {
+    background-color: #edf2f7;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
 }
