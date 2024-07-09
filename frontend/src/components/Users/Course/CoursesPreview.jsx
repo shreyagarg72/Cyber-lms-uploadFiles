@@ -373,7 +373,7 @@ const CoursePreviewPage = () => {
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mt-2">
-              <button className="" onClick={handleAssignment}>
+              <button className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg " onClick={handleAssignment} >
                 View Assignment
               </button>
             </div>
