@@ -6,6 +6,10 @@ import { faMultiply } from "@fortawesome/free-solid-svg-icons";
 
 const ToggleProfile = ({closeProfile}) => {
     const [close, setClose] = useState(false)
+    const ToggleProfileClose = ()=>{
+        setClose(!close)
+        closeProfile()
+    }
     return (
         <div className="absolute z-50 top-10 right-0 bg-white shadow-lg rounded-lg p-4 w-72">
             <div className="flex justify-end"
@@ -17,7 +21,7 @@ const ToggleProfile = ({closeProfile}) => {
                 <div className="flex justify-center">
                     <img src={profile} alt="profile" className="w-32 h-32 rounded-full" />
                 </div>
-                <Link to="/profile">
+                <Link to="/profile" onClick={ToggleProfileClose}>
                     <div className="bg-gray-200 p-2 rounded-lg shadow-sm hover:scale-105 duration-200">
                         <div className='flex justify-center mb-1'>
                             <h1 className="text-lg  font-semibold">My Profile</h1>

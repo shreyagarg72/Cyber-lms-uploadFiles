@@ -99,7 +99,7 @@ const AdminCourse = () => {
     }
   }, [enrolledCourses.length, courses.length]);
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6" style={{marginTop:`4rem`}}>
       <div className="flex justify-center">
         <div className=" bg-white px-2 rounded-3xl py-2 w-4/5 flex items-center justify-between absolute top-11 shadow-xl">
           <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
