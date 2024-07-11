@@ -170,7 +170,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/AdminCalander"
             element={
               <ProtectedRoute>
@@ -179,7 +179,7 @@ function App() {
                 </LayoutAdmin>
               </ProtectedRoute>
             }
-          /> */}
+          />
         </Routes>
       </Router>
     </AuthProvider>

@@ -164,7 +164,7 @@ const AdminDashboard = () => {
               <h2 className="text-xl font-bold">Today</h2>
               <h1 className='mb-2 text-sm'>June 18, 2024</h1>
             </div>
-            <Link to="/Admincalander">
+            <Link to="/AdminCalander">
               <button className='w-20 bg-blue-950 rounded-xl text-white text-sm'>View all</button>
             </Link>
           </div>
