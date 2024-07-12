@@ -26,9 +26,12 @@ import Notification from './Notification';
 import ToggleProfile from './ToggleProfile';
 import { useAuth } from "../../auth/AuthProvider";
 
-
 const DashboardContent = () => {
   const { auth } = useAuth();
+
+  const userToken = localStorage.getItem('token');
+
+ 
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
@@ -77,11 +80,13 @@ const DashboardContent = () => {
       <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}>
         <div
           className={`bg-white px-2 rounded-3xl ${
-            isMobile ? "py-2 w-full mx-2" : "py-2 w-5/6 mr-3"
+            isMobile ? "py-2 w-full mx-2" : "py-2 w-4/5 mr-3 flex items-center justify-between absolute top-11"
           } shadow-xl`}
         >
+      
           <div className="w-full flex flex-row justify-between">
-            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-52">
+            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
+           
               <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
               <input
                 type="text"
@@ -109,7 +114,7 @@ const DashboardContent = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-20">
         <div className="col-span-2">
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Courses</h2>

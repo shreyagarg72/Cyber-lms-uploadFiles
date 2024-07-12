@@ -2,17 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCamera, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ProfileBoy from "../../assets/Profile.webp";
-<<<<<<< HEAD
-import { useAuth0 } from '@auth0/auth0-react';
-=======
->>>>>>> 7f452df14face9381f871ea5929c7aa35f74322c
 import Axios from "../../helper/Axios";
 import { useMediaQuery } from 'react-responsive';
 
 const Profile = () => {
   const [photo, setPhoto] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const {user, isAuthenticated, isLoading} = useAuth0();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -99,20 +94,11 @@ const Profile = () => {
       </div>
       <div className={`pl-0 ${isSmallScreen ? 'w-full' : 'w-2/3 pl-8'}`}>
         <div className="mb-6">
-<<<<<<< HEAD
-          <h3 className="text-lg font-semibold">Personal Details</h3>
-          {isAuthenticated &&<ul className="mt-2 text-gray-700 space-y-4">
-     
-            <li><strong>Email:</strong> {user.email}</li>
-            <li><strong>Name:</strong> {user.name}</li>
-          </ul>}
-=======
           <h3 className={`font-semibold ${isSmallScreen ? 'text-base' : 'text-lg'}`}>Personal Details</h3>
           <ul className={`mt-2 text-gray-700 ${isSmallScreen ? 'space-y-2' : 'space-y-4'}`}>
             <li><strong>Email:</strong> {userData.email}</li>
             <li><strong>Region:</strong> {userData.region}</li>
           </ul>
->>>>>>> 7f452df14face9381f871ea5929c7aa35f74322c
         </div>
         <div className="mb-6">
           <h3 className={`font-semibold ${isSmallScreen ? 'text-base' : 'text-lg'}`}>Course Details</h3>
