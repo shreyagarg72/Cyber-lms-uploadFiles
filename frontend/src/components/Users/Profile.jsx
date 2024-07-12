@@ -2,12 +2,13 @@ import React, { useState , useEffect} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCamera, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ProfileBoy from "../../assets/Profile.webp";
-
+import { useAuth0 } from '@auth0/auth0-react';
 import Axios from "../../helper/Axios";
 
 const Profile = () => {
   const [photo, setPhoto] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const {user, isAuthenticated, isLoading} = useAuth0();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -94,11 +95,11 @@ const Profile = () => {
       <div className="w-2/3 pl-8">
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Personal Details</h3>
-          <ul className="mt-2 text-gray-700 space-y-4">
+          {isAuthenticated &&<ul className="mt-2 text-gray-700 space-y-4">
      
-            <li><strong>Email:</strong> {userData.email}</li>
-            <li><strong>Region:</strong> {userData.region}</li>
-          </ul>
+            <li><strong>Email:</strong> {user.email}</li>
+            <li><strong>Name:</strong> {user.name}</li>
+          </ul>}
         </div>
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Course Details</h3>
