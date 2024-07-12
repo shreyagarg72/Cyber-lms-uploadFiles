@@ -25,13 +25,16 @@ import CourseCard from "../Users/Course/DashCourseCard";
 import Notification from './Notification';
 import ToggleProfile from './ToggleProfile';
 import { useAuth } from "../../auth/AuthProvider";
+import { format, isAfter, parseISO } from 'date-fns';
+import axios from 'axios';
 
 const DashboardContent = () => {
   const { auth } = useAuth();
 
+
   const userToken = localStorage.getItem('token');
 
- 
+
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
@@ -40,8 +43,10 @@ const DashboardContent = () => {
   const [courses, setCourses] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const isMobile = useMediaQuery({maxWidth : 450})
-  const isTablet = useMediaQuery({maxWidth : 768})
+  const isMobile = useMediaQuery({ maxWidth: 450 })
+  const isTablet = useMediaQuery({ maxWidth: 768 })
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [events, setEvents] = useState({});
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
@@ -74,46 +79,51 @@ const DashboardContent = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem('events'));
+    if (storedEvents) {
+      setEvents(storedEvents);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [currentMonth]);
+
+  useEffect(() => {
+    localStorage.setItem('events', JSON.stringify(events));
+  }, [events]);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/event`,
+        {
+          params: {
+            month: format(currentMonth, 'yyyy-MM')
+          }
+        }
+      );
+      const fetchedEvents = response.data.reduce((acc, event) => {
+        const date = event.date;
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(event);
+        return acc;
+      }, {});
+      setEvents(fetchedEvents);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const today = new Date();
+  const sortedEventDate = Object.keys(events).filter(date => isAfter(parseISO(date), today || date === format(today, 'yyyy-MM-dd'))
+  ).sort((a, b) => parseISO(a) - parseISO(b));
+
   return (
     <div className="min-h-full">
-      {/* <Navbar /> */}
-      <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}>
-        <div
-          className={`bg-white px-2 rounded-3xl ${
-            isMobile ? "py-2 w-full mx-2" : "py-2 w-4/5 mr-3 flex items-center justify-between absolute top-11"
-          } shadow-xl`}
-        >
-      
-          <div className="w-full flex flex-row justify-between">
-            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
-           
-              <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full bg-transparent focus:outline-none"
-              />
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
-              <Link onClick={toggleNotifications}>
-                <FontAwesomeIcon
-                  icon={faBell}
-                  className="text-gray-700 text-3xl"
-                />
-              </Link>
-              <Link onClick={toggleProfile}>
-                <img
-                  src={ProfileBoy}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </Link>
-              {showProfile && <ToggleProfile closeProfile={closeProfile} />}
-              {showNotifications && <Notification />}
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-20">
         <div className="col-span-2">
           <div className="bg-white p-4 rounded-lg shadow-md">
@@ -131,7 +141,7 @@ const DashboardContent = () => {
                 </tr>
               </thead>
               <tbody>
-              {courses.slice(0,3).map((course) => (
+                {courses.slice(0, 3).map((course) => (
                   <tr key={course._id}>
                     <td className="py-2 px-4 border-b">{course.courseName}</td>
                     <td className="py-2 px-4 border-b">
@@ -139,13 +149,12 @@ const DashboardContent = () => {
                       {course.trainerName}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      <span className={`py-1 px-3 rounded-full text-xs ${
-                        course.level === "Easy"
+                      <span className={`py-1 px-3 rounded-full text-xs ${course.level === "Easy"
                           ? "bg-green-400"
                           : course.level === "Medium"
-                          ? "bg-yellow-400"
-                          : "bg-red-400"
-                      } text-black`}>
+                            ? "bg-yellow-400"
+                            : "bg-red-400"
+                        } text-black`}>
                         {course.level}
                       </span>
                     </td>
@@ -173,80 +182,58 @@ const DashboardContent = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {courses.slice(0,3).map((course) => (
+              {courses.slice(0, 3).map((course) => (
                 <Link
-                key={course._id}
-                to="/course/coursePage"
-                state={{course:course}}
-              >
-                <CourseCard
                   key={course._id}
-                  imgUrl={course.imgUrl}
-                  level={course.level}
-                  courseName={course.courseName}
-                  trainerName={course.trainerName}
-                  description={course.description}
-                  duration={course.content.reduce((acc, module) => acc + module.submodules.length, 0)}
-                  students={course.students}
-                  modules={course.content.length}
-                />
-                 </Link>
+                  to="/course/coursePage"
+                  state={{ course: course }}
+                >
+                  <CourseCard
+                    key={course._id}
+                    imgUrl={course.imgUrl}
+                    level={course.level}
+                    courseName={course.courseName}
+                    trainerName={course.trainerName}
+                    description={course.description}
+                    duration={course.content.reduce((acc, module) => acc + module.submodules.length, 0)}
+                    students={course.students}
+                    modules={course.content.length}
+                  />
+                </Link>
               ))}
             </div>
             {/* <CourseCard/> */}
           </div>
         </div>
         <div>
-          <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-            <div className="flex justify-between">
+        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
+            <div className='flex justify-between'>
               <div>
                 <h2 className="text-xl font-bold">Today</h2>
-                <h1 className="mb-2 text-sm">June 18, 2024</h1>
               </div>
-              <Link>
-                <button className="w-20 bg-blue-950 rounded-xl text-white text-sm">
-                  View all
-                </button>
+              <Link to="/calendar">
+                <button className='w-20 bg-blue-950 rounded-xl text-white text-sm'>View all</button>
               </Link>
             </div>
-            <div className="flex flex-col">
-              <div className="bg-gray-100 p-4 rounded-lg mb-2 flex justify-between items-center">
-                <div>
-                  <h3 className="text-md font-bold">Ethical Hacking</h3>
-                  <p className="text-gray-500 text-sm">
-                    <FontAwesomeIcon icon={faClock} className="mx-2" />
-                    3:00-4:00pm <br /> <br /> Prof Raj Sharma
-                  </p>
+            <div>
+              {sortedEventDate.slice(0, 4).map((date) => (
+                <div key={date} className='my-5'>
+                  {events[date].map((event) => (
+                    <div key={event.id}>
+                      <div className="flex flex-col">
+                        <div className="bg-gray-100 p-4 rounded-lg mb-2 flex justify-between items-center">
+                          <div>
+                            <h3 className="text-md font-bold">{event.title}</h3>
+                            <h3><FontAwesomeIcon icon={faCalendarDays} className='text-sm mx-2 text-gray-500' /> {date}</h3>
+                            <p className="text-gray-500 text-sm"><FontAwesomeIcon icon={faClock} className='mx-2' />{event.timeFrom} - {event.timeTo} <br /> <br /> Prof {event.instructor}</p>
+                          </div>
+                          <button className="bg-blue-900 text-white py-0.5 px-3.5 rounded-full">Join</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <button className="bg-blue-900 text-white py-1 px-7 rounded-full">
-                  Join
-                </button>
-              </div>
-              <div className="bg-gray-100 p-4 rounded-lg mb-4 flex justify-between items-center">
-                <div>
-                  <h3 className="text-md font-bold">Ethical Hacking</h3>
-                  <p className="text-gray-500 text-sm">
-                    <FontAwesomeIcon icon={faClock} className="mx-2" />
-                    3:00-4:00pm <br /> <br /> Prof Raj Sharma
-                  </p>
-                </div>
-                <button className="bg-blue-900 text-white py-1 px-7 rounded-full">
-                  Join
-                </button>
-              </div>
-              <div className="bg-gray-100 p-4 rounded-lg mb-4 flex justify-between items-center">
-                <div>
-                  <h3 className="text-md font-bold">Ethical Hacking</h3>
-                  <p className="text-gray-500 text-sm">
-                    <FontAwesomeIcon icon={faClock} className="mx-2" />
-                    3:00-4:00pm <br /> <br /> Prof Raj Sharma
-                  </p>
-                </div>
-                <button className="bg-blue-900 text-white py-1 px-7 rounded-full">
-                  Join
-                </button>
-              </div>
-              {/* Repeat for other events */}
+              ))}
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-md">
