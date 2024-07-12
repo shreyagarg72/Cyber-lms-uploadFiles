@@ -1,24 +1,25 @@
-import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Axios from "../helper/Axios";
-import { useAuth } from '../auth/AuthProvider';
-
+import { useAuth } from "../auth/AuthProvider";
+import { useAuth0 } from "@auth0/auth0-react";
 function SignInForm() {
   const navigate = useNavigate();
+  const { user, loginWithRedirect, isAuthenticated,logout } = useAuth0();
   const { login } = useAuth();
   const [state, setState] = useState({
     email: "",
     password: "",
-    userType: "user"
+    userType: "user",
   });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = evt => {
+  const handleChange = (evt) => {
     const { name, value } = evt.target;
     setState({
       ...state,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -44,11 +45,11 @@ function SignInForm() {
       login(data.token, data.userType);
 
       // Store the token and user type
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userType', data.userType);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userType", data.userType);
 
-      if (data.userType !== userType && userType === 'admin') {
-        alert('You do not have admin access');
+      if (data.userType !== userType && userType === "admin") {
+        alert("You do not have admin access");
         return;
       }
 
@@ -58,15 +59,21 @@ function SignInForm() {
         navigate("/Dashboard");
       }
     } catch (error) {
-      console.error('Login failed:', error);
-      setErrorMessage('Invalid email or password. Please try again.');
+      console.error("Login failed:", error);
+      setErrorMessage("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/Dashboard');
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <div className="form-container sign-in-container">
+      
+      { isAuthenticated &&<h3>Hello {user.name}</h3>}
       <form onSubmit={handleOnSubmit} className="flex flex-col items-center">
         <h1 className="text-2xl font-bold mb-4">Sign in</h1>
         <input
@@ -111,14 +118,28 @@ function SignInForm() {
             <span className="ml-2">User</span>
           </label>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="bg-blue-500 text-white p-2 rounded"
           disabled={loading}
         >
-          {loading ? 'Signing In...' : 'Sign In'}
+          {loading ? "Signing In..." : "Sign In"}
         </button>
-        {errorMessage && <p className="error-message text-red-500 mt-2">{errorMessage}</p>}
+        <h2>OR</h2>
+
+        {isAuthenticated ? (
+          <button onClick={(e) => logout()} >Logout</button>
+        ) : (
+          <button onClick={() => loginWithRedirect({
+            appState: { returnTo: '/Dashboard' }
+          })}>
+            Login with Auth0
+          </button>
+        )}
+
+        {errorMessage && (
+          <p className="error-message text-red-500 mt-2">{errorMessage}</p>
+        )}
       </form>
     </div>
   );

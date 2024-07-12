@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "react-doc-viewer": "^0.1.13"
+    "@auth0/auth0-react": "^2.2.4",
+    "react-doc-viewer": "^0.1.13",
+    "socket.io": "^4.7.5"
   }
 }

@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCamera, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ProfileBoy from "../../assets/Profile.webp";
+
+import { useAuth0 } from '@auth0/auth0-react';
+
+
 import Axios from "../../helper/Axios";
 import { useMediaQuery } from 'react-responsive';
 
 const Profile = () => {
   const [photo, setPhoto] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const {user, isAuthenticated, isLoading} = useAuth0();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
