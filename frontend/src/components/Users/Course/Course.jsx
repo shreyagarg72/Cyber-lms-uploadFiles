@@ -36,7 +36,7 @@ const AdminCourse = () => {
         );
         if (response.ok) {
           const data = await response.json();
-          setCourses(data);
+          setCourses(data.filter(course => course && course._id)); // Filter out any invalid courses
         } else {
           const errorData = await response.text();
           console.error("Error fetching courses:", errorData);
@@ -47,7 +47,35 @@ const AdminCourse = () => {
     };
     fetchCourses();
   }, []);
-
+  
+  useEffect(() => {
+    const fetchEnrolledCourses = async () => {
+      const endpoint = `${
+        import.meta.env.VITE_BACKEND_BASEURL
+      }/api/enrolled-courses`;
+  
+      try {
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        setEnrolledCourses(data.enrolledCourses.filter(course => course && course.course_id && course.course_id._id)); // Filter out any invalid enrolled courses
+      } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+      }
+    };
+  
+    fetchEnrolledCourses();
+  }, []);
   const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
@@ -86,18 +114,20 @@ const AdminCourse = () => {
   useEffect(() => {
     const determineNonEnrolledCourses = () => {
       const enrolledCourseIds = new Set(
-        enrolledCourses.map((course) => course.course_id._id)
+        enrolledCourses
+          .filter(course => course && course.course_id && course.course_id._id)
+          .map((course) => course.course_id._id)
       );
       const nonEnrolled = courses.filter(
-        (course) => !enrolledCourseIds.has(course._id)
+        (course) => course && course._id && !enrolledCourseIds.has(course._id)
       );
       setNonEnrolledCourses(nonEnrolled);
     };
-
+  
     if (enrolledCourses.length && courses.length) {
       determineNonEnrolledCourses();
     }
-  }, [enrolledCourses.length, courses.length]);
+  }, [enrolledCourses, courses]);
   return (
     <div className="min-h-screen p-6">
       <div className="flex justify-center">
