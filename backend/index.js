@@ -182,11 +182,6 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-
 });
 
 io.on('connection', (socket) => {
