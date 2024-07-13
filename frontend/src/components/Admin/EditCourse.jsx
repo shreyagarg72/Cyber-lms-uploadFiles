@@ -381,7 +381,7 @@ const EditCourse = () => {
             />
             <input
               type="file"
-              accept="application/pdf, .doc, .docx"
+              accept=".txt"
               onChange={(e) => handleFileChange(e, index, "doc")}
               className="w-full mb-2"
             />

@@ -204,8 +204,9 @@ const AdminCourse = () => {
             </Link>
           ))}
         </div>
-        <div className="">
-          <h2 className="m-3 font-bold">My Courses</h2>
+        <h2 className="m-3 font-bold">My Courses</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+         
           {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 ? (
             enrolledCourses.map((course) =>
               course && course.course_id && course.course_id._id ? (

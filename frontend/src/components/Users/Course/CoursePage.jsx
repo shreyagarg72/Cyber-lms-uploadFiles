@@ -651,7 +651,7 @@ const CoursePage = () => {
       </div>
       <div className="flex flex-col gap-2 md:flex-row justify-between h-full">
         <div className="w-2/3">
-          <div className="flex flex-col justify-between items-start md:items-center bg-white p-6 rounded-lg shadow-md">
+          <div className="flex flex-col justify-between items-start bg-white p-6 rounded-lg shadow-md">
             <div className="md:flex-1">
               <div className="flex items-center space-x-2 mb-2">
                 <div className="space-x-2 py-1 px-2 bg-yellow-300 rounded-3xl text-sm">
@@ -679,6 +679,14 @@ const CoursePage = () => {
               </div>
               <p className="mt-4 text-gray-600">
                 {course.description}
+                
+              </p>
+              <p className="mt-4 text-gray-600">
+                Learn the essentials of Cyber Security, covering key principles
+                and practices to protect digital information and systems. This
+                course provides foundational knowledge for safeguarding against
+                cyber threats and vulnerabilities in today's interconnected
+                world.
               </p>
               <div className="flex items-center space-x-2 mt-4">
                 <FontAwesomeIcon icon={faUser} className="text-gray-500" />

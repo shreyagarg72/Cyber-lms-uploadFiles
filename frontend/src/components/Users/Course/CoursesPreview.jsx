@@ -29,6 +29,7 @@ import { useLocation } from "react-router-dom";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import AssignmentSection from "./AssignmentSection";
 import Axios from "../../../helper/Axios";
+import FileReader from "./FileReader";
 
 const CoursePreviewPage = () => {
   const location = useLocation();
@@ -86,7 +87,6 @@ const CoursePreviewPage = () => {
   //   //     console.error('Error fetching completed submodules:', error);
   //   //   });
 
-   
   // }, []);
   useEffect(() => {
     const fetchData = async (courseId) => {
@@ -99,16 +99,16 @@ const CoursePreviewPage = () => {
           },
           params: { courseId }, // Pass courseId as a parameter in the URL query string
         };
-  
+
         const response = await Axios(axiosConfig);
         const completedSubmoduleIds = new Set(response.data);
-  
+
         setCheckedSubmodules(completedSubmoduleIds);
       } catch (error) {
-        console.error('Error fetching completed submodules:', error);
+        console.error("Error fetching completed submodules:", error);
       }
     };
-  
+
     fetchData(courseId);
   }, []);
 
@@ -126,21 +126,18 @@ const CoursePreviewPage = () => {
     });
   };
 
-  
   const handleAssignment = () => {
     setShowAssignment(true); // Show assignment view when button is clicked
-  }
+  };
 
   const token = localStorage.getItem("token");
   useEffect(() => {
-    
-
     // Define your asynchronous update function
     const updateBackendData = async (courseId, submodules) => {
       try {
         const sendingData = {
           courseId: courseId,
-          submodules:[...submodules],
+          submodules: [...submodules],
         };
         console.log("sending data");
         console.log(sendingData);
@@ -187,7 +184,7 @@ const CoursePreviewPage = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto p-6 bg-gray-100">
+      <div className="max-w-7xl mx-auto p-6 bg-gray-100 mt-10">
         <div className="flex justify-center pb-9">
           <div className=" bg-white px-2 rounded-3xl py-2 w-4/5 flex items-center justify-between absolute top-11 shadow-xl">
             <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
@@ -219,15 +216,11 @@ const CoursePreviewPage = () => {
         </div>
         <div className="flex flex-col gap-6 md:flex-row">
           <div className="w-2/3">
-            <div className="bg-white p-3 rounded-lg shadow-md">
+          <h2 className="mb-4 text-gray-800 font-semibold">{course.courseName}</h2>
+            <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md">
               <div className="relative">
-                {/* <DocViewer
-                  pluginRenderers={DocViewerRenderers}
-                  documents={[document]}
-                  className="ml-3"
-                  style={{ height: "50vh", width: "45vw", borderRadius: "20" }}
-                /> */}
-                {/* {selectedSubmodule && selectedSubmodule.docUrl ? (
+                {/*                
+                {selectedSubmodule && selectedSubmodule.docUrl ? (
                   <DocViewer
                     pluginRenderers={DocViewerRenderers}
                     documents={[document]}
@@ -238,6 +231,8 @@ const CoursePreviewPage = () => {
                       borderRadius: "20",
                     }}
                   />
+                  
+
                 ) : (
                   selectedSubmodule &&
                   selectedSubmodule.videoUrl && (
@@ -254,7 +249,34 @@ const CoursePreviewPage = () => {
                     </video>
                   )
                 )} */}
-                {showAssignment ? (
+                {selectedSubmodule && selectedSubmodule.docUrl ? (
+                  <FileReader
+                    docUrl={selectedSubmodule.docUrl}
+                    className="ml-3"
+                    style={{
+                      height: "50vh",
+                      width: "45vw",
+                      borderRadius: "20",
+                    }}
+                  />
+                ) : (
+                  selectedSubmodule &&
+                  selectedSubmodule.videoUrl && (
+                    <video
+                      controls
+                      className="w-full h-auto rounded-lg m-auto"
+                      style={{ height: "50vh", width: "45vw" }}
+                    >
+                      <source
+                        src={selectedSubmodule.videoUrl}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  )
+                )}
+
+                {/* {showAssignment ? (
                 <AssignmentSection assignments={assignments} />
               ) : selectedSubmodule && selectedSubmodule.docUrl ? (
                 <DocViewer
@@ -282,7 +304,7 @@ const CoursePreviewPage = () => {
                     Your browser does not support the video tag.
                   </video>
                 )
-              )}
+              )} */}
                 <div className="absolute bottom-4 left-4 flex items-center space-x-2"></div>
                 {/* <div className="flex justify-between mt-4">
                   <button className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full">
@@ -295,39 +317,9 @@ const CoursePreviewPage = () => {
                 </div> */}
               </div>
             </div>
-            <div className="bg-white p-6 mt-6 rounded-lg shadow-md">
-              <div className="flex items-center space-x-2 mb-2">
-                <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
-                <span className="text-yellow-500">4.6</span>
-                <span className="text-sm text-gray-600">based on</span>
-                <a href="#" className="underline text-blue-400">
-                  10 reviews
-                </a>
-              </div>
-              <h1 className="text-3xl font-bold text-gray-800">
-                {course.courseName}
-              </h1>
-              <div className="flex items-center mt-2 space-x-2">
-                <span className="px-2 py-1 bg-yellow-300 text-yellow-800 rounded">
-                  Medium
-                </span>
-                <span className="px-2 py-1 bg-gray-300 text-gray-800 rounded flex items-center">
-                  <FontAwesomeIcon icon={faTools} className="mr-2" />
-                  Kali Linux
-                </span>
-              </div>
-              <p className="mt-4 text-gray-600">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
-              </p>
-              <div className="flex items-center space-x-2 mt-4">
-                <FontAwesomeIcon icon={faUser} className="text-gray-500" />
-                <span className="text-gray-500">{course.trainerName}</span>
-                <FontAwesomeIcon icon={faUsers} className="text-gray-500" />
-                <span className="text-gray-500">100+ students enrolled</span>
-              </div>
+            
+            <div className="">
+              {/* <FileReader docUrl={selectedSubmodule.docUrl}></FileReader> */}
             </div>
           </div>
           <div className="w-full md:w-1/3">
@@ -373,7 +365,10 @@ const CoursePreviewPage = () => {
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mt-2">
-              <button className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg " onClick={handleAssignment} >
+              <button
+                className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg "
+                onClick={handleAssignment}
+              >
                 View Assignment
               </button>
             </div>

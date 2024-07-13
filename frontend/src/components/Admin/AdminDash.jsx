@@ -61,7 +61,7 @@ const AdminDashboard = () => {
     datasets: [
       {
         label: 'Student Enrollment by Course',
-        data: [400, 300, 900, 700],
+        data: [40, 30, 90, 70],
         backgroundColor: ['red', 'orange', 'red', 'navy'],
 
       },
@@ -130,7 +130,11 @@ const AdminDashboard = () => {
               <h2 className="text-center text-lg font-bold mb-4">Student Enrollment by Course</h2>
               <Bar data={barData} />
             </div>
-            <div className="mt-6 bg-white p-4 rounded-lg shadow-xl">
+            <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
+              <h2 className="text-center text-lg font-bold mb-4">Enrollment Types</h2>
+              <Pie data={pieData} />
+            </div>
+            <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
               <h2 className="text-center text-lg font-bold mb-4">Enrollment Types</h2>
               <Pie data={pieData} />
             </div>
