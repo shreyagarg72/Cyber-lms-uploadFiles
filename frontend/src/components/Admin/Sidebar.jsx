@@ -34,7 +34,7 @@ const Sidebar = () => {
     { to: "/AdminDashboard", icon: dashlogo, label: "Dashboard" },
     { to: "/AdminCourse", icon: faBook, label: "Courses" },
     { to: "/AdminCommunity", icon: faPeopleGroup, label: "Community" },
-    { to: "/Calendar", icon: faPeopleGroup, label: "Calendar" },
+    { to: "/Admincalander", icon: faPeopleGroup, label: "Calendar" },
     // { to: "/doubt", icon: faQuestionCircle, label: "Doubts" },
     // { to: "/feedback", icon: faComments, label: "Feedback" },
     // { to: "/report", icon: faFile, label: "Report" },

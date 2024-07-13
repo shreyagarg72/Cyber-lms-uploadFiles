@@ -36,6 +36,7 @@ const Sidebar = () => {
     { to: "/Dashboard", icon: dashlogo, label: "Dashboard" },
     { to: "/course", icon: faBook, label: "Courses" },
     { to: "/community", icon: faPeopleGroup, label: "Community" },
+    { to: "/calendar", icon: faPeopleGroup, label: "Calendar" },
   ];
 
   return (
