@@ -412,7 +412,7 @@ const Upload = () => {
                 {" "}
                 <input
                   type="file"
-                  accept=".doc,.docx"
+                  accept=".txt,.rtf"
                   onChange={(e) =>
                     handleFileChange(e, sectionIndex, "doc", submoduleIndex)
                   }
