@@ -16,13 +16,12 @@ import SecureUpload from "./components/Admin/SecureUpload";
 import EditCourse from "./components/Admin/EditCourse";
 import CoursePage from "./components/Users/Course/CoursePage";
 import CoursePreviewPage from "./components/Users/Course/CoursesPreview";
-import Calendar from "./components/Admin/Calendar";
-
 import AdminProfile from "./components/Admin/Profile";
 
 import AdminCalandar from "./components/Admin/Calendar";
 import { AuthProvider } from "./auth/AuthProvider"; // Adjust the import path as necessary
 import ProtectedRoute from "./hoc/ProtectedRoutes"; // Adjust the import path as necessary
+import Calendar from "./components/Users/Calendar";
 
 function App() {
   return (
@@ -164,13 +163,13 @@ function App() {
             path="/calendar"
             element={
               <ProtectedRoute>
-                <LayoutAdmin>
+                <Layout>
                   <Calendar />
-                </LayoutAdmin>
+                </Layout>
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/AdminCalander"
             element={
               <ProtectedRoute>
@@ -179,7 +178,7 @@ function App() {
                 </LayoutAdmin>
               </ProtectedRoute>
             }
-          /> */}
+          />
         </Routes>
       </Router>
     </AuthProvider>
