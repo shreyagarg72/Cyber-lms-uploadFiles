@@ -26,6 +26,7 @@
     "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mammoth": "^1.8.0",
     "mongoose": "^8.4.3",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
