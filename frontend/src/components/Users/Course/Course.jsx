@@ -129,35 +129,9 @@ const AdminCourse = () => {
     }
   }, [enrolledCourses, courses]);
   return (
-    <div className="min-h-screen p-6" style={{marginTop:`4rem`}}>
+    <div className="min-h-screen p-6" >
       <div className="flex justify-center">
-        <div className=" bg-white px-2 rounded-3xl py-2 w-4/5 flex items-center justify-between absolute top-11 shadow-xl">
-          <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
-            <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full bg-transparent focus:outline-none"
-            />
-          </div>
-          <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
-            <Link onClick={toggleNotifications}>
-              <FontAwesomeIcon
-                icon={faBell}
-                className="text-gray-700 text-3xl"
-              />
-            </Link>
-            <Link onClick={toggleProfile}>
-              <img
-                src={ProfileBoy}
-                alt="Profile"
-                className="w-10 h-10 rounded-full"
-              />
-            </Link>
-            {showProfile && <ToggleProfile closeProfile={closeProfile} />}
-            {showNotifications && <Notification />}
-          </div>
-        </div>
+        
       </div>
       <div className=" bg-white mt-6 rounded-lg shadow-md p-2 mb-4">
         <div className="flex justify-between items-center">

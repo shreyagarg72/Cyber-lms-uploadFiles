@@ -185,35 +185,7 @@ const CoursePreviewPage = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto p-6 bg-gray-100 mt-10">
-        <div className="flex justify-center pb-9">
-          <div className=" bg-white px-2 rounded-3xl py-2 w-4/5 flex items-center justify-between absolute top-11 shadow-xl">
-            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-full max-w-md ">
-              <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full bg-transparent focus:outline-none"
-              />
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
-              <Link onClick={toggleNotifications}>
-                <FontAwesomeIcon
-                  icon={faBell}
-                  className="text-gray-700 text-3xl"
-                />
-              </Link>
-              <Link onClick={toggleProfile}>
-                <img
-                  src={ProfileBoy}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </Link>
-              {showProfile && <ToggleProfile closeProfile={closeProfile} />}
-              {showNotifications && <Notification />}
-            </div>
-          </div>
-        </div>
+      
         <div className="flex flex-col gap-6 md:flex-row">
           <div className="w-2/3">
           <h2 className="mb-4 text-gray-800 font-semibold">{course.courseName}</h2>

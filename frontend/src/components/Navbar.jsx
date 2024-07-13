@@ -53,9 +53,9 @@ const Navbar = () => {
   };
 
   return (
-    <div className={`bg-white shadow-md fixed top-0 z-10 ${isMobileandTablet ? "w-full" : "w-3/6"}`}>
-      <div className={`flex justify-between items-center ${isMobile ? 'p-2' : 'py-2 px-6'}`}>
-        <div className={`flex items-center bg-slate-200 rounded-full px-4 py-2 ${isMobile ? 'w-52' : 'w-52'}`}>
+    <div className={`bg-white shadow-md fixed top-8 w-4/5 left-20 z-10 rounded-3xl  ${isMobileandTablet ? "w-full" : "w-3/6"}`} style={{left:`17rem`}}>
+      <div className={`flex justify-between items-center ${isMobile ? 'p-2' : 'py-2 pl-2 pr-6'}`}>
+        <div className={`flex items-center bg-slate-200 rounded-3xl px-4 py-2 ${isMobile ? 'w-52' : 'w-80'}`} >
           <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
           <input
             type="text"
