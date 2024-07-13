@@ -138,7 +138,7 @@ const Calendar = () => {
   };
 
   return (
-    <div>
+    <div className='mt-10'>
       {renderHeader()}
       {renderDays()}
       {renderCells()}
