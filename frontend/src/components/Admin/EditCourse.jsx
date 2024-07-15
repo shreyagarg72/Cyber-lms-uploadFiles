@@ -110,7 +110,7 @@
 //     }
 //     setSections(updatedSections);
 //   };
-  
+
 //   const addNewQuestion = (sectionIndex) => {
 //     const updatedSections = [...sections];
 //     updatedSections[sectionIndex].assignment.questions.push({
@@ -121,7 +121,7 @@
 //     });
 //     setSections(updatedSections);
 //   };
-  
+
 //   const uploadFile = async (type, file) => {
 //     try {
 //       const data = new FormData();
@@ -302,7 +302,7 @@
 //       },
 //     },
 //   ]);
-  
+
 //   return (
 //     <div className="min-h-full">
 //       <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}></div>
@@ -852,13 +852,21 @@ const EditCourse = () => {
   const location = useLocation();
   const initialCourseData = location.state || {};
 
-  const [courseName, setCourseName] = useState(initialCourseData.courseName || "");
-  const [description, setDescription] = useState(initialCourseData.description || "");
+  const [courseName, setCourseName] = useState(
+    initialCourseData.courseName || ""
+  );
+  const [description, setDescription] = useState(
+    initialCourseData.description || ""
+  );
   const [img, setImg] = useState(initialCourseData.img || null);
-  const [trainerName, setTrainerName] = useState(initialCourseData.trainerName || "");
+  const [trainerName, setTrainerName] = useState(
+    initialCourseData.trainerName || ""
+  );
   const [level, setLevel] = useState(initialCourseData.level || "Medium");
   const [tools, setTools] = useState(initialCourseData.tools || "");
-  const [finalAssignment, setFinalAssignment] = useState(initialCourseData.finalAssignment || []);
+  const [finalAssignment, setFinalAssignment] = useState(
+    initialCourseData.finalAssignment || []
+  );
   const [content, setContent] = useState(initialCourseData.content || []);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -876,7 +884,14 @@ const EditCourse = () => {
   const addNewSection = () => {
     setContent([
       ...content,
-      { title: "", description: "", doc: null, video: null, submodules: [], assignment: { questions: [] } },
+      {
+        title: "",
+        description: "",
+        doc: null,
+        video: null,
+        submodules: [],
+        assignment: { questions: [] },
+      },
     ]);
   };
 
@@ -889,7 +904,12 @@ const EditCourse = () => {
   const handleAddFinalAssignment = () => {
     setFinalAssignment([
       ...finalAssignment,
-      { questionText: "", options: ["", "", "", ""], correctAnswer: "", explanation: "" },
+      {
+        questionText: "",
+        options: ["", "", "", ""],
+        correctAnswer: "",
+        explanation: "",
+      },
     ]);
   };
 
@@ -914,12 +934,21 @@ const EditCourse = () => {
     setFinalAssignment(finalAssignment.filter((_, i) => i !== index));
   };
 
-  const handleAssignmentChange = (moduleIndex, questionIndex, field, value, optionIndex = null) => {
+  const handleAssignmentChange = (
+    moduleIndex,
+    questionIndex,
+    field,
+    value,
+    optionIndex = null
+  ) => {
     const newContent = [...content];
     if (field === "options") {
-      newContent[moduleIndex].assignment.questions[questionIndex].options[optionIndex] = value;
+      newContent[moduleIndex].assignment.questions[questionIndex].options[
+        optionIndex
+      ] = value;
     } else {
-      newContent[moduleIndex].assignment.questions[questionIndex][field] = value;
+      newContent[moduleIndex].assignment.questions[questionIndex][field] =
+        value;
     }
     setContent(newContent);
   };
@@ -1011,7 +1040,10 @@ const EditCourse = () => {
 
               // Upload submodule video if changed
               if (submodule.video instanceof File) {
-                updatedSubmodule.video = await uploadFile("video", submodule.video);
+                updatedSubmodule.video = await uploadFile(
+                  "video",
+                  submodule.video
+                );
               }
 
               return updatedSubmodule;
@@ -1037,7 +1069,9 @@ const EditCourse = () => {
 
       // Send PUT request to update course in backend
       const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/${initialCourseData._id}`,
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/${
+          initialCourseData._id
+        }`,
         updatedCourseData
       );
 
@@ -1092,16 +1126,15 @@ const EditCourse = () => {
 
   const deleteSubmodule = (sectionIndex, submoduleIndex) => {
     const newContent = [...content];
-    newContent[sectionIndex].submodules = newContent[sectionIndex].submodules.filter(
-      (_, i) => i !== submoduleIndex
-    );
+    newContent[sectionIndex].submodules = newContent[
+      sectionIndex
+    ].submodules.filter((_, i) => i !== submoduleIndex);
     setContent(newContent);
   };
 
   return (
     <div className="min-h-full">
-      <div className={`flex justify-center ${isMobile ? 'p-2' : 'py-2'}`}>
-      </div>
+      <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}></div>
       <div className="max-w-4xl mx-auto p-6 bg-gray-100 relative">
         {successMessage && (
           <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-md z-50">
@@ -1126,7 +1159,6 @@ const EditCourse = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded"
-              required
             ></textarea>
           </div>
           <div className="mb-4">
@@ -1178,7 +1210,10 @@ const EditCourse = () => {
             />
           </div>
           {content.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="mb-4 border rounded-lg p-4 bg-white shadow-md">
+            <div
+              key={sectionIndex}
+              className="mb-4 border rounded-lg p-4 bg-white shadow-md"
+            >
               <div className="mb-4">
                 <label className="block font-bold mb-1">Section Title:</label>
                 <input
@@ -1194,7 +1229,9 @@ const EditCourse = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block font-bold mb-1">Section Description:</label>
+                <label className="block font-bold mb-1">
+                  Section Description:
+                </label>
                 <textarea
                   value={section.description}
                   onChange={(e) => {
@@ -1203,11 +1240,12 @@ const EditCourse = () => {
                     setContent(newContent);
                   }}
                   className="w-full px-4 py-2 border border-gray-300 rounded"
-                  required
                 ></textarea>
               </div>
               <div className="mb-4">
-                <label className="block font-bold mb-1">Section Document:</label>
+                <label className="block font-bold mb-1">
+                  Section Document:
+                </label>
                 <input
                   type="file"
                   accept=".pdf,.doc,.docx"
@@ -1217,7 +1255,11 @@ const EditCourse = () => {
                 {section.doc && (
                   <div className="mt-2">
                     <a
-                      href={typeof section.doc === "string" ? section.doc : URL.createObjectURL(section.doc)}
+                      href={
+                        typeof section.doc === "string"
+                          ? section.doc
+                          : URL.createObjectURL(section.doc)
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 underline"
@@ -1264,51 +1306,79 @@ const EditCourse = () => {
               <div className="mb-4">
                 <label className="block font-bold mb-1">Assignment:</label>
                 <div>
-                  {section.assignment.questions.map((question, questionIndex) => (
-                    <div key={questionIndex} className="mb-4 border p-2 rounded">
-                      <label className="block mb-1">Question:</label>
-                      <input
-                        type="text"
-                        value={question.questionText}
-                        onChange={(e) =>
-                          handleAssignmentChange(sectionIndex, questionIndex, "questionText", e.target.value)
-                        }
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                        required
-                      />
-                      <label className="block mt-2 mb-1">Options:</label>
-                      {question.options.map((option, optionIndex) => (
+                  {section.assignment.questions.map(
+                    (question, questionIndex) => (
+                      <div
+                        key={questionIndex}
+                        className="mb-4 border p-2 rounded"
+                      >
+                        <label className="block mb-1">Question:</label>
                         <input
-                          key={optionIndex}
                           type="text"
-                          value={option}
+                          value={question.questionText}
                           onChange={(e) =>
-                            handleAssignmentChange(sectionIndex, questionIndex, "options", e.target.value, optionIndex)
+                            handleAssignmentChange(
+                              sectionIndex,
+                              questionIndex,
+                              "questionText",
+                              e.target.value
+                            )
                           }
-                          className="w-full px-2 py-1 mb-1 border border-gray-300 rounded"
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
                           required
                         />
-                      ))}
-                      <label className="block mt-2 mb-1">Correct Answer:</label>
-                      <input
-                        type="text"
-                        value={question.correctAnswer}
-                        onChange={(e) =>
-                          handleAssignmentChange(sectionIndex, questionIndex, "correctAnswer", e.target.value)
-                        }
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                        required
-                      />
-                      <label className="block mt-2 mb-1">Explanation:</label>
-                      <textarea
-                        value={question.explanation}
-                        onChange={(e) =>
-                          handleAssignmentChange(sectionIndex, questionIndex, "explanation", e.target.value)
-                        }
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                      ></textarea>
-                    </div>
-                  ))}
+                        <label className="block mt-2 mb-1">Options:</label>
+                        {question.options.map((option, optionIndex) => (
+                          <input
+                            key={optionIndex}
+                            type="text"
+                            value={option}
+                            onChange={(e) =>
+                              handleAssignmentChange(
+                                sectionIndex,
+                                questionIndex,
+                                "options",
+                                e.target.value,
+                                optionIndex
+                              )
+                            }
+                            className="w-full px-2 py-1 mb-1 border border-gray-300 rounded"
+                            required
+                          />
+                        ))}
+                        <label className="block mt-2 mb-1">
+                          Correct Answer:
+                        </label>
+                        <input
+                          type="text"
+                          value={question.correctAnswer}
+                          onChange={(e) =>
+                            handleAssignmentChange(
+                              sectionIndex,
+                              questionIndex,
+                              "correctAnswer",
+                              e.target.value
+                            )
+                          }
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                          required
+                        />
+                        <label className="block mt-2 mb-1">Explanation:</label>
+                        <textarea
+                          value={question.explanation}
+                          onChange={(e) =>
+                            handleAssignmentChange(
+                              sectionIndex,
+                              questionIndex,
+                              "explanation",
+                              e.target.value
+                            )
+                          }
+                          className="w-full px-2 py-1 border border-gray-300 rounded"
+                        ></textarea>
+                      </div>
+                    )
+                  )}
                   <button
                     type="button"
                     onClick={() => addNewQuestion(sectionIndex)}
@@ -1319,15 +1389,25 @@ const EditCourse = () => {
                 </div>
               </div>
               {section.submodules.map((submodule, submoduleIndex) => (
-                <div key={submoduleIndex} className="mb-4 border p-4 rounded-lg bg-gray-50">
-                  <h3 className="font-bold mb-2">Submodule {submoduleIndex + 1}</h3>
+                <div
+                  key={submoduleIndex}
+                  className="mb-4 border p-4 rounded-lg bg-gray-50"
+                >
+                  <h3 className="font-bold mb-2">
+                    Submodule {submoduleIndex + 1}
+                  </h3>
                   <div className="mb-4">
                     <label className="block font-bold mb-1">Title:</label>
                     <input
                       type="text"
                       value={submodule.title}
                       onChange={(e) =>
-                        handleSubmoduleChange(e, sectionIndex, submoduleIndex, "title")
+                        handleSubmoduleChange(
+                          e,
+                          sectionIndex,
+                          submoduleIndex,
+                          "title"
+                        )
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded"
                       required
@@ -1338,10 +1418,14 @@ const EditCourse = () => {
                     <textarea
                       value={submodule.description}
                       onChange={(e) =>
-                        handleSubmoduleChange(e, sectionIndex, submoduleIndex, "description")
+                        handleSubmoduleChange(
+                          e,
+                          sectionIndex,
+                          submoduleIndex,
+                          "description"
+                        )
                       }
                       className="w-full px-4 py-2 border border-gray-300 rounded"
-                      required
                     ></textarea>
                   </div>
                   <div className="mb-4">
@@ -1350,7 +1434,12 @@ const EditCourse = () => {
                       type="file"
                       accept=".pdf,.doc,.docx"
                       onChange={(e) =>
-                        handleSubmoduleFileChange(e, sectionIndex, submoduleIndex, "doc")
+                        handleSubmoduleFileChange(
+                          e,
+                          sectionIndex,
+                          submoduleIndex,
+                          "doc"
+                        )
                       }
                       className="w-full"
                     />
@@ -1377,7 +1466,12 @@ const EditCourse = () => {
                       type="file"
                       accept="video/*"
                       onChange={(e) =>
-                        handleSubmoduleFileChange(e, sectionIndex, submoduleIndex, "video")
+                        handleSubmoduleFileChange(
+                          e,
+                          sectionIndex,
+                          submoduleIndex,
+                          "video"
+                        )
                       }
                       className="w-full"
                     />
@@ -1409,7 +1503,9 @@ const EditCourse = () => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => deleteSubmodule(sectionIndex, submoduleIndex)}
+                    onClick={() =>
+                      deleteSubmodule(sectionIndex, submoduleIndex)
+                    }
                     className="bg-red-500 text-white px-4 py-2 rounded mt-2"
                   >
                     Delete Submodule
@@ -1442,13 +1538,20 @@ const EditCourse = () => {
           <div className="mb-4 mt-6">
             <h2 className="text-xl font-bold mb-2">Final Assignment</h2>
             {finalAssignment.map((assignment, index) => (
-              <div key={index} className="mb-4 border p-4 rounded-lg bg-gray-50">
+              <div
+                key={index}
+                className="mb-4 border p-4 rounded-lg bg-gray-50"
+              >
                 <label className="block mb-1 font-bold">Question:</label>
                 <input
                   type="text"
                   value={assignment.questionText}
                   onChange={(e) =>
-                    handleFinalAssignmentChange(index, "questionText", e.target.value)
+                    handleFinalAssignmentChange(
+                      index,
+                      "questionText",
+                      e.target.value
+                    )
                   }
                   className="w-full px-2 py-1 border border-gray-300 rounded"
                 />
@@ -1459,25 +1562,42 @@ const EditCourse = () => {
                     type="text"
                     value={option}
                     onChange={(e) =>
-                      handleFinalAssignmentChange(index, "options", e.target.value, optIndex)
+                      handleFinalAssignmentChange(
+                        index,
+                        "options",
+                        e.target.value,
+                        optIndex
+                      )
                     }
                     className="w-full px-2 py-1 mb-1 border border-gray-300 rounded"
                   />
                 ))}
-                <label className="block mt-2 mb-1 font-bold">Correct Answer:</label>
+                <label className="block mt-2 mb-1 font-bold">
+                  Correct Answer:
+                </label>
                 <input
                   type="text"
                   value={assignment.correctAnswer}
                   onChange={(e) =>
-                    handleFinalAssignmentChange(index, "correctAnswer", e.target.value)
+                    handleFinalAssignmentChange(
+                      index,
+                      "correctAnswer",
+                      e.target.value
+                    )
                   }
                   className="w-full px-2 py-1 border border-gray-300 rounded"
                 />
-                <label className="block mt-2 mb-1 font-bold">Explanation:</label>
+                <label className="block mt-2 mb-1 font-bold">
+                  Explanation:
+                </label>
                 <textarea
                   value={assignment.explanation}
                   onChange={(e) =>
-                    handleFinalAssignmentChange(index, "explanation", e.target.value)
+                    handleFinalAssignmentChange(
+                      index,
+                      "explanation",
+                      e.target.value
+                    )
                   }
                   className="w-full px-2 py-1 border border-gray-300 rounded"
                 ></textarea>
