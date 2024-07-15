@@ -91,13 +91,17 @@ const QuestionSchema = new mongoose.Schema({
   explanation: { type: String }
 });
 
+const AssignmentSchema = new mongoose.Schema({
+  questions: [QuestionSchema] // Array of QuestionSchema objects
+});
+
 const ContentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
   docUrl: { type: String },
   videoUrl: { type: String },
   submodules: [SubmoduleSchema],
-  assignment: QuestionSchema  // Added assignment to each content module
+  assignment: AssignmentSchema // Use the AssignmentSchema here
 });
 
 const CourseSchema = new mongoose.Schema({
@@ -108,7 +112,7 @@ const CourseSchema = new mongoose.Schema({
   tools: { type: String },
   imgUrl: { type: String, required: true },
   content: [ContentSchema],
-  // Removed the separate assignments array
+  finalAssignment: [QuestionSchema] // Array of QuestionSchema objects
 }, {
   timestamps: true,
 });
@@ -116,3 +120,6 @@ const CourseSchema = new mongoose.Schema({
 const Course = mongoose.model('Course', CourseSchema);
 
 export default Course;
+
+
+

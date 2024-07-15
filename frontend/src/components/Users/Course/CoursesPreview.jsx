@@ -39,9 +39,14 @@ const CoursePreviewPage = () => {
   // Example usage of the updateBackendData function
   const courseId = course._id;
 
-  const assignments = course.assignments;
+  const finalAssignment = course.finalAssignment || {};
+
+ 
+
 
   const weekContent = course.content || {};
+
+
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedSubmodule, setSelectedSubmodule] = useState(
@@ -75,19 +80,7 @@ const CoursePreviewPage = () => {
     setShowAssignment(false);
   };
 
-  //this is the useEffect that will run once when the react component is mounted
-  // useEffect(() => {
-  //   // Fetch completed submodules when the component mounts
-  //   // axios.get('/api/completedSubmodules')
-  //   //   .then(response => {
-  //   //     const completedSubmoduleIds = new Set(response.data); // Assuming the backend returns an array of completed submodule IDs
-  //   //     setSelectedSubmodules(completedSubmoduleIds);
-  //   //   })
-  //   //   .catch(error => {
-  //   //     console.error('Error fetching completed submodules:', error);
-  //   //   });
 
-  // }, []);
   useEffect(() => {
     const fetchData = async (courseId) => {
       try {
@@ -191,36 +184,7 @@ const CoursePreviewPage = () => {
           <h2 className="mb-4 text-gray-800 font-semibold">{course.courseName}</h2>
             <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md">
               <div className="relative">
-                {/*                
-                {selectedSubmodule && selectedSubmodule.docUrl ? (
-                  <DocViewer
-                    pluginRenderers={DocViewerRenderers}
-                    documents={[document]}
-                    className="ml-3"
-                    style={{
-                      height: "50vh",
-                      width: "45vw",
-                      borderRadius: "20",
-                    }}
-                  />
-                  
-
-                ) : (
-                  selectedSubmodule &&
-                  selectedSubmodule.videoUrl && (
-                    <video
-                      controls
-                      className="w-full h-auto rounded-lg m-auto "
-                      style={{ height: "50vh", width: "45vw" }}
-                    >
-                      <source
-                        src={selectedSubmodule.videoUrl}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  )
-                )} */}
+                
                 {selectedSubmodule && selectedSubmodule.docUrl ? (
                   <FileReader
                     docUrl={selectedSubmodule.docUrl}

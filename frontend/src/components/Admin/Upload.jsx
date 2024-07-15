@@ -1,30 +1,10 @@
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faFileAlt,
-  faCheckCircle,
-  faTimesCircle,
-  faClock,
-  faSearch,
-  faUsers,
-  faBell,
-  faFolderOpen,
-  faCalendarDays,
-} from "@fortawesome/free-solid-svg-icons";
+
 import { useMediaQuery } from "react-responsive";
-import image01 from "../../assets/Screenshot 2024-06-19 001148.png";
-import ProfileBoy from "../../assets/Profile.webp";
-import PT from "../../assets/DashboardUI__109615071.png";
-import NS from "../../assets/DashboardUI_images1.png";
-import DC from "../../assets/DashboardUI__30764161.png";
-import DM from "../../assets/DashboardUI__183600437cryptographyiconblockchaintechnologyrelatedvectorillustration1.png";
-import WD from "../../assets/DashboardUI_malwaresymbolredisolatedonwhitebackgroundfreevector1.png";
+
 import React, { useState } from "react";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
-import Notification from "../Users/Notification";
-import ToggleProfile from "../Users/ToggleProfile";
+
 
 const Upload = () => {
   const [courseName, setCourseName] = useState("");
@@ -33,28 +13,11 @@ const Upload = () => {
   const [trainerName, setTrainerName] = useState("");
   const [level, setLevel] = useState("Medium");
   const [tools, setTools] = useState("");
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
-  const toggleProfile = () => {
-    setShowProfile(!showProfile);
-  };
 
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
 
-  const closeProfile = () => {
-    setShowProfile(false);
-  };
-  // const [content, setContent] = useState([
-  //   {
-  //     title: "Week 1 - Introduction",
-  //     description: "Lorem ipsum dolor sit amet",
-  //     submodules: [],
-  //   },
-  // ]);
   const [content, setContent] = useState([
     {
       title: "Week 1 - Introduction",
@@ -74,29 +37,34 @@ const Upload = () => {
   ]);
 
   const [assignments, setAssignments] = useState([]);
+  const [finalAssignments, setFinalAssignments] = useState([]);
 
-  const handleAddAssignment = () => {
+  const handleAddFinalAssignment=(e)=>{
+    e.preventDefault();
+    console.log("add final assignment triggered");
     const newAssignment = {
       questionText: "",
       options: ["", "", "", ""],
       correctAnswer: "",
       explanation: "",
     };
-    setAssignments([...assignments, newAssignment]);
-  };
+    setFinalAssignments([...finalAssignments, newAssignment]);
+  }
+  
 
-  // const handleAssignmentChange = (index, field, value, optionIndex = null) => {
-  //   const newAssignments = [...assignments];
-  //   if (field === 'options') {
-  //     newAssignments[index].options[optionIndex] = value;
-  //   } else {
-  //     newAssignments[index][field] = value;
-  //   }
-  //   setAssignments(newAssignments);
-  // };
+  const handleFinalAssignmentChange = (index, field, value, optionIndex = null) => {
+    const newAssignments = [...finalAssignments];
+    if (field === 'options') {
+      newAssignments[index].options[optionIndex] = value;
+    } else {
+      newAssignments[index][field] = value;
+    }
+    setFinalAssignments(newAssignments);
+  };
 
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
   const handleAssignmentChange = (
     moduleIndex,
     questionIndex,
@@ -114,7 +82,10 @@ const Upload = () => {
         value;
     }
     setContent(newContent);
+    console.log(newContent);
   };
+
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -132,9 +103,6 @@ const Upload = () => {
     setContent(newContent);
   };
 
-  // const addNewModule = () => {
-  //   setContent([...content, { title: "", description: "", submodules: [] }]);
-  // };
   const addNewModule = () => {
     setContent([
       ...content,
@@ -206,6 +174,7 @@ const Upload = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("handle submit triggered");
     e.preventDefault();
     try {
       setLoading(true);
@@ -238,6 +207,7 @@ const Upload = () => {
             title: section.title,
             description: section.description,
             submodules: submodulesWithUrls,
+            assignment: section.assignment
           };
         })
       );
@@ -251,12 +221,12 @@ const Upload = () => {
         tools,
         imgUrl,
         content: contentWithUrls,
-        assignments,
+        finalAssignment:finalAssignments,
       };
-
+      console.log(courseData);
       // Send courseData to backend API to save in MongoDB
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`,
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/upload`,
         courseData
       );
 
@@ -286,6 +256,16 @@ const Upload = () => {
         title: "Week 1 - Introduction",
         description: "Lorem ipsum dolor sit amet",
         submodules: [],
+        assignment: {
+          questions: [
+            {
+              questionText: "",
+              options: ["", "", "", ""],
+              correctAnswer: "",
+              explanation: "",
+            },
+          ],
+        },
       },
     ]);
   };
@@ -318,41 +298,7 @@ const Upload = () => {
 
   return (
     <div className="min-h-full">
-      <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}>
-        <div
-          className={`bg-white px-2 rounded-3xl ${
-            isMobile ? "py-2 w-full mx-2" : "py-2 w-5/6 mr-3"
-          } shadow-xl`}
-        >
-          <div className="w-full flex flex-row justify-between">
-            <div className="flex items-center bg-slate-200 rounded-full px-4 py-2 w-52">
-              <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full bg-transparent focus:outline-none"
-              />
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-10 md:mr-10">
-              <Link onClick={toggleNotifications}>
-                <FontAwesomeIcon
-                  icon={faBell}
-                  className="text-gray-700 text-3xl"
-                />
-              </Link>
-              <Link onClick={toggleProfile}>
-                <img
-                  src={ProfileBoy}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full"
-                />
-              </Link>
-              {showProfile && <ToggleProfile closeProfile={closeProfile} />}
-              {showNotifications && <Notification />}
-            </div>
-          </div>
-        </div>
-      </div>
+     
       <div className="max-w-4xl mx-auto p-6 bg-gray-100 relative">
         {successMessage && (
           <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
@@ -409,7 +355,7 @@ const Upload = () => {
               <option value="Hard">Hard</option>
             </select>
           </div>
-
+          {/* tools */}
           <input
             type="text"
             placeholder="Enter tools"
@@ -517,6 +463,7 @@ const Upload = () => {
               ))}
               <div className="mt-6 p-4 bg-gray-100 rounded shadow">
                 <h3 className="text-lg font-bold mb-4">Module Assignment</h3>
+               
                 {section.assignment.questions.map((question, questionIndex) => (
                   <div
                     key={questionIndex}
@@ -628,12 +575,12 @@ const Upload = () => {
           <div className="mb-6">
             <h3 className="text-xl font-bold mb-4">Assignments</h3>
             <button
-              onClick={handleAddAssignment}
+              onClick={handleAddFinalAssignment}
               className="mb-4 p-2 bg-green-500 text-white rounded shadow"
             >
               Add Assignment
             </button>
-            {assignments.map((assignment, index) => (
+            {finalAssignments.map((assignment, index) => (
               <div key={index} className="mb-6 p-4 bg-white rounded shadow">
                 <div className="mb-4">
                   <label className="block mb-2 font-bold">Question:</label>
@@ -642,7 +589,7 @@ const Upload = () => {
                     placeholder="Question Text"
                     value={assignment.questionText}
                     onChange={(e) =>
-                      handleAssignmentChange(
+                      handleFinalAssignmentChange( 
                         index,
                         "questionText",
                         e.target.value
@@ -660,7 +607,7 @@ const Upload = () => {
                       placeholder={`Option ${optionIndex + 1}`}
                       value={option}
                       onChange={(e) =>
-                        handleAssignmentChange(
+                        handleFinalAssignmentChange(
                           index,
                           "options",
                           e.target.value,
@@ -680,7 +627,7 @@ const Upload = () => {
                     placeholder="Correct Answer"
                     value={assignment.correctAnswer}
                     onChange={(e) =>
-                      handleAssignmentChange(
+                      handleFinalAssignmentChange(
                         index,
                         "correctAnswer",
                         e.target.value
@@ -695,7 +642,7 @@ const Upload = () => {
                     placeholder="Explanation for the correct answer"
                     value={assignment.explanation}
                     onChange={(e) =>
-                      handleAssignmentChange(
+                      handleFinalAssignmentChange(
                         index,
                         "explanation",
                         e.target.value
@@ -707,6 +654,7 @@ const Upload = () => {
               </div>
             ))}
           </div>
+
           <button
             type="submit"
             className={`w-full p-2 bg-blue-500 text-white rounded shadow ${
