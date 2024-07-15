@@ -20,7 +20,7 @@ const AssignmentSection = ({ assignments }) => {
     <div>
       {assignments.map((question, index) => (
         <div key={index}>
-          <h4 className='font-bold mb-2'>{`Question ${question.questionNo}: ${question.questionText}`}</h4>
+          <h4 className='font-bold mb-2'>{`Question ${index+1}: ${question.questionText}`}</h4>
           {question.options.map((option, idx) => (
             <div key={idx}  className="option-box radio-container">
               <input

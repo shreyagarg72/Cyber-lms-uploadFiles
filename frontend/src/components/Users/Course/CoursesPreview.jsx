@@ -41,12 +41,7 @@ const CoursePreviewPage = () => {
 
   const finalAssignment = course.finalAssignment || {};
 
- 
-
-
   const weekContent = course.content || {};
-
-
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedSubmodule, setSelectedSubmodule] = useState(
@@ -56,6 +51,7 @@ const CoursePreviewPage = () => {
   const [checkedSubmodules, setCheckedSubmodules] = useState(new Set());
   const [showProfile, setShowProfile] = useState(false);
   const [showAssignment, setShowAssignment] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState([]);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
 
@@ -79,7 +75,6 @@ const CoursePreviewPage = () => {
     setSelectedSubmodule(submodule);
     setShowAssignment(false);
   };
-
 
   useEffect(() => {
     const fetchData = async (courseId) => {
@@ -120,7 +115,16 @@ const CoursePreviewPage = () => {
   };
 
   const handleAssignment = () => {
+    setSelectedAssignment(finalAssignment);
     setShowAssignment(true); // Show assignment view when button is clicked
+    setSelectedSubmodule([]);
+  };
+
+  const handleModuleAssignment = (assignment) => {
+    console.log(assignment.questions);
+    setSelectedAssignment(assignment.questions);
+    setShowAssignment(true);
+    setSelectedSubmodule([]);
   };
 
   const token = localStorage.getItem("token");
@@ -178,85 +182,52 @@ const CoursePreviewPage = () => {
   return (
     <>
       <div className="max-w-7xl mx-auto p-6 bg-gray-100 mt-10">
-      
         <div className="flex flex-col gap-6 md:flex-row">
           <div className="w-2/3">
-          <h2 className="mb-4 text-gray-800 font-semibold">{course.courseName}</h2>
+            <h2 className="mb-4 text-gray-800 font-semibold">
+              {course.courseName}
+            </h2>
             <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md">
               <div className="relative">
-                
-                {selectedSubmodule && selectedSubmodule.docUrl ? (
-                  <FileReader
-                    docUrl={selectedSubmodule.docUrl}
-                    className="ml-3"
-                    style={{
-                      height: "50vh",
-                      width: "45vw",
-                      borderRadius: "20",
-                    }}
-                  />
+                {showAssignment ? (
+                  <AssignmentSection assignments={selectedAssignment} />
                 ) : (
-                  selectedSubmodule &&
-                  selectedSubmodule.videoUrl && (
-                    <video
-                      controls
-                      className="w-full h-auto rounded-lg m-auto"
-                      style={{ height: "50vh", width: "45vw" }}
-                    >
-                      <source
-                        src={selectedSubmodule.videoUrl}
-                        type="video/mp4"
+                  <>
+                    {selectedSubmodule && selectedSubmodule.docUrl ? (
+                      <FileReader
+                        docUrl={selectedSubmodule.docUrl}
+                        className="ml-3"
+                        style={{
+                          height: "50vh",
+                          width: "45vw",
+                          borderRadius: "20px",
+                        }}
                       />
-                      Your browser does not support the video tag.
-                    </video>
-                  )
+                    ) : (
+                      selectedSubmodule &&
+                      selectedSubmodule.videoUrl && (
+                        <video
+                          controls
+                          className="w-full h-auto rounded-lg m-auto"
+                          style={{ height: "50vh", width: "45vw" }}
+                        >
+                          <source
+                            src={selectedSubmodule.videoUrl}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      )
+                    )}
+                  </>
                 )}
+              
 
-                {/* {showAssignment ? (
-                <AssignmentSection assignments={assignments} />
-              ) : selectedSubmodule && selectedSubmodule.docUrl ? (
-                <DocViewer
-                  pluginRenderers={DocViewerRenderers}
-                  documents={[document]}
-                  className="ml-3"
-                  style={{
-                    height: "50vh",
-                    width: "45vw",
-                    borderRadius: "20",
-                  }}
-                />
-              ) : (
-                selectedSubmodule &&
-                selectedSubmodule.videoUrl && (
-                  <video
-                    controls
-                    className="w-full h-auto rounded-lg m-auto "
-                    style={{ height: "50vh", width: "45vw" }}
-                  >
-                    <source
-                      src={selectedSubmodule.videoUrl}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                )
-              )} */}
-                <div className="absolute bottom-4 left-4 flex items-center space-x-2"></div>
-                {/* <div className="flex justify-between mt-4">
-                  <button className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full">
-                    <FontAwesomeIcon icon={faBackward} className="mr-1" />{" "}
-                    Previous
-                  </button>
-                  <button className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full">
-                    Next <FontAwesomeIcon icon={faForward} className="ml-1" />
-                  </button>
-                </div> */}
+              
               </div>
             </div>
+
             
-            <div className="">
-              {/* <FileReader docUrl={selectedSubmodule.docUrl}></FileReader> */}
-            </div>
           </div>
           <div className="w-full md:w-1/3">
             <div className="bg-white p-6 rounded-lg shadow-md">
@@ -295,6 +266,20 @@ const CoursePreviewPage = () => {
                           </button>
                         </li>
                       ))}
+                      <li>
+                        <button
+                        className={`mt-3 pl-2 pr-2 border rounded ${
+                              selectedAssignment === week.assignment.questions
+                                ? "bg-blue-500 text-white border border-blue-500"
+                                : "hover:bg-gray-300 text-gray-600"
+                            }`}
+                          onClick={() =>
+                            handleModuleAssignment(week.assignment)
+                          }
+                        >
+                          Assignment
+                        </button>
+                      </li>
                     </ul>
                   </details>
                 ))}
@@ -302,10 +287,15 @@ const CoursePreviewPage = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mt-2">
               <button
-                className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg "
+                // className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg "
+                className={`pl-2 pr-2 pt-1 pb-1 border rounded-lg ${
+                             selectedAssignment === finalAssignment 
+                                ? "bg-blue-500 text-white border border-blue-500"
+                                : "hover:bg-gray-300 text-gray-600"
+                            }`}
                 onClick={handleAssignment}
               >
-                View Assignment
+                Final Assignment
               </button>
             </div>
           </div>
