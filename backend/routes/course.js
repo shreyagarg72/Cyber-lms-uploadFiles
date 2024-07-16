@@ -1,6 +1,7 @@
 // routes/course.js
 import express from "express";
 import Course from "../models/video.js"; // Ensure you have a Course model
+import User from "../models/user.js"; // Ensure you have a Course model
 import upload from '../middlewares/upload.js';
 import cloudinary  from 'cloudinary';
 
@@ -72,6 +73,29 @@ router.get('/free-count', async (req, res) => {
     res.json({ freeCourses });
   } catch (error) {
     res.status(500).json({ error: 'Error fetching free courses' });
+  }
+});
+// routes/courses.js
+router.get('/enrollment-count', async (req, res) => {
+  try {
+    const enrollmentData = await User.aggregate([
+      { $unwind: '$courses' },
+      { $group: { _id: '$courses.course_id', count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: 'courses',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'course',
+        },
+      },
+      { $unwind: '$course' },
+      { $project: { _id: 0, courseName: '$course.courseName', count: 1 } },
+    ]);
+
+    res.json(enrollmentData);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

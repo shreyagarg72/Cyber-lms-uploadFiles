@@ -44,13 +44,39 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const barOptions = {
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          autoSkip: false, // Prevents skipping labels
+        },
+        title: {
+          display: true,
+          text: 'Courses',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Number of Enrollments',
+        },
+      },
+    },
+    barPercentage: 0.5, // Adjust this to change the bar width (0.5 is 50% of the available space)
+    categoryPercentage: 0.8, // Adjust this to control the spacing between bars
+  };
+  
   const { auth } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [pieData, setPieData] = useState({ labels: [], datasets: [] });
   const [lineData, setLineData] = useState({ labels: [], datasets: [] });
   const [courseCount, setCourseCount] = useState(0);
   const [learningHours, setLearningHours] = useState(0);
-
+  const [barData, setBarData] = useState({ labels: [], datasets: [] });
   const [showProfile, setShowProfile] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
@@ -71,17 +97,47 @@ const AdminDashboard = () => {
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
   }
+  useEffect(() => {
+    const fetchEnrollmentData = async () => {
+      try {
+        const token = auth.token;
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/enrollment-count`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const enrollmentData = response.data;
+        const shortenCourseName = (name) => {
+          // Adjust the logic here as needed (e.g., using the first few characters)
+          return name.length > 15 ? `${name.substring(0, 15)}...` : name;
+        };
+  
+        const labels = enrollmentData.map(data =>shortenCourseName(data.courseName));
+        const counts = enrollmentData.map(data => data.count);
 
-  const barData = {
-    labels: ["A", "B", "C", "D"],
-    datasets: [
-      {
-        label: "Student Enrollment by Course",
-        data: [40, 30, 90, 70],
-        backgroundColor: ["red", "orange", "red", "navy"],
-      },
-    ],
-  };
+        setBarData({
+          labels,
+          datasets: [
+            {
+              label: 'Number of Enrollments',
+              data: counts,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Error fetching enrollment data:', error);
+      }
+    };
+
+    fetchEnrollmentData();
+  }, []);
+  
   useEffect(() => {
     const fetchFreeCourses = async () => {
       try {
@@ -278,7 +334,7 @@ const AdminDashboard = () => {
               <h2 className="text-center text-lg font-bold mb-4">
                 Student Enrollment by Course
               </h2>
-              <Bar data={barData} />
+              <Bar data={barData} options={barOptions} />
             </div>
             <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
               <h2 className="text-center text-lg font-bold mb-4">
