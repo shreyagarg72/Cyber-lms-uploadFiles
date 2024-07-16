@@ -42,6 +42,14 @@ router.get('/users/monthly-count', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+router.get('/users/total-count', async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    res.json({ totalUsers });
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching total users' });
+  }
+});
 
 
 export default router;

@@ -48,9 +48,14 @@ const AdminDashboard = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [pieData, setPieData] = useState({ labels: [], datasets: [] });
   const [lineData, setLineData] = useState({ labels: [], datasets: [] });
+  const [courseCount, setCourseCount] = useState(0);
+  const [learningHours, setLearningHours] = useState(0);
+
   const [showProfile, setShowProfile] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [freeCourses, setFreeCourses] = useState(0);
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
@@ -67,7 +72,6 @@ const AdminDashboard = () => {
     return <Navigate to="/login" />;
   }
 
-
   const barData = {
     labels: ["A", "B", "C", "D"],
     datasets: [
@@ -78,19 +82,41 @@ const AdminDashboard = () => {
       },
     ],
   };
+  useEffect(() => {
+    const fetchFreeCourses = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/free-count`
+        );
+        const freeCourseCount = response.data.freeCourses; // Adjust based on your API response structure
+        setFreeCourses(freeCourseCount);
+      } catch (error) {
+        console.error("Error fetching free courses:", error);
+      }
+    };
+
+    fetchFreeCourses();
+  }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`
+        );
         const courses = response.data;
         // Check the structure of the response
-  
+
         // Ensure courses is an array
         if (Array.isArray(courses)) {
-          const paidCount = courses.filter((course) => course.enrollType === "Paid").length;
-          const freeCount = courses.filter((course) => course.enrollType === "Free").length;
-  
+          setCourseCount(courses.length); // Set the dynamic course count
+          const paidCount = courses.filter(
+            (course) => course.enrollType === "Paid"
+          ).length;
+          const freeCount = courses.filter(
+            (course) => course.enrollType === "Free"
+          ).length;
+
           setPieData({
             labels: ["Paid", "Free"],
             datasets: [
@@ -100,51 +126,89 @@ const AdminDashboard = () => {
               },
             ],
           });
+          const totalSubmodules = courses.reduce((acc, course) => {
+            return (
+              acc +
+              course.content.reduce(
+                (subAcc, module) => subAcc + module.submodules.length,
+                0
+              )
+            );
+          }, 0);
+
+          const totalLearningHours = totalSubmodules * 24;
+          setLearningHours(totalLearningHours);
         } else {
-          console.error("Expected courses to be an array",courses);
+          console.error("Expected courses to be an array", courses);
         }
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
     };
-  
+
     fetchCourses();
   }, []);
-  
+
   useEffect(() => {
     const fetchUsersPerMonth = async () => {
       try {
         const token = auth.token; // Adjust based on your auth context
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/users/monthly-count`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Assuming you're using Bearer tokens
-          },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/users/monthly-count`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Assuming you're using Bearer tokens
+            },
+          }
+        );
         const userData = response.data; // Should be an array of user counts per month
-  
+
         // Create labels for 12 months
         const labels = Array.from({ length: 12 }, (_, index) => index + 1); // Creates [1, 2, 3, ..., 12]
-  
+
         // Map userData to fit into the 12 months
         const data = labels.map((_, index) => userData[index] || 0); // Use 0 for months without data
-  
+
         setLineData({
-          labels: labels.map(month => `Month ${month}`), // E.g., ["Month 1", "Month 2", ...]
-          datasets: [{
-            label: "Number of Users per Month",
-            data: data,
-            borderColor: "red",
-            backgroundColor: "rgba(255, 0, 0, 0.5)",
-          }],
+          labels: labels.map((month) => `Month ${month}`), // E.g., ["Month 1", "Month 2", ...]
+          datasets: [
+            {
+              label: "Number of Users per Month",
+              data: data,
+              borderColor: "red",
+              backgroundColor: "rgba(255, 0, 0, 0.5)",
+            },
+          ],
         });
       } catch (error) {
         console.error("Error fetching users per month:", error);
       }
     };
-  
+
     fetchUsersPerMonth();
   }, [auth]); // Ensure to include auth in dependencies if it changes
-  
+
+  useEffect(() => {
+    const fetchTotalUsers = async () => {
+      try {
+        const token = auth.token; // Adjust based on your auth context
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/users/total-count`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Assuming you're using Bearer tokens
+            },
+          }
+        );
+        const userCount = response.data.totalUsers; // Adjust based on your API response structure
+        setTotalUsers(userCount);
+      } catch (error) {
+        console.error("Error fetching total users:", error);
+      }
+    };
+
+    fetchTotalUsers();
+  }, [auth]);
 
   const options = {
     maintainAspectRatio: false,
@@ -163,7 +227,7 @@ const AdminDashboard = () => {
                   className="text-blue-500 text-2xl"
                 />
                 <div>
-                  <p className="text-gray-500">10 Course Views</p>
+                  <p className="text-gray-500">{courseCount} Courses</p>
                 </div>
               </div>
             </div>
@@ -174,7 +238,9 @@ const AdminDashboard = () => {
                   className="text-green-500 text-2xl"
                 />
                 <div>
-                  <p className="text-gray-500">100 learning hours</p>
+                  <p className="text-gray-500">
+                    {learningHours} learning hours
+                  </p>
                 </div>
               </div>
             </div>
@@ -185,7 +251,7 @@ const AdminDashboard = () => {
                   className="text-red-500 text-2xl"
                 />
                 <div>
-                  <p className="text-gray-500">50 Total Users</p>
+                  <p className="text-gray-500">{totalUsers} Total Users</p>
                 </div>
               </div>
             </div>
@@ -196,7 +262,7 @@ const AdminDashboard = () => {
                   className="text-yellow-500 text-2xl"
                 />
                 <div>
-                  <p className="text-gray-500">10 Popular Courses</p>
+                  <p className="text-gray-500">{freeCourses} Free Courses</p>
                 </div>
               </div>
             </div>

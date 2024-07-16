@@ -66,6 +66,15 @@ router.post("/upload", async (req, res) => {
   }
 });
 
+router.get('/free-count', async (req, res) => {
+  try {
+    const freeCourses = await Course.countDocuments({ enrollType: 'Free' });
+    res.json({ freeCourses });
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching free courses' });
+  }
+});
+
 // export default router;
 
 export default router;
