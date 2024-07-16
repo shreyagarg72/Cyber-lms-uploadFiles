@@ -60,9 +60,9 @@ const Navbar = () => {
   return (
     <div
       className={`bg-white shadow-md fixed top-8 w-4/5 left-20 z-10 rounded-3xl  ${
-        isMobileandTablet ? "w-full" : "w-3/6"
+        isMobileandTablet ? " w-full" : "w-3/6"
       }`}
-      style={{ left: `17rem` }}
+      style={ isMobile?{ left: `0` }:{ left: `17rem` }}
     >
       <div
         className={`flex justify-between items-center ${
