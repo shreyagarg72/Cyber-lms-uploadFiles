@@ -26,9 +26,6 @@ const UserSchema = new mongoose.Schema({
     required: true  
   }
 });
-UserSchema.methods.getTotalEnrolledCourses = function () {
-  return this.courses.length;
-};
 
 
 

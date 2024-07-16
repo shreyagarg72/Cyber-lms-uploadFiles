@@ -19,7 +19,9 @@ const Profile = () => {
     region: "",
   });
 
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    courses: [],
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -192,10 +194,22 @@ const Profile = () => {
             }`}
           >
             <li>
-              <strong>No. of Courses:</strong> 12
+              <strong>No. of Courses:</strong> {userData.courses?.length || 0}
             </li>
             <li>
-              <strong>Courses:</strong> name of courses
+              <strong>Courses:</strong>
+              <ul>
+                {userData.courses?.length > 0 ? (
+                  userData.courses.map((course) => (
+                    <li key={course.course_id}>
+                      {course.courseDetails?.courseName ||
+                        "Course name not found"}
+                    </li>
+                  ))
+                ) : (
+                  <li>No courses enrolled</li>
+                )}
+              </ul>
             </li>
           </ul>
         </div>
@@ -216,40 +230,53 @@ const Profile = () => {
               View All
             </div>
           </div>
-          <div
-            className={`mt-2 flex ${
-              isSmallScreen ? "flex-col space-y-4" : "space-x-4"
-            }`}
-          >
+        </div>
+        <div
+          className={`mt-2 flex ${
+            isSmallScreen ? "flex-col space-y-4" : "space-x-4"
+          }`}
+        >
+          {userData.courses?.length > 0 ? (
+            userData.courses.map((course) => {
+              const percentage =
+                course.total_no_of_modules > 0
+                  ? (
+                      (course.no_of_modules_completed /
+                        course.total_no_of_modules) *
+                      100
+                    ).toFixed(2)
+                  : 0;
+
+              return (
+                <div
+                  key={course.course_id}
+                  className={`bg-gray-100 p-4 rounded-md ${
+                    isSmallScreen ? "w-full" : "w-1/2"
+                  } h-44 text-center shadow-xl`}
+                >
+                  <p className="text-gray-600">
+                    {course.courseDetails?.courseName ||
+                      "Course name not found"}
+                  </p>
+                  <p
+                    className={`font-semibold ${
+                      isSmallScreen ? "text-xl" : "text-2xl"
+                    }`}
+                  >
+                    {percentage}% completed
+                  </p>
+                </div>
+              );
+            })
+          ) : (
             <div
               className={`bg-gray-100 p-4 rounded-md ${
                 isSmallScreen ? "w-full" : "w-1/2"
               } h-44 text-center shadow-xl`}
             >
-              <p className="text-gray-600">Course 1</p>
-              <p
-                className={`font-semibold ${
-                  isSmallScreen ? "text-xl" : "text-2xl"
-                }`}
-              >
-                56%
-              </p>
+              <p className="text-gray-600">No recent courses enrolled</p>
             </div>
-            <div
-              className={`bg-gray-100 p-4 rounded-md ${
-                isSmallScreen ? "w-full" : "w-1/2"
-              } h-44 text-center shadow-xl`}
-            >
-              <p className="text-gray-600">Course 2</p>
-              <p
-                className={`font-semibold ${
-                  isSmallScreen ? "text-xl" : "text-2xl"
-                }`}
-              >
-                50%
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
