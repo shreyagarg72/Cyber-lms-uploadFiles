@@ -161,6 +161,7 @@ app.use('/api/notify', notifyRoutes);
 app.get('/api/courses', async (req, res) => {
   try {
     const courses = await Course.find();
+  
     res.json(courses);
   } catch (error) {
     res.status(500).json({ message: error.message });
