@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import UserCourseCard from "./CourseCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faBell } from "@fortawesome/free-solid-svg-icons";
-import ProfileBoy from "../../../assets/Profile.webp";
 import { useMediaQuery } from "react-responsive";
-import Notification from "../Notification";
-import ToggleProfile from "../ToggleProfile";
 import Axios from "../../../helper/Axios";
+
 const AdminCourse = () => {
   const [courses, setCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -16,6 +12,10 @@ const AdminCourse = () => {
   const [showProfile, setShowProfile] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
+  const [displayAll, setDisplayAll] = useState(true);
+  const [displayEnrolled, setDisplayEnrolled] = useState(false);
+  const [displayCompleted, setDisplayCompleted] = useState(false);
+  const [sortBy, setSortBy] = useState("Newest");
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
@@ -28,6 +28,7 @@ const AdminCourse = () => {
   const closeProfile = () => {
     setShowProfile(false);
   };
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -48,11 +49,11 @@ const AdminCourse = () => {
     fetchCourses();
   }, []);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
-      const endpoint = `${
-        import.meta.env.VITE_BACKEND_BASEURL
-      }/api/enrolled-courses`;
+      const endpoint = `${import.meta.env.VITE_BACKEND_BASEURL}/api/enrolled-courses`;
 
       try {
         const response = await fetch(endpoint, {
@@ -80,40 +81,6 @@ const AdminCourse = () => {
 
     fetchEnrolledCourses();
   }, []);
-  const token = localStorage.getItem("token");
-  useEffect(() => {
-    const fetchEnrolledCourses = async () => {
-      const endpoint = `${
-        import.meta.env.VITE_BACKEND_BASEURL
-      }/api/enrolled-courses`;
-
-      try {
-        const response = await fetch(endpoint, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-          },
-        });
-
-        // Check if the response is successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the response data
-        const data = await response.json();
-
-        // Handle the data (e.g., update state or return it)
-        console.log("Data from backend:", data);
-        setEnrolledCourses(data.enrolledCourses);
-      } catch (error) {
-        console.error("Error fetching enrolled courses:", error);
-      }
-    };
-
-    fetchEnrolledCourses();
-  }, []);
 
   useEffect(() => {
     const determineNonEnrolledCourses = () => {
@@ -134,33 +101,107 @@ const AdminCourse = () => {
       determineNonEnrolledCourses();
     }
   }, [enrolledCourses, courses]);
+
+  const displayAllCourses = () => {
+    setDisplayAll(true);
+    setDisplayEnrolled(false);
+    setDisplayCompleted(false);
+  };
+
+  const displayEnrolledCourses = () => {
+    setDisplayAll(false);
+    setDisplayEnrolled(true);
+    setDisplayCompleted(false);
+  };
+
+  const displayCompletedCourses = () => {
+    setDisplayAll(false);
+    setDisplayEnrolled(false);
+    setDisplayCompleted(true);
+  };
+
+  const sortCourses = (coursesArray) => {
+    return coursesArray.sort((a, b) => {
+      if (sortBy === "Newest") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else if (sortBy === "Oldest") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return 0;
+    });
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
+
+  const filteredAndSortedCourses = () => {
+    if (displayAll) {
+      return sortCourses(nonEnrolledCourses);
+    } else if (displayEnrolled) {
+      return sortCourses(
+        enrolledCourses.filter((course) => course.course_id && course.course_id._id)
+      );
+    } else if (displayCompleted) {
+      return sortCourses(
+        enrolledCourses.filter(
+          (course) =>
+            course.course_id &&
+            course.course_id._id &&
+            course.progressPercentage === 1
+        )
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="flex justify-center"></div>
-      <div className="bg-white mt-6 rounded-3xl shadow-md p-4 mb-4">
-        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start lg:space-x-4 space-y-4 lg:space-y-0">
-          <div className="flex space-x-2 lg:space-x-4">
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
+      <div
+        className={`bg-white mt-6 rounded-3xl shadow-md p-2 mb-4 ${
+          isMobile ? "" : ""
+        }`}
+      >
+        <div
+          className={`flex justify-between items-center ${
+            isMobile ? "w-full" : ""
+          }`}
+        >
+          <div className="flex space-x-4">
+            <button
+              onClick={displayAllCourses}
+              className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200"
+            >
               All
             </button>
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
+            <button
+              onClick={displayEnrolledCourses}
+              className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200"
+            >
+              Enrolled
+            </button>
+            <button
+              onClick={displayCompletedCourses}
+              className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200"
+            >
               Completed
             </button>
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
-              Active
-            </button>
           </div>
-          <div className="flex space-x-2 lg:space-x-4">
+          <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Sort By:</span>
-              <select className="focus:outline-none cursor-pointer text-sm bg-gray-100 rounded-md p-1">
-                <option>Newest</option>
-                <option>Oldest</option>
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="focus:outline-none cursor-pointer text-sm"
+              >
+                <option value="Newest">Newest</option>
+                <option value="Oldest">Oldest</option>
               </select>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Filter:</span>
-              <select className="text-sm focus:outline-none bg-gray-100 rounded-md p-1">
+              <select className="text-sm focus:outline-none">
                 <option>Free</option>
                 <option>Paid</option>
               </select>
@@ -168,40 +209,68 @@ const AdminCourse = () => {
           </div>
         </div>
       </div>
-
       <div>
         <h1 className="text-2xl font-bold mb-4">Courses</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {nonEnrolledCourses.map((course) => (
-            <Link
-              key={course._id}
-              to="/course/coursePage"
-              state={{ course: course }}
-            >
-              <UserCourseCard course={course} />
-            </Link>
-          ))}
-        </div>
-        <h2 className="m-3 font-bold">My Courses</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 ? (
-            enrolledCourses.map((course) =>
-              course && course.course_id && course.course_id._id ? (
+          {displayAll &&
+            (nonEnrolledCourses.length > 0 ? (
+              filteredAndSortedCourses().map((course) => (
                 <Link
-                  key={course.course_id._id}
+                  key={course._id}
                   to="/course/coursePage"
-                  state={{ course: course.course_id }}
+                  state={{ course: course }}
                 >
-                  <UserCourseCard
-                    course={course.course_id}
-                    progress={course.progressPercentage}
-                  />
+                  <UserCourseCard course={course} />
                 </Link>
-              ) : null
-            )
-          ) : (
-            <p>No courses enrolled</p>
-          )}
+              ))
+            ) : (
+              <p>No courses available</p>
+            ))}
+          {displayEnrolled &&
+            (enrolledCourses.length > 0 ? (
+              filteredAndSortedCourses().map(
+                (course) =>
+                  course && course.course_id && course.course_id._id && (
+                    <Link
+                      key={course.course_id._id}
+                      to="/course/coursePage"
+                      state={{ course: course.course_id }}
+                    >
+                      <UserCourseCard
+                        course={course.course_id}
+                        progress={course.progressPercentage}
+                      />
+                    </Link>
+                  )
+              )
+            ) : (
+              <p>No courses enrolled</p>
+            ))}
+          {displayCompleted &&
+            (enrolledCourses.some(
+              (course) => course.progressPercentage === 1
+            ) ? (
+              filteredAndSortedCourses().map(
+                (course) =>
+                  course &&
+                  course.course_id &&
+                  course.course_id._id &&
+                  course.progressPercentage === 1 && (
+                    <Link
+                      key={course.course_id._id}
+                      to="/course/coursePage"
+                      state={{ course: course.course_id }}
+                    >
+                      <UserCourseCard
+                        course={course.course_id}
+                        progress={course.progressPercentage}
+                      />
+                    </Link>
+                  )
+              )
+            ) : (
+              <p>No courses completed</p>
+            ))}
         </div>
       </div>
     </div>
