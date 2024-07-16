@@ -15,6 +15,7 @@ const AdminCourse = () => {
   const [displayAll, setDisplayAll] = useState(true);
   const [displayEnrolled, setDisplayEnrolled] = useState(false);
   const [displayCompleted, setDisplayCompleted] = useState(false);
+  const [sortBy, setSortBy] = useState("Newest");
 
   const toggleProfile = () => {
     setShowProfile(!showProfile);
@@ -117,6 +118,41 @@ const AdminCourse = () => {
     setDisplayAll(false);
     setDisplayEnrolled(false);
     setDisplayCompleted(true);
+    
+  };
+
+  const sortCourses = (coursesArray) => {
+    return coursesArray.sort((a, b) => {
+      if (sortBy === "Newest") {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      } else if (sortBy === "Oldest") {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return 0;
+    });
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
+
+  const filteredAndSortedCourses = () => {
+    if (displayAll) {
+      return sortCourses(nonEnrolledCourses);
+    } else if (displayEnrolled) {
+      return sortCourses(
+        enrolledCourses.filter((course) => course.course_id && course.course_id._id)
+      );
+    } else if (displayCompleted) {
+      return sortCourses(
+        enrolledCourses.filter(
+          (course) =>
+            course.course_id &&
+           
+            course.progressPercentage == 100.0
+        )
+      );
+    }
   };
 
   return (
@@ -137,7 +173,7 @@ const AdminCourse = () => {
               onClick={displayAllCourses}
               className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200"
             >
-              All
+              Explore
             </button>
             <button
               onClick={displayEnrolledCourses}
@@ -155,9 +191,13 @@ const AdminCourse = () => {
           <div className="flex space-x-4">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Sort By:</span>
-              <select className="focus:outline-none cursor-pointer text-sm">
-                <option>Newest</option>
-                <option>Oldest</option>
+              <select
+                value={sortBy}
+                onChange={handleSortChange}
+                className="focus:outline-none cursor-pointer text-sm"
+              >
+                <option value="Newest">Newest</option>
+                <option value="Oldest">Oldest</option>
               </select>
             </div>
             <div className="flex items-center space-x-2">
@@ -175,7 +215,7 @@ const AdminCourse = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {displayAll &&
             (nonEnrolledCourses.length > 0 ? (
-              nonEnrolledCourses.map((course) => (
+              filteredAndSortedCourses().map((course) => (
                 <Link
                   key={course._id}
                   to="/course/coursePage"
@@ -189,43 +229,44 @@ const AdminCourse = () => {
             ))}
           {displayEnrolled &&
             (enrolledCourses.length > 0 ? (
-              enrolledCourses.map((course) =>
-                course && course.course_id && course.course_id._id ? (
-                  <Link
-                    key={course.course_id._id}
-                    to="/course/coursePage"
-                    state={{ course: course.course_id }}
-                  >
-                    <UserCourseCard
-                      course={course.course_id}
-                      progress={course.progressPercentage}
-                    />
-                  </Link>
-                ) : null
+              filteredAndSortedCourses().map(
+                (course) =>
+                  course && course.course_id && course.course_id._id && (
+                    <Link
+                      key={course.course_id._id}
+                      to="/course/coursePage"
+                      state={{ course: course.course_id }}
+                    >
+                      <UserCourseCard
+                        course={course.course_id}
+                        progress={course.progressPercentage}
+                      />
+                    </Link>
+                  )
               )
             ) : (
               <p>No courses enrolled</p>
             ))}
           {displayCompleted &&
             (enrolledCourses.some(
-              (course) => course.progressPercentage === 1
+              (course) => course.progressPercentage == 100.00
             ) ? (
-              enrolledCourses.map((course) =>
-                course &&
-                course.course_id &&
-                course.course_id._id &&
-                course.progressPercentage === 1 ? (
-                  <Link
-                    key={course.course_id._id}
-                    to="/course/coursePage"
-                    state={{ course: course.course_id }}
-                  >
-                    <UserCourseCard
-                      course={course.course_id}
-                      progress={course.progressPercentage}
-                    />
-                  </Link>
-                ) : null
+              filteredAndSortedCourses().map(
+                (course) =>
+                  course &&
+                  course.course_id &&
+                  course.progressPercentage == 100.00 && (
+                    <Link
+                      key={course.course_id._id}
+                      to="/course/coursePage"
+                      state={{ course: course.course_id }}
+                    >
+                      <UserCourseCard
+                        course={course.course_id}
+                        progress={course.progressPercentage}
+                      />
+                    </Link>
+                  )
               )
             ) : (
               <p>No courses completed</p>
