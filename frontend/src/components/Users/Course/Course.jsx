@@ -36,7 +36,7 @@ const AdminCourse = () => {
         );
         if (response.ok) {
           const data = await response.json();
-          setCourses(data.filter(course => course && course._id)); // Filter out any invalid courses
+          setCourses(data.filter((course) => course && course._id)); // Filter out any invalid courses
         } else {
           const errorData = await response.text();
           console.error("Error fetching courses:", errorData);
@@ -47,13 +47,13 @@ const AdminCourse = () => {
     };
     fetchCourses();
   }, []);
-  
+
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
       const endpoint = `${
         import.meta.env.VITE_BACKEND_BASEURL
       }/api/enrolled-courses`;
-  
+
       try {
         const response = await fetch(endpoint, {
           method: "GET",
@@ -62,18 +62,22 @@ const AdminCourse = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-  
+
         const data = await response.json();
-        setEnrolledCourses(data.enrolledCourses.filter(course => course && course.course_id && course.course_id._id)); // Filter out any invalid enrolled courses
+        setEnrolledCourses(
+          data.enrolledCourses.filter(
+            (course) => course && course.course_id && course.course_id._id
+          )
+        ); // Filter out any invalid enrolled courses
       } catch (error) {
         console.error("Error fetching enrolled courses:", error);
       }
     };
-  
+
     fetchEnrolledCourses();
   }, []);
   const token = localStorage.getItem("token");
@@ -115,7 +119,9 @@ const AdminCourse = () => {
     const determineNonEnrolledCourses = () => {
       const enrolledCourseIds = new Set(
         enrolledCourses
-          .filter(course => course && course.course_id && course.course_id._id)
+          .filter(
+            (course) => course && course.course_id && course.course_id._id
+          )
           .map((course) => course.course_id._id)
       );
       const nonEnrolled = courses.filter(
@@ -123,41 +129,38 @@ const AdminCourse = () => {
       );
       setNonEnrolledCourses(nonEnrolled);
     };
-  
+
     if (enrolledCourses.length && courses.length) {
       determineNonEnrolledCourses();
     }
   }, [enrolledCourses, courses]);
   return (
-    <div className="min-h-screen p-6" >
-      <div className="flex justify-center">
-        
-      </div>
-      <div className=" bg-white mt-6 rounded-3xl shadow-md p-2 mb-4">
-        <div className="flex justify-between items-center">
-          <div className="flex space-x-4">
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
+    <div className="min-h-screen p-6">
+      <div className="flex justify-center"></div>
+      <div className="bg-white mt-6 rounded-3xl shadow-md p-4 mb-4">
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start lg:space-x-4 space-y-4 lg:space-y-0">
+          <div className="flex space-x-2 lg:space-x-4">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
               All
             </button>
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
               Completed
             </button>
-            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 bg-gray-100">
               Active
             </button>
           </div>
-          <div className="flex space-x-4">
+          <div className="flex space-x-2 lg:space-x-4">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Sort By:</span>
-              <select className="focus:outline-none cursor-pointer text-sm">
-              
+              <select className="focus:outline-none cursor-pointer text-sm bg-gray-100 rounded-md p-1">
                 <option>Newest</option>
                 <option>Oldest</option>
               </select>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Filter:</span>
-              <select className="text-sm focus:outline-none">
+              <select className="text-sm focus:outline-none bg-gray-100 rounded-md p-1">
                 <option>Free</option>
                 <option>Paid</option>
               </select>
@@ -165,6 +168,7 @@ const AdminCourse = () => {
           </div>
         </div>
       </div>
+
       <div>
         <h1 className="text-2xl font-bold mb-4">Courses</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -180,7 +184,6 @@ const AdminCourse = () => {
         </div>
         <h2 className="m-3 font-bold">My Courses</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-         
           {Array.isArray(enrolledCourses) && enrolledCourses.length > 0 ? (
             enrolledCourses.map((course) =>
               course && course.course_id && course.course_id._id ? (
