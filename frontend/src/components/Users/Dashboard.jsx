@@ -125,7 +125,7 @@ const DashboardContent = () => {
     <div className="min-h-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-7">
         <div className="col-span-2">
-          <div className="bg-white p-4 rounded-lg shadow-md">
+          <div className="bg-white p-4 rounded-lg shadow-md overflow-x-auto">
             <h2 className="text-xl font-bold mb-4">Courses</h2>
             <table className="min-w-full bg-white text-sm">
               <thead>
@@ -181,7 +181,7 @@ const DashboardContent = () => {
                 </button>
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-6 gap-4">
               {courses.slice(0,3).map((course) => (
                 <Link
                 key={course._id}
