@@ -1,22 +1,21 @@
-
 import { useMediaQuery } from "react-responsive";
 
 import React, { useState } from "react";
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 
-
 const Upload = () => {
   const [courseName, setCourseName] = useState("");
   const [description, setDescription] = useState("");
   const [img, setImg] = useState(null);
+  const [enrollType, setEnrollType] = useState("Free");
+
   const [trainerName, setTrainerName] = useState("");
   const [level, setLevel] = useState("Medium");
   const [tools, setTools] = useState("");
 
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
-
 
   const [content, setContent] = useState([
     {
@@ -39,7 +38,7 @@ const Upload = () => {
   const [assignments, setAssignments] = useState([]);
   const [finalAssignments, setFinalAssignments] = useState([]);
 
-  const handleAddFinalAssignment=(e)=>{
+  const handleAddFinalAssignment = (e) => {
     e.preventDefault();
     console.log("add final assignment triggered");
     const newAssignment = {
@@ -49,12 +48,16 @@ const Upload = () => {
       explanation: "",
     };
     setFinalAssignments([...finalAssignments, newAssignment]);
-  }
-  
+  };
 
-  const handleFinalAssignmentChange = (index, field, value, optionIndex = null) => {
+  const handleFinalAssignmentChange = (
+    index,
+    field,
+    value,
+    optionIndex = null
+  ) => {
     const newAssignments = [...finalAssignments];
-    if (field === 'options') {
+    if (field === "options") {
       newAssignments[index].options[optionIndex] = value;
     } else {
       newAssignments[index][field] = value;
@@ -84,7 +87,6 @@ const Upload = () => {
     setContent(newContent);
     console.log(newContent);
   };
-
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -207,7 +209,7 @@ const Upload = () => {
             title: section.title,
             description: section.description,
             submodules: submodulesWithUrls,
-            assignment: section.assignment
+            assignment: section.assignment,
           };
         })
       );
@@ -221,7 +223,8 @@ const Upload = () => {
         tools,
         imgUrl,
         content: contentWithUrls,
-        finalAssignment:finalAssignments,
+        finalAssignment: finalAssignments,
+        enrollType,
       };
       console.log(courseData);
       // Send courseData to backend API to save in MongoDB
@@ -250,6 +253,7 @@ const Upload = () => {
     setDescription("");
     setTrainerName("");
     setLevel("Medium");
+    setEnrollType("Free");
     setTools("");
     setContent([
       {
@@ -298,7 +302,6 @@ const Upload = () => {
 
   return (
     <div className="min-h-full">
-     
       <div className="max-w-4xl mx-auto p-6 bg-gray-100 relative">
         {successMessage && (
           <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50">
@@ -334,6 +337,16 @@ const Upload = () => {
               onChange={handleImageChange}
               className="w-full"
             />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <select
+              value={enrollType}
+              onChange={(e) => setEnrollType(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="Free">Free</option>
+              <option value="Paid">Paid</option>
+            </select>
           </div>
 
           {/* Additional Information */}
@@ -463,7 +476,7 @@ const Upload = () => {
               ))}
               <div className="mt-6 p-4 bg-gray-100 rounded shadow">
                 <h3 className="text-lg font-bold mb-4">Module Assignment</h3>
-               
+
                 {section.assignment.questions.map((question, questionIndex) => (
                   <div
                     key={questionIndex}
@@ -566,9 +579,6 @@ const Upload = () => {
             </div>
           ))}
 
-
-
-          
           <button
             type="button"
             onClick={addNewModule}
@@ -593,7 +603,7 @@ const Upload = () => {
                     placeholder="Question Text"
                     value={assignment.questionText}
                     onChange={(e) =>
-                      handleFinalAssignmentChange( 
+                      handleFinalAssignmentChange(
                         index,
                         "questionText",
                         e.target.value

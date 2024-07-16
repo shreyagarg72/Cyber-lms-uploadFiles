@@ -111,6 +111,7 @@ const CourseSchema = new mongoose.Schema({
   level: { type: String, required: true },
   tools: { type: String },
   imgUrl: { type: String, required: true },
+  enrollType:{type:String,required:true},
   content: [ContentSchema],
   finalAssignment: [QuestionSchema] // Array of QuestionSchema objects
 }, {

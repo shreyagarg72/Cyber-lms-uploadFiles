@@ -10,6 +10,7 @@ import { useMediaQuery } from "react-responsive";
 
 const Profile = () => {
   const [photo, setPhoto] = useState(null);
+  const [showAllCourses, setShowAllCourses] = useState(false);
   // const { user, loginWithRedirect, isAuthenticated,logout } = useAuth0();
   const [isEditing, setIsEditing] = useState(false);
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -76,7 +77,9 @@ const Profile = () => {
       [name]: value,
     });
   };
-
+  const toggleViewAll = () => {
+    setShowAllCourses(!showAllCourses);
+  };
   // Media queries
   const isSmallScreen = useMediaQuery({ maxWidth: 425 });
 
@@ -223,21 +226,20 @@ const Profile = () => {
               Recent Courses
             </h3>
             <div
+              onClick={toggleViewAll}
               className={`px-2 py-1 bg-slate-700 text-white rounded-full text-sm ${
                 isSmallScreen ? "text-xs" : "text-sm"
               }`}
             >
-              View All
+              {showAllCourses ? "Show Less" : "View All"}
             </div>
           </div>
         </div>
         <div
-          className={`mt-2 flex ${
-            isSmallScreen ? "flex-col space-y-4" : "space-x-4"
-          }`}
+          className={`mt-2 flex ${showAllCourses ? "flex-col" : "space-x-4"}`}
         >
           {userData.courses?.length > 0 ? (
-            userData.courses.map((course) => {
+            userData.courses.slice(0, showAllCourses ? userData.courses.length : 2).map((course) => {
               const percentage =
                 course.total_no_of_modules > 0
                   ? (

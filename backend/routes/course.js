@@ -37,6 +37,7 @@ router.post("/upload", async (req, res) => {
       level,
       tools,
       imgUrl,
+      enrollType,
       content,
       finalAssignment
     } = req.body;
@@ -52,6 +53,7 @@ router.post("/upload", async (req, res) => {
       level,
       tools,
       imgUrl,
+      enrollType,
       content,
       finalAssignment:assignmentsWithNumbers
     });
