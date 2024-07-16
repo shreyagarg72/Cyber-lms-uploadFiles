@@ -47,6 +47,7 @@ const AdminDashboard = () => {
   const { auth } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [pieData, setPieData] = useState({ labels: [], datasets: [] });
+  const [lineData, setLineData] = useState({ labels: [], datasets: [] });
   const [showProfile, setShowProfile] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isTablet = useMediaQuery({ maxWidth: 768 });
@@ -66,17 +67,6 @@ const AdminDashboard = () => {
     return <Navigate to="/login" />;
   }
 
-  const lineData = {
-    labels: Array.from({ length: 10 }, (_, i) => i + 1),
-    datasets: [
-      {
-        label: "Number of Users per Month",
-        data: [100, 300, 400, 500, 700, 900, 800, 700, 600, 500],
-        borderColor: "red",
-        backgroundColor: "rgba(255, 0, 0, 0.5)",
-      },
-    ],
-  };
 
   const barData = {
     labels: ["A", "B", "C", "D"],
@@ -121,6 +111,41 @@ const AdminDashboard = () => {
     fetchCourses();
   }, []);
   
+  useEffect(() => {
+    const fetchUsersPerMonth = async () => {
+      try {
+        const token = auth.token; // Adjust based on your auth context
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/users/monthly-count`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Assuming you're using Bearer tokens
+          },
+        });
+        const userData = response.data; // Should be an array of user counts per month
+  
+        // Create labels for 12 months
+        const labels = Array.from({ length: 12 }, (_, index) => index + 1); // Creates [1, 2, 3, ..., 12]
+  
+        // Map userData to fit into the 12 months
+        const data = labels.map((_, index) => userData[index] || 0); // Use 0 for months without data
+  
+        setLineData({
+          labels: labels.map(month => `Month ${month}`), // E.g., ["Month 1", "Month 2", ...]
+          datasets: [{
+            label: "Number of Users per Month",
+            data: data,
+            borderColor: "red",
+            backgroundColor: "rgba(255, 0, 0, 0.5)",
+          }],
+        });
+      } catch (error) {
+        console.error("Error fetching users per month:", error);
+      }
+    };
+  
+    fetchUsersPerMonth();
+  }, [auth]); // Ensure to include auth in dependencies if it changes
+  
+
   const options = {
     maintainAspectRatio: false,
   };
