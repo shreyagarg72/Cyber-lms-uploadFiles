@@ -162,7 +162,7 @@ const AdminCourse = () => {
           (course) =>
             course.course_id &&
             course.course_id._id &&
-            course.progressPercentage === 1
+            course.progressPercentage == 100.00
         )
       );
     }
@@ -263,14 +263,14 @@ const AdminCourse = () => {
             ))}
           {displayCompleted &&
             (enrolledCourses.some(
-              (course) => course.progressPercentage === 1
+              (course) => course.progressPercentage == 100.0
             ) ? (
               filteredAndSortedCourses().map(
                 (course) =>
                   course &&
                   course.course_id &&
                   course.course_id._id &&
-                  course.progressPercentage === 1 && (
+                  course.progressPercentage == 100.0 && (
                     <Link
                       key={course.course_id._id}
                       to="/course/coursePage"
