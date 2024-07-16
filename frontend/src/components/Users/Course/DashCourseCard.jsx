@@ -32,7 +32,7 @@ const CourseCard = ({ imgUrl, level, courseName, trainerName, description, durat
   //const totalSubmodules = course.content.reduce((acc, module) => acc + module.submodules.length, 0);
 
   return (
-    <div className="course-card bg-white shadow-md rounded-lg overflow-hidden">
+    <div className="course-card bg-white shadow-lg rounded-lg overflow-hidden">
       <img src={imgUrl || 'defaultImagePath.jpg'} alt={courseName || 'Course Image'} className="w-full h-32 sm:h-48 object-cover" />
       <div className="p-4">
         <h3 className="text-lg font-bold mb-2">{courseName || 'Course Name'}</h3>
