@@ -130,18 +130,32 @@ const AdminCourse = () => {
       return 0;
     });
   };
+  const sortEnrolledCourses = (coursesArray) => {
+    return coursesArray.sort((a, b) => {
+      if (sortBy === "Newest") {
+        return new Date(b.course_id.createdAt) - new Date(a.course_id.createdAt);
+      } else if (sortBy === "Oldest") {
+        return new Date(a.course_id.createdAt) - new Date(b.course_id.createdAt);
+      }
+      return 0;
+    });
+  };
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
   };
 
   const filteredAndSortedCourses = () => {
+    console.log("filteredAndSortedCourses called");
+    console.log(enrolledCourses);
     if (displayAll) {
       return sortCourses(nonEnrolledCourses);
     } else if (displayEnrolled) {
-      return sortCourses(
+      return sortEnrolledCourses(
         enrolledCourses.filter((course) => course.course_id && course.course_id._id)
+        
       );
+      
     } else if (displayCompleted) {
       return sortCourses(
         enrolledCourses.filter(
@@ -153,6 +167,7 @@ const AdminCourse = () => {
       );
     }
   };
+  
 
   return (
     <div className="min-h-screen p-6">
