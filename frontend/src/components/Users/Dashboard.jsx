@@ -172,7 +172,7 @@ const DashboardContent = () => {
               </tbody>
             </table>
           </div>
-          <div className="bg-slate-100 p-4 rounded-lg shadow-md mt-4">
+          <div className="bg-white p-4 rounded-lg shadow-md mt-4">
             <div className="flex justify-between">
               <h2 className="text-xl font-bold mb-4">Explore Courses</h2>
               <Link to="/Course">
@@ -289,23 +289,23 @@ const DashboardContent = () => {
       <div className="bg-white p-3 rounded-lg shadow-md mt-4">
         <h2 className="text-xl font-bold mb-4">Popular Course Topics</h2>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="flex items-center text-sm p-4 rounded-lg cursor-pointer hover:scale-110 transition duration-200">
+          <div className="flex items-center text-sm px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition duration-200  ">
             <img src={PT} alt="" className="w-9 h-9 mr-4" />
             <span>Penetration Testing</span>
           </div>
-          <div className="flex items-center text-sm p-4 rounded-lg cursor-pointer hover:scale-110 transition duration-200">
+          <div className="flex items-center text-sm px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition duration-200  ">
             <img src={NS} alt="" className="w-9 h-9 mr-4" />
             <span>Network Security</span>
           </div>
-          <div className="flex items-center text-sm p-4 rounded-lg cursor-pointer hover:scale-110 transition duration-200">
+          <div className="flex items-center text-sm px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition duration-200  ">
             <img src={DC} alt="" className="w-9 h-9 mr-4" />
             <span>Data Privacy</span>
           </div>
-          <div className="flex items-center text-sm p-4 rounded-lg cursor-pointer hover:scale-110 transition duration-200">
+          <div className="flex items-center text-sm px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition duration-200  ">
             <img src={DM} alt="" className="w-9 h-9 mr-4" />
             <span>Digital Marketing</span>
           </div>
-          <div className="flex items-center text-sm p-4 rounded-lg cursor-pointer hover:scale-110 transition duration-200">
+          <div className="flex items-center text-sm px-4 py-2 rounded-lg cursor-pointer hover:scale-110 transition duration-200 ">
             <img src={WD} alt="" className="w-9 h-9 mr-4" />
             <span>Web Development</span>
           </div>

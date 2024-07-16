@@ -133,16 +133,16 @@ const AdminCourse = () => {
       <div className="flex justify-center">
         
       </div>
-      <div className=" bg-white mt-6 rounded-lg shadow-md p-2 mb-4">
+      <div className=" bg-white mt-6 rounded-3xl shadow-md p-2 mb-4">
         <div className="flex justify-between items-center">
           <div className="flex space-x-4">
-            <button className="px-4 py-2 rounded-lg focus:outline-none focus:bg-gray-300">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
               All
             </button>
-            <button className="px-4 py-2 rounded-lg focus:outline-none focus:bg-gray-300">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
               Completed
             </button>
-            <button className="px-4 py-2 rounded-lg focus:outline-none focus:bg-gray-300">
+            <button className="px-4 py-2 rounded-3xl focus:outline-none focus:bg-gray-200 ">
               Active
             </button>
           </div>
@@ -150,7 +150,7 @@ const AdminCourse = () => {
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Sort By:</span>
               <select className="focus:outline-none cursor-pointer text-sm">
-                <option>Last Active</option>
+              
                 <option>Newest</option>
                 <option>Oldest</option>
               </select>

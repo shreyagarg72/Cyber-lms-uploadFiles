@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay } from 'date-fns';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  isSameMonth,
+  isSameDay,
+} from "date-fns";
+import axios from "axios";
 
-const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MAX_EVENTS_DISPLAY = 2;
 
 const AdminCalendar = () => {
@@ -11,16 +22,16 @@ const AdminCalendar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [events, setEvents] = useState({});
-  const [dropdown, setDropDown]  = useState(false)
+  const [dropdown, setDropDown] = useState(false);
   const [formValues, setFormValues] = useState({
-    timeFrom: '',
-    timeTo: '',
-    title: '',
-    instructor: ''
+    timeFrom: "",
+    timeTo: "",
+    title: "",
+    instructor: "",
   });
 
   useEffect(() => {
-    const storedEvents = JSON.parse(localStorage.getItem('events'));
+    const storedEvents = JSON.parse(localStorage.getItem("events"));
     if (storedEvents) {
       setEvents(storedEvents);
     }
@@ -31,7 +42,7 @@ const AdminCalendar = () => {
   }, [currentMonth]);
 
   useEffect(() => {
-    localStorage.setItem('events', JSON.stringify(events));
+    localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
   const fetchEvents = async () => {
@@ -40,8 +51,8 @@ const AdminCalendar = () => {
         `${import.meta.env.VITE_BACKEND_BASEURL}/api/event`,
         {
           params: {
-            month: format(currentMonth, 'yyyy-MM')
-          }
+            month: format(currentMonth, "yyyy-MM"),
+          },
         }
       );
       const fetchedEvents = response.data.reduce((acc, event) => {
@@ -54,26 +65,34 @@ const AdminCalendar = () => {
       }, {});
       setEvents(fetchedEvents);
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error("Error fetching events:", error);
     }
   };
 
-  const toggleDropdown = ()=>{
+  const toggleDropdown = () => {
     setDropDown(!dropdown);
-  }
+  };
 
   const renderHeader = () => (
     <div className="flex justify-between items-center mb-4">
-      <button onClick={prevMonth} className="text-lg font-bold">&lt;</button>
-      <div className="text-xl font-bold">{format(currentMonth, 'MMMM yyyy')}</div>
-      <button onClick={nextMonth} className="text-lg font-bold">&gt;</button>
+      <button onClick={prevMonth} className="text-lg font-bold">
+        &lt;
+      </button>
+      <div className="text-xl font-bold">
+        {format(currentMonth, "MMMM yyyy")}
+      </div>
+      <button onClick={nextMonth} className="text-lg font-bold">
+        &gt;
+      </button>
     </div>
   );
 
   const renderDays = () => (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="grid grid-cols-7 ">
       {daysOfWeek.map((day) => (
-        <div key={day} className="text-center font-bold text-gray-600">{day}</div>
+        <div key={day} className="text-center font-bold text-gray-600">
+          {day}
+        </div>
       ))}
     </div>
   );
@@ -90,18 +109,29 @@ const AdminCalendar = () => {
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        const formattedDate = format(day, 'd');
-        const isoDate = format(day, 'yyyy-MM-dd');
+        const formattedDate = format(day, "d");
+        const isoDate = format(day, "yyyy-MM-dd");
         const dayEvents = events[isoDate] || [];
 
         days.push(
           <div
             key={isoDate}
-            className={`relative h-24 flex flex-col p-1 border ${isSameMonth(day, monthStart) ? 'border-gray-300' : 'border-gray-100'} ${isSameDay(day, new Date()) ? 'bg-blue-300' : ''}`}
-            onClick={() => openModal(isoDate)}
+            className={`relative h-32 flex flex-col p-1 border rounded ${
+              isSameMonth(day, monthStart)
+                ? isSameDay(day, new Date())
+                  ? "bg-blue-300"
+                  : "bg-white"
+                : ""
+            }`}
           >
-            <div className='flex justify-between'>
-              <span className={`text-gray-900 ${!isSameMonth(day, monthStart) ? 'text-gray-400' : ''}`}>{formattedDate}</span>
+            <div className="flex justify-between">
+              <span
+                className={`text-gray-900 ${
+                  !isSameMonth(day, monthStart) ? "text-gray-400" : ""
+                }`}
+              >
+                {formattedDate}
+              </span>
             </div>
             <div className="text-xs">
               {dayEvents
@@ -109,11 +139,23 @@ const AdminCalendar = () => {
                 .slice(0, MAX_EVENTS_DISPLAY - 1)
                 .map((event, index) => (
                   <div key={index}>
-                    <div className="font-semibold text-xs">{event.timeFrom} - {event.timeTo}</div>
-                    <div className='text-xs'>{event.instructor}</div>
-                    <div className='flex justify-between mt-3'>
-                      <button onClick={(e) => handleDeleteEvent(e, event._id)} className='text-red-600'>Delete</button>
-                      <button onClick={() => openEditModal(isoDate, event)} className='text-blue-600'>Edit</button>
+                    <div className="font-semibold text-xs">
+                      {event.timeFrom} - {event.timeTo}
+                    </div>
+                    <div className="text-xs">{event.instructor}</div>
+                    <div className="flex justify-between mt-3">
+                      <button
+                        onClick={(e) => handleDeleteEvent(e, event._id)}
+                        className="text-red-600"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        onClick={() => openEditModal(isoDate, event)}
+                        className="text-blue-600"
+                      >
+                        Edit
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -123,7 +165,7 @@ const AdminCalendar = () => {
         day = addDays(day, 1);
       }
       rows.push(
-        <div className="grid grid-cols-7 gap-2" key={day}>
+        <div className="grid grid-cols-7 " key={day}>
           {days}
         </div>
       );
@@ -149,10 +191,10 @@ const AdminCalendar = () => {
     setIsModalOpen(false);
     setSelectedDate(null);
     setFormValues({
-      timeFrom: '',
-      timeTo: '',
-      title: '',
-      instructor: ''
+      timeFrom: "",
+      timeTo: "",
+      title: "",
+      instructor: "",
     });
   };
 
@@ -160,7 +202,7 @@ const AdminCalendar = () => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -171,7 +213,7 @@ const AdminCalendar = () => {
       timeFrom: formValues.timeFrom,
       timeTo: formValues.timeTo,
       title: formValues.title,
-      instructor: formValues.instructor
+      instructor: formValues.instructor,
     };
 
     try {
@@ -180,7 +222,7 @@ const AdminCalendar = () => {
         newEvent
       );
 
-      setEvents(prevEvents => {
+      setEvents((prevEvents) => {
         const updatedEvents = { ...prevEvents };
         if (!updatedEvents[selectedDate]) {
           updatedEvents[selectedDate] = [];
@@ -191,23 +233,27 @@ const AdminCalendar = () => {
 
       closeModal();
     } catch (error) {
-      console.error('Error saving event:', error);
+      console.error("Error saving event:", error);
     }
   };
 
   const handleDeleteEvent = async (e, id) => {
     e.stopPropagation(); // Prevent triggering parent div's click event
     try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_BASEURL}/api/event/${id}`);
-      setEvents(prevEvents => {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/event/${id}`
+      );
+      setEvents((prevEvents) => {
         const updatedEvents = { ...prevEvents };
         for (let date in updatedEvents) {
-          updatedEvents[date] = updatedEvents[date].filter(event => event._id !== id);
+          updatedEvents[date] = updatedEvents[date].filter(
+            (event) => event._id !== id
+          );
         }
         return updatedEvents;
       });
     } catch (error) {
-      console.error('Error deleting event:', error);
+      console.error("Error deleting event:", error);
     }
   };
 
@@ -217,13 +263,13 @@ const AdminCalendar = () => {
       timeFrom: event.timeFrom,
       timeTo: event.timeTo,
       title: event.title,
-      instructor: event.instructor
+      instructor: event.instructor,
     });
     setIsModalOpen(true);
   };
 
   return (
-    <div>
+    <div className="mt-10">
       {renderHeader()}
       {renderDays()}
       {renderCells()}
@@ -234,15 +280,26 @@ const AdminCalendar = () => {
             <div className="modal-content py-4 text-left px-6">
               <div className="flex justify-between items-center pb-3">
                 <p className="text-2xl font-bold">Add Event</p>
-                <div className="modal-close cursor-pointer z-50" onClick={closeModal}>
-                  <svg className="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                <div
+                  className="modal-close cursor-pointer z-50"
+                  onClick={closeModal}
+                >
+                  <svg
+                    className="fill-current text-black"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                  >
                     <path d="M14.53 3.53L12.47 1.47 9 4.94 5.53 1.47 3.47 3.53 7 7l-3.53 3.53 2.06 2.06L9 9.06l3.47 3.47 2.06-2.06L11 7z" />
                   </svg>
                 </div>
               </div>
               <form onSubmit={handleFormSubmit}>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Time From</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Time From
+                  </label>
                   <input
                     type="text"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -254,7 +311,9 @@ const AdminCalendar = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Time To</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Time To
+                  </label>
                   <input
                     type="text"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -266,7 +325,9 @@ const AdminCalendar = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Title</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Title
+                  </label>
                   <input
                     type="text"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -278,7 +339,9 @@ const AdminCalendar = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Instructor</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Instructor
+                  </label>
                   <input
                     type="text"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

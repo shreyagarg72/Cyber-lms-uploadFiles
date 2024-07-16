@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faSignOutAlt, faBell, faSearch } from '@fortawesome/free-solid-svg-icons';
-import Notification from './Users/Notification';
-import ToggleProfile from './Users/ToggleProfile';
-import { useMediaQuery } from 'react-responsive';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faSignOutAlt,
+  faBell,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
+import Notification from "./Users/Notification";
+import ToggleProfile from "./Users/ToggleProfile";
+import { useMediaQuery } from "react-responsive";
 import ProfileBoy from "../assets/Profile.webp";
 import { io } from "socket.io-client";
 
@@ -15,7 +20,7 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [notificationCount, setNotificationCount] = useState(() => {
     // Initialize count from localStorage
-    return parseInt(localStorage.getItem('notificationCount'), 10) || 0;
+    return parseInt(localStorage.getItem("notificationCount"), 10) || 0;
   });
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isMobileandTablet = useMediaQuery({ maxWidth: 1024 });
@@ -23,9 +28,9 @@ const Navbar = () => {
   useEffect(() => {
     socket.on("newEvent", (event) => {
       // Increment notification count on new event
-      setNotificationCount(prevCount => {
+      setNotificationCount((prevCount) => {
         const newCount = prevCount + 1;
-        localStorage.setItem('notificationCount', newCount); // Update localStorage
+        localStorage.setItem("notificationCount", newCount); // Update localStorage
         return newCount;
       });
     });
@@ -49,13 +54,26 @@ const Navbar = () => {
 
   const handleNotificationCountUpdate = (count) => {
     setNotificationCount(count);
-    localStorage.setItem('notificationCount', count);
+    localStorage.setItem("notificationCount", count);
   };
 
   return (
-    <div className={`bg-white shadow-md fixed top-8 w-4/5 left-20 z-10 rounded-3xl  ${isMobileandTablet ? "w-full" : "w-3/6"}`} style={{left:`17rem`}}>
-      <div className={`flex justify-between items-center ${isMobile ? 'p-2' : 'py-2 pl-2 pr-6'}`}>
-        <div className={`flex items-center bg-slate-200 rounded-3xl px-4 py-2 ${isMobile ? 'w-52' : 'w-80'}`} >
+    <div
+      className={`bg-white shadow-md fixed top-8 w-4/5 left-20 z-10 rounded-3xl  ${
+        isMobileandTablet ? "w-full" : "w-3/6"
+      }`}
+      style={{ left: `17rem` }}
+    >
+      <div
+        className={`flex justify-between items-center ${
+          isMobile ? "p-2" : "py-2 pl-2 pr-6"
+        }`}
+      >
+        <div
+          className={`flex items-center bg-slate-200 rounded-3xl px-4 py-2 ${
+            isMobile ? "w-52" : "w-80"
+          }`}
+        >
           <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
           <input
             type="text"
@@ -65,7 +83,10 @@ const Navbar = () => {
         </div>
         <div className="flex items-center space-x-4 md:space-x-6 lg:space-x-8">
           <Link onClick={toggleNotifications} className="relative">
-            <FontAwesomeIcon icon={faBell} className="text-gray-700 text-xl lg:text-2xl" />
+            <FontAwesomeIcon
+              icon={faBell}
+              className="text-gray-700 text-xl lg:text-2xl"
+            />
             {notificationCount > 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
                 {notificationCount}
@@ -73,10 +94,18 @@ const Navbar = () => {
             )}
           </Link>
           <Link onClick={toggleProfile}>
-            <img src={ProfileBoy} alt="Profile" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full" />
+            <img
+              src={ProfileBoy}
+              alt="Profile"
+              className="w-8 h-8 lg:w-10 lg:h-10 rounded-full"
+            />
           </Link>
-          {showProfile && (<ToggleProfile closeProfile={closeProfile} />)}
-          {showNotifications && (<Notification setNotificationCount={handleNotificationCountUpdate} />)}
+          {showProfile && <ToggleProfile closeProfile={closeProfile} />}
+          {showNotifications && (
+            <Notification
+              setNotificationCount={handleNotificationCountUpdate}
+            />
+          )}
         </div>
       </div>
     </div>

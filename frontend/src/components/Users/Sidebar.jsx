@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
-  faBars,
+  faCalendar,
   faPeopleGroup,
-  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import dashlogo from "../../assets/dashboard.svg";
 import image01 from "../../assets/CyberPeace Logo Verticle-03.png";
 import { useMediaQuery } from "react-responsive";
-import LowerBar from './LowerBar';
+import LowerBar from "./LowerBar";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,14 +35,19 @@ const Sidebar = () => {
     { to: "/Dashboard", icon: dashlogo, label: "Dashboard" },
     { to: "/course", icon: faBook, label: "Courses" },
     { to: "/community", icon: faPeopleGroup, label: "Community" },
-    { to: "/calendar", icon: faPeopleGroup, label: "Calendar" },
+    { to: "/calendar", icon: faCalendar, label: "Calendar" },
   ];
 
   return (
     <div className="flex">
-
       {(isOpen || !isMobile) && (
-        <div className={`bg-gray-800 text-white w-56 min-h-screen flex flex-col rounded-3xl  ${isMobile ? 'absolute top-0 left-0 h-full z-50' : 'fixed top-0 left-0 ml-3'}`}>
+        <div
+          className={`bg-gray-800 text-white w-56 flex flex-col rounded-3xl ${
+    isMobile
+      ? "absolute top-0 left-0 h-full z-50"
+      : "fixed top-0 bottom-0 mx-3 my-4"
+  }`}
+        >
           <div className="p-3 flex justify-center ">
             <img src={image01} alt="logo" className="mt-3 w-4/5" />
           </div>
@@ -51,14 +55,30 @@ const Sidebar = () => {
             <ul>
               {navItems.map(({ to, icon, label }) => (
                 <li key={to}>
-                  <div className="block" onClick={() => handleNavigation(to)}>
-                    <div className={`flex items-center p-4 cursor-pointer ${location.pathname.startsWith(to) ? 'bg-blue-500 rounded-full mx-2.5 translate-x-1 -translate-y-2 shadow-2xl transition duration-200 shadow-blue-700 my-3' : 'hover:bg-gray-600 transition duration-200 hover:translate-x-1 hover:-translate-y-1 hover:mx-2.5 hover:rounded-2xl hover:text-lg'} transition-colors`}>
-                      {typeof icon === 'string' ? (
-                        <img src={icon} alt={label} className="h-5 w-5 mr-3" />
+                  <div className="block mb-5" onClick={() => handleNavigation(to)}>
+                    <div
+                        className={`flex items-center px-4 py-3 cursor-pointer rounded-full mx-5 ${
+                        location.pathname.startsWith(to)
+                          ? "bg-white text-gray-800 "
+                          : "hover:bg-gray-600 "
+                      } transition-colors`}
+                    >
+                      {typeof icon === "string" ? (
+                        <img src={icon} alt={label} className="h-5 w-5 mr-3" style={{
+                            filter: location.pathname.startsWith(to)
+                              ? "invert(0%)"
+                              : "invert(100%)",
+                          }}/>
                       ) : (
                         <FontAwesomeIcon icon={icon} className="h-5 w-5 mr-3" />
                       )}
-                      <span className={`${location.pathname.startsWith(to) ? "text-lg" : ""}`}>{label}</span>
+                      <span
+                        className={`${
+                          location.pathname.startsWith(to) ? "text-lg" : ""
+                        }`}
+                      >
+                        {label}
+                      </span>
                     </div>
                   </div>
                 </li>
@@ -68,7 +88,9 @@ const Sidebar = () => {
         </div>
       )}
 
-      {isMobile && !isOpen && <LowerBar navItems={navItems} handleNavigation={handleNavigation} />}
+      {isMobile && !isOpen && (
+        <LowerBar navItems={navItems} handleNavigation={handleNavigation} />
+      )}
     </div>
   );
 };
