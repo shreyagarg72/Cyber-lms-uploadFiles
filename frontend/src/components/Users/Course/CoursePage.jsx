@@ -654,13 +654,7 @@ const CoursePage = () => {
                 {course.description}
                 
               </p>
-              <p className="mt-4 text-gray-600">
-                Learn the essentials of Cyber Security, covering key principles
-                and practices to protect digital information and systems. This
-                course provides foundational knowledge for safeguarding against
-                cyber threats and vulnerabilities in today's interconnected
-                world.
-              </p>
+              
               <div className="flex items-center space-x-2 mt-4">
                 <FontAwesomeIcon icon={faUser} className="text-gray-500" />
                 <span className="text-gray-500">{course.trainerName}</span>
