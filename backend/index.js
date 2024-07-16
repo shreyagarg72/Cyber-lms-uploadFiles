@@ -138,7 +138,7 @@ import enrollRoutes from './routes/enroll.js';
 import uploadRoutes from './routes/upload.js';
 import Notification from './models/notification.js';
 import Event from './models/event.js';
-
+import userRoutes from './routes/user.js'
 dotenv.config();
 
 const app = express();
@@ -171,7 +171,7 @@ app.use('/api', loginRegRoutes);
 app.use('/api', courseProgressRoutes);
 app.use('/api', authMiddleware, enrollRoutes);
 app.use('/api/upload', uploadRoutes);
-
+app.use('/api', userRoutes);
 app.use(errorHandler);
 
 const server = http.createServer(app);

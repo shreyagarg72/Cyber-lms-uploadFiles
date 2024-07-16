@@ -25,7 +25,7 @@ import CourseCard from "../Users/Course/DashCourseCard";
 import { useAuth } from "../../auth/AuthProvider";
 import { format, isAfter, parseISO } from 'date-fns';
 import axios from 'axios';
-
+import { useAuth0 } from "@auth0/auth0-react";
 
 const DashboardContent = () => {
   const { auth } = useAuth();
@@ -33,7 +33,8 @@ const DashboardContent = () => {
   const userToken = localStorage.getItem('token');
 
  
-
+  const { user, loginWithRedirect, isAuthenticated,logout } = useAuth0();
+  
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" />;
   }
