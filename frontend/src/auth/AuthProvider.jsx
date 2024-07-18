@@ -1,32 +1,35 @@
-// src/context/AuthProvider.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({ isAuthenticated: false, userType: null, token: null });
- 
+  const [loading, setLoading] = useState(true);
+
   const login = (token, userType) => {
-    // Save token to localStorage or cookies
     localStorage.setItem('token', token);
     localStorage.setItem('userType', userType);
-    setAuth({ isAuthenticated: true, userType,token });
+    setAuth({ isAuthenticated: true, userType, token });
   };
 
   const logout = () => {
-    // Remove token from localStorage or cookies
     localStorage.removeItem('token');
     localStorage.removeItem('userType');
-    setAuth({ isAuthenticated: false, userType: null,token: null });
+    setAuth({ isAuthenticated: false, userType: null, token: null });
   };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
     if (token && userType) {
-      setAuth({ isAuthenticated: true, userType,token });
+      setAuth({ isAuthenticated: true, userType, token });
     }
+    setLoading(false); // Set loading to false after checking localStorage
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Add a loading state or spinner here if needed
+  }
 
   return (
     <AuthContext.Provider value={{ auth, login, logout }}>
@@ -41,6 +44,4 @@ export const useAuth = () => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-  // const { token } = useContext(AuthContext);
-  // return { token };
 };

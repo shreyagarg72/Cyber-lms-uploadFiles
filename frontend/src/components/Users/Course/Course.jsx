@@ -239,7 +239,7 @@ const AdminCourse = () => {
                 </Link>
               ))
             ) : (
-              <p>No courses available</p>
+              <p>No new courses available.</p>
             ))}
           {displayEnrolled &&
             (enrolledCourses.length > 0 ? (
