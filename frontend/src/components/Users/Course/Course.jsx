@@ -149,7 +149,7 @@ const AdminCourse = () => {
     console.log("filteredAndSortedCourses called");
     console.log(enrolledCourses);
     if (displayAll) {
-      return sortCourses(nonEnrolledCourses);
+      return sortCourses(courses);
     } else if (displayEnrolled) {
       return sortEnrolledCourses(
         enrolledCourses.filter((course) => course.course_id && course.course_id._id)
@@ -228,7 +228,7 @@ const AdminCourse = () => {
         <h1 className="text-2xl font-bold mb-4">Courses</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {displayAll &&
-            (nonEnrolledCourses.length > 0 ? (
+            (courses.length > 0 ? (
               filteredAndSortedCourses().map((course) => (
                 <Link
                   key={course._id}
