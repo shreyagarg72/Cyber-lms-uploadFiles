@@ -70,7 +70,25 @@ router.post("/comments", async (req, res) => {
     res.status(400).json({ message: "Failed to save comment", error });
   }
 });
+router.post('/:commentId/reply', async (req, res) => {
+  const { commentId } = req.params;
+  const { userid, text } = req.body;
 
+  try {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    comment.replies.push({ userid, text });
+    await comment.save();
+
+    res.status(201).json({ message: 'Reply added successfully', comment });
+  } catch (error) {
+    console.error('Error adding reply:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 router.get("/userData", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId);
