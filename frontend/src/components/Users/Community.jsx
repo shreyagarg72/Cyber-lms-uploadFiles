@@ -271,11 +271,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faReply,
-  faPlus,
-  faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+import { faReply, faPlus, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import image01 from "../../assets/Discussion_Ellipse2.png";
 import { useMediaQuery } from "react-responsive";
 import Axios from "axios";
@@ -289,33 +285,25 @@ const DiscussionEntry = () => {
   const isTablet = useMediaQuery({ maxWidth: 544 });
   const isMobile = useMediaQuery({ maxWidth: 426 });
   const [user, setUser] = useState(null);
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    // Fetch the list of available courses from the API
     const fetchCourses = async () => {
       try {
-        const response = await Axios.get(
-          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`
-        );
+        const response = await Axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`);
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
     };
 
-    fetchCourses();
-
-    // Fetch user details to get userId
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const response = await Axios.get(
-            `${import.meta.env.VITE_BACKEND_BASEURL}/api/userData`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+          const response = await Axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/userData`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
           setUser(response.data);
           setUserId(response.data._id);
         } catch (error) {
@@ -324,7 +312,18 @@ const DiscussionEntry = () => {
       }
     };
 
+    const fetchDiscussionEntries = async () => {
+      try {
+        const response = await Axios.get(`${import.meta.env.VITE_BACKEND_BASEURL}/api/comments`);
+        setEntries(response.data);
+      } catch (error) {
+        console.error("Error fetching discussion entries:", error);
+      }
+    };
+
+    fetchCourses();
     fetchUserData();
+    fetchDiscussionEntries();
   }, []);
 
   const handleNewConversation = () => {
@@ -340,18 +339,10 @@ const DiscussionEntry = () => {
   };
 
   const handlePostNewConversation = async () => {
-    // Handle posting the new conversation
     if (!userId || !selectedCourse || !newConversationText) {
       alert("Please select a course and enter conversation text");
       return;
     }
-
-    console.log(
-      "Posting conversation with:",
-      userId,
-      selectedCourse,
-      newConversationText
-    );
 
     const token = localStorage.getItem("token");
     try {
@@ -372,7 +363,7 @@ const DiscussionEntry = () => {
         setNewConversationText("");
         setSelectedCourse("");
         setShowNewConversation(false);
-        // Optionally, you can refresh the list of conversations here
+        // Refresh the list of conversations here if needed
       }
     } catch (error) {
       console.error("Error saving conversation:", error);
@@ -383,55 +374,16 @@ const DiscussionEntry = () => {
     }
   };
 
-  const entries = [
-    {
-      id: 1,
-      name: "Andrew Smith",
-      date: "11 July, 2024",
-      content: "Here's a sample entry for the discussion platform",
-    },
-    {
-      id: 2,
-      name: "Andrew Smith",
-      date: "11 July, 2024",
-      content: "Here's a sample entry for the discussion platform",
-    },
-    {
-      id: 3,
-      name: "Andrew Smith",
-      date: "11 July, 2024",
-      content: "Here's a sample entry for the discussion platform",
-    },
-    {
-      id: 4,
-      name: "Andrew Smith",
-      date: "11 July, 2024",
-      content: "Here's a sample entry for the discussion platform",
-    },
-  ];
-
   return (
     <div className={`${isMobile ? "p-3" : "p-6"}`}>
-      <div
-        className={`flex justify-between mt-4 mb-4 ${
-          isMobile ? "flex-col space-y-3" : ""
-        }`}
-      >
-        <div
-          className={`flex bg-white rounded-full ${
-            isTablet ? "py-1 px-2 text-sm space-x-5" : "p-3 space-x-10"
-          }`}
-        >
+      <div className={`flex justify-between mt-4 mb-4 ${isMobile ? "flex-col space-y-3" : ""}`}>
+        <div className={`flex bg-white rounded-full ${isTablet ? "py-1 px-2 text-sm space-x-5" : "p-3 space-x-10"}`}>
           <button className="text-gray-600 ml-1">Recent</button>
           <button className="text-gray-600">Popular</button>
           <button className="text-gray-600 mr-1">Last Reply</button>
         </div>
 
-        <div
-          className={`flex bg-white rounded-full ${
-            isTablet ? "py-1 px-2 text-sm" : "p-3"
-          }`}
-        >
+        <div className={`flex bg-white rounded-full ${isTablet ? "py-1 px-2 text-sm" : "p-3"}`}>
           <button className="text-gray-600">By Category:</button>
           <select className="text-sm focus:outline-none">
             <option>General</option>
@@ -442,39 +394,18 @@ const DiscussionEntry = () => {
       </div>
 
       <div className="flex justify-end mb-4">
-        {showNewConversation ? (
-          <button
-            onClick={handleNewConversation}
-            className={`flex items-center ${
-              isMobile
-                ? "text-red-500"
-                : "px-4 py-2 bg-red-500 text-white rounded-full"
-            }`}
-          >
-            Close
-          </button>
-        ) : (
-          <button
-            onClick={handleNewConversation}
-            className={`flex items-center ${
-              isMobile
-                ? "text-blue-500"
-                : "px-4 py-2 bg-blue-500 text-white rounded-full"
-            }`}
-          >
-            <FontAwesomeIcon icon={faPlus} className="mr-2" /> Start a New
-            Conversation
-          </button>
-        )}
+        <button
+          onClick={handleNewConversation}
+          className={`flex items-center ${isMobile ? "text-blue-500" : "px-4 py-2 bg-blue-500 text-white rounded-full"}`}
+        >
+          <FontAwesomeIcon icon={faPlus} className="mr-2" /> {showNewConversation ? "Close" : "Start a New Conversation"}
+        </button>
       </div>
 
       {showNewConversation && (
         <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
           <div className="mb-2">
-            <label
-              htmlFor="course-select"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="course-select" className="block text-sm font-medium text-gray-700">
               Select Course
             </label>
             <select
@@ -499,10 +430,7 @@ const DiscussionEntry = () => {
             placeholder="Type your conversation here..."
           ></textarea>
           <div className="flex justify-end mt-2">
-            <button
-              onClick={handlePostNewConversation}
-              className="px-4 py-2 bg-blue-500 text-white rounded-full"
-            >
+            <button onClick={handlePostNewConversation} className="px-4 py-2 bg-blue-500 text-white rounded-full">
               <FontAwesomeIcon icon={faPaperPlane} className="mr-2" /> Post
             </button>
           </div>
@@ -510,40 +438,13 @@ const DiscussionEntry = () => {
       )}
 
       {entries.map((entry) => (
-        <div
-          key={entry.id}
-          className={`flex bg-blue-50 p-4 rounded-lg mb-4 ${
-            isMobile ? "text-sm" : ""
-          }`}
-        >
-          <img
-            src={image01}
-            alt={entry.name}
-            className={`rounded-full mr-4 ${
-              isMobile ? "w-6 h-6" : "w-12 h-12"
-            }`}
-          />
-          <div className="flex-1">
+        <div key={entry._id} className={`flex items-start bg-white p-3 mt-4 ${isMobile ? "flex-col" : ""}`}>
+          <img src={image01} alt="User" className={`rounded-full ${isMobile ? "w-8 h-8" : "w-14 h-14"}`} />
+          <div className={`ml-4 ${isMobile ? "mt-2" : ""}`}>
             <h2 className={`font-semibold ${isMobile ? "text-sm" : "text-lg"}`}>
-              {entry.name}
+              {entry.userid ? entry.userid.name : "Unknown"}
             </h2>
-            <p className={`${isMobile ? "text-xs" : ""}`}>{entry.content}</p>
-          </div>
-          <div className="flex flex-col items-end">
-            <span
-              className={`text-gray-500 ${isMobile ? "text-xs" : "text-sm"}`}
-            >
-              {entry.date}
-            </span>
-            <button
-              className={`mt-2 ${
-                isMobile
-                  ? "text-blue-500"
-                  : "px-4 py-2 bg-blue-500 text-white rounded-full"
-              }`}
-            >
-              <FontAwesomeIcon icon={faReply} /> Reply
-            </button>
+            <p className={`${isMobile ? "text-xs" : ""}`}>{entry.text}</p>
           </div>
         </div>
       ))}

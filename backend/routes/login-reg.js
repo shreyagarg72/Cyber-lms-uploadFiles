@@ -4,7 +4,7 @@ import verifyToken from "../middlewares/authMiddleware.js";
 import User from "../models/user.js";
 import Course from "../models/video.js";
 const router = express.Router();
-import Comment from '../models/comments.js';
+import Comment from "../models/comments.js";
 
 // Login route
 console.log("reached login.js");
@@ -18,8 +18,7 @@ router.get("/userDetails", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
     console.log(userId);
-    const user = await User.findById(userId)
-      .lean();
+    const user = await User.findById(userId).lean();
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -46,31 +45,40 @@ router.get(
   verifyToken,
   authController.checkEnrollmentStatus
 );
-
-router.post('/comments', async (req, res) => {
+router.get("/comments", async (req, res) => {
   try {
-      const { courseid, userid, text } = req.body;
-
-      // Validate incoming data against schema
-      const newComment = new Comment({ courseid, userid, text });
-      await newComment.save();
-
-      res.status(201).json(newComment);
-  } catch (error) {
-      console.error('Error saving comment:', error);
-      res.status(400).json({ message: 'Failed to save comment', error });
-  }
-});
-
-router.get('/userData', verifyToken, async (req, res) => {
-  try {
-      const user = await User.findById(req.userId);
-      res.json(user);
+    const comments = await Comment.find()
+      .populate("userid", "name") // Populating only the 'name' field from the User model
+      .populate("courseid", "courseName"); // Populating only the 'courseName' field from the Course model
+    res.json(comments);
   } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+router.post("/comments", async (req, res) => {
+  try {
+    const { courseid, userid, text } = req.body;
+
+    // Validate incoming data against schema
+    const newComment = new Comment({ courseid, userid, text });
+    await newComment.save();
+
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.error("Error saving comment:", error);
+    res.status(400).json({ message: "Failed to save comment", error });
   }
 });
 
+router.get("/userData", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 export default router;
