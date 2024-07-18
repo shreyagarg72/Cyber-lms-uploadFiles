@@ -4,7 +4,7 @@ import verifyToken from "../middlewares/authMiddleware.js";
 import User from "../models/user.js";
 import Course from "../models/video.js";
 const router = express.Router();
-
+import Comment from '../models/comments.js';
 // Login route
 console.log("reached login.js");
 router.post("/login", authController.login);
@@ -45,4 +45,21 @@ router.get(
   verifyToken,
   authController.checkEnrollmentStatus
 );
+
+router.post('/comments', verifyToken, async (req, res) => {
+  try {
+    const { courseid, text } = req.body;
+    const userId = req.userId; // User ID from the authenticated user
+    const newComment = new Comment({
+      courseid,
+      userId, // Ensure the field name matches your schema
+      text,
+    });
+    await newComment.save();
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    res.status(500).json({ message: 'Error creating comment' });
+  }
+});
 export default router;

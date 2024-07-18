@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ReplySchema = new Schema({
-  userid: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  text: { type: String, required: true },
+  userid: { type: Schema.Types.ObjectId, ref: 'User'},
+  text: { type: String},
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -15,4 +15,5 @@ const CommentSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Comment', CommentSchema);
+const Comment = mongoose.model('Comment', CommentSchema);
+export default Comment;
