@@ -5,6 +5,7 @@ import User from "../models/user.js";
 import Course from "../models/video.js";
 const router = express.Router();
 import Comment from '../models/comments.js';
+
 // Login route
 console.log("reached login.js");
 router.post("/login", authController.login);
@@ -46,20 +47,30 @@ router.get(
   authController.checkEnrollmentStatus
 );
 
-router.post('/comments', verifyToken, async (req, res) => {
+router.post('/comments', async (req, res) => {
   try {
-    const { courseid, text } = req.body;
-    const userId = req.userId; // User ID from the authenticated user
-    const newComment = new Comment({
-      courseid,
-      userId, // Ensure the field name matches your schema
-      text,
-    });
-    await newComment.save();
-    res.status(201).json(newComment);
+      const { courseid, userid, text } = req.body;
+
+      // Validate incoming data against schema
+      const newComment = new Comment({ courseid, userid, text });
+      await newComment.save();
+
+      res.status(201).json(newComment);
   } catch (error) {
-    console.error('Error creating comment:', error);
-    res.status(500).json({ message: 'Error creating comment' });
+      console.error('Error saving comment:', error);
+      res.status(400).json({ message: 'Failed to save comment', error });
   }
 });
+
+router.get('/userData', verifyToken, async (req, res) => {
+  try {
+      const user = await User.findById(req.userId);
+      res.json(user);
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+  }
+});
+
+
 export default router;
