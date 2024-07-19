@@ -34,6 +34,24 @@ router.get("/userDetails", verifyToken, async (req, res) => {
   }
 });
 
+router.put("/userDetails",verifyToken, async (req, res) => {
+  const userId = req.userId; // Assuming you have user ID from the authenticated user
+  const { name, email, region } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, email, region },
+      { new: true }
+    );
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user" });
+  }
+});
+
+
 router.get("/verifyToken", verifyToken, (req, res) => {
   res.status(200).send({ isValid: true });
 });

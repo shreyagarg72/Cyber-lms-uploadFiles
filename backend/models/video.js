@@ -106,7 +106,7 @@ const ContentSchema = new mongoose.Schema({
 
 const CourseSchema = new mongoose.Schema({
   courseName: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   trainerName: { type: String, required: true },
   level: { type: String, required: true },
   tools: { type: String },
