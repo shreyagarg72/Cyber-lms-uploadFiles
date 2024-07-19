@@ -13,7 +13,7 @@ console.log("going from index.js");
 
 // Route to register a new user
 router.post("/register", authController.register);
-
+router.post('/auth0-login',authController.loginAuth);
 router.get("/userDetails", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;

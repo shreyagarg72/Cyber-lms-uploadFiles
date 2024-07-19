@@ -74,6 +74,45 @@ const jwtKey = process.env.JWT_SECRET;
 //     res.status(500).json({ message: "Server error" });
 //   }
 // };
+const loginAuth = async(req, res) => {
+  try {
+    const { auth0Id, email, name } = req.body;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user if not exists
+      user = new User({
+        name,
+        email,
+        auth0Id,
+        userType: 'user', // Default to 'user', adjust as needed
+        password: 'Auth0_' + Math.random().toString(36).slice(-8), // Generate a random password
+      });
+      await user.save();
+    } else {
+      // Update existing user with Auth0 ID if not present
+      if (!user.auth0Id) {
+        user.auth0Id = auth0Id;
+        await user.save();
+      }
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, userType: user.userType },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token, userType: user.userType });
+  } catch (error) {
+    console.error('Auth0 login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 
 const login = (req, res) => {
   const { email, password } = req.body;
@@ -202,7 +241,7 @@ const checkEnrollmentStatus = async (req, res) => {
   }
 };
 
-export { login, register, getUser, getEnrolledCourses, checkEnrollmentStatus };
+export { login, register, getUser, getEnrolledCourses, checkEnrollmentStatus,loginAuth };
 
 
 export default {
@@ -211,4 +250,5 @@ export default {
   getUser,
   getEnrolledCourses,
   checkEnrollmentStatus,
+  loginAuth
 };

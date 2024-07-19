@@ -14,7 +14,7 @@ function SignInForm() {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [isStoringUser, setIsStoringUser] = useState(false);
   const handleChange = (evt) => {
     const { name, value } = evt.target;
     setState({
@@ -22,7 +22,45 @@ function SignInForm() {
       [name]: value,
     });
   };
+  useEffect(() => {
+    const storeAuth0User = async () => {
+      if (isAuthenticated && user) {
+        setIsStoringUser(true);
+        try {
+          const response = await Axios({
+            url: "/api/auth0-login",
+            method: "post",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            data: JSON.stringify({
+              auth0Id: user.sub,
+              email: user.email,
+              name: user.name,
+            }),
+          });
 
+          const data = response.data;
+          login(data.token, data.userType);
+
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userType", data.userType);
+
+          navigate('/Dashboard');
+        } catch (error) {
+          console.error("Failed to store Auth0 user:", error);
+          // Handle error (e.g., show error message to user)
+        } finally {
+          setIsStoringUser(false);
+        }
+      }
+    };
+
+    storeAuth0User();
+  }, [isAuthenticated, user, login, navigate]);
+
+console.log(user);
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     const { email, password, userType } = state;
@@ -65,6 +103,7 @@ function SignInForm() {
       setLoading(false);
     }
   };
+ 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/Dashboard');
@@ -128,13 +167,26 @@ function SignInForm() {
         <h2>OR</h2>
 
         {isAuthenticated ? (
-          <button onClick={(e) => logout()} >Logout</button>
-        ) : (
-          <button onClick={() => loginWithRedirect({
-            appState: { returnTo: '/Dashboard' }
-          })}>
-            Login with Auth0
-          </button>
+         <div>
+         {isStoringUser ? (
+           <p>Storing user data...</p>
+         ) : (
+           <>
+             <button onClick={() => logout({ returnTo: window.location.origin })}>
+               Logout
+             </button>
+           </>
+         )}
+       </div>
+     ) : (
+       <div>
+         <h1 className="text-2xl font-bold mb-4">Sign in</h1>
+         <button onClick={() => loginWithRedirect({
+           appState: { returnTo: '/Dashboard' }
+         })}>
+           Login with Auth0
+         </button>
+       </div>
         )}
 
         {errorMessage && (

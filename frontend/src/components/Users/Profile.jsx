@@ -560,6 +560,7 @@ import ProfileBoy from "../../assets/Profile.webp";
 import { useAuth0 } from "@auth0/auth0-react";
 import Axios from "../../helper/Axios";
 import { useMediaQuery } from "react-responsive";
+
 import EditProfile from "./EditProfile";
 
 const Profile = () => {
@@ -683,11 +684,19 @@ const Profile = () => {
           />
         </div>
         <div className="text-center">
-          <h2
-            className={`font-semibold ${isSmallScreen ? "text-lg" : "text-xl"}`}
-          >
-            {userData.name}
-          </h2>
+          {isAuthenticated ? (
+            <h2
+              className={`font-semibold ${
+                isSmallScreen ? "text-lg" : "text-xl"
+              }`}
+            >{`${user.name}`}</h2>
+          ) : (
+            <h2
+              className={`font-semibold ${
+                isSmallScreen ? "text-lg" : "text-xl"
+              }`}
+            >{`${userData.name}`}</h2>
+          )}
         </div>
         <button
           className="text-blue-500 hover:underline mt-4"
@@ -706,7 +715,9 @@ const Profile = () => {
       <div className={`pl-0 ${isSmallScreen ? "w-full" : "w-2/3 pl-8"}`}>
         <div className="mb-6">
           <h3
-            className={`font-semibold ${isSmallScreen ? "text-base" : "text-lg"}`}
+            className={`font-semibold ${
+              isSmallScreen ? "text-base" : "text-lg"
+            }`}
           >
             Personal Details
           </h3>
@@ -715,17 +726,31 @@ const Profile = () => {
               isSmallScreen ? "space-y-2" : "space-y-4"
             }`}
           >
-            <li>
-              <strong>Email:</strong> {userData.email}
-            </li>
-            <li>
-              <strong>Region:</strong> {userData.region}
-            </li>
+            {isAuthenticated ? (
+              <li>
+                <strong>Email:</strong> {user.email}
+              </li>
+            ) : (
+              <li>
+                <strong>Email:</strong> {userData.email}
+              </li>
+            )}
+            {isAuthenticated ? (
+              <li>
+                <strong>Username:</strong> {user.given_name}
+              </li>
+            ) : (
+              <li>
+                <strong>Region:</strong> {userData.region}
+              </li>
+            )}
           </ul>
         </div>
         <div className="mb-6">
           <h3
-            className={`font-semibold ${isSmallScreen ? "text-base" : "text-lg"}`}
+            className={`font-semibold ${
+              isSmallScreen ? "text-base" : "text-lg"
+            }`}
           >
             Course Details
           </h3>
@@ -743,7 +768,8 @@ const Profile = () => {
                 {userData.courses.length > 0 ? (
                   userData.courses.map((course) => (
                     <li key={course.course_id}>
-                      {course.courseDetails?.courseName || "Course name not found"}
+                      {course.courseDetails?.courseName ||
+                        "Course name not found"}
                     </li>
                   ))
                 ) : (
@@ -796,7 +822,8 @@ const Profile = () => {
                     } h-44 text-center shadow-xl`}
                   >
                     <p className="text-gray-600">
-                      {course.courseDetails?.courseName || "Course name not found"}
+                      {course.courseDetails?.courseName ||
+                        "Course name not found"}
                     </p>
                     <p
                       className={`font-semibold ${
