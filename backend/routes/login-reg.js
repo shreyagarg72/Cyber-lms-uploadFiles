@@ -45,17 +45,35 @@ router.get(
   verifyToken,
   authController.checkEnrollmentStatus
 );
-router.get("/comments", async (req, res) => {
+// router.get("/comments", async (req, res) => {
+//   try {
+//     const comments = await Comment.find()
+//       .populate("userid", "name") // Populating only the 'name' field from the User model
+//       .populate("courseid", "courseName"); // Populating only the 'courseName' field from the Course model
+//     res.json(comments);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server Error");
+//   }
+// });
+
+router.get('/comments', async (req, res) => {
   try {
+    // Fetch comments and populate the replies' user details
     const comments = await Comment.find()
-      .populate("userid", "name") // Populating only the 'name' field from the User model
-      .populate("courseid", "courseName"); // Populating only the 'courseName' field from the Course model
+      .populate({
+        path: 'replies.userid', // Populate the user details for each reply
+        select: 'name', // Select only the name field
+      })
+      .populate('userid', 'name'); // Populate the user details for each comment
+
     res.json(comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+  } catch (error) {
+    console.error("Error fetching comments with replies:", error);
+    res.status(500).json({ error: 'Error fetching comments with replies' });
   }
 });
+
 router.post("/comments", async (req, res) => {
   try {
     const { courseid, userid, text } = req.body;
