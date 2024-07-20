@@ -17,12 +17,13 @@ const UserSchema = new mongoose.Schema({
     default: false,
   },
   hasCyberPeaceFoundation: {
-    type: Boolean,
-    default: false,
+    type: String,
+    default: "No",
+    required: true
   },
   universityName: {
     type: String,
-    default: "",
+    required: true
   },
   courses: [
     {

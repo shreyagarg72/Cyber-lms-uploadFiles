@@ -69,12 +69,12 @@ router.get("/userDetails", verifyToken, async (req, res) => {
 
 router.put("/userDetails", verifyToken, async (req, res) => {
   const userId = req.userId; // Assuming you have user ID from the authenticated user
-  const { name, email, region, hasCyberPeaceFoundation, universityName } = req.body;
+  const { name, email, region, hasCyberPeaceFoundation, universityName,isProfileComplete } = req.body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, email, region, hasCyberPeaceFoundation, universityName },
+      { name, email, region, hasCyberPeaceFoundation, universityName, isProfileComplete },
       { new: true }
     );
     res.json(updatedUser);
