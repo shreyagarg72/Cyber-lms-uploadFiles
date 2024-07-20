@@ -180,7 +180,6 @@ console.log(user);
        </div>
      ) : (
        <div>
-         <h1 className="text-2xl font-bold mb-4">Sign in</h1>
          <button onClick={() => loginWithRedirect({
            appState: { returnTo: '/Dashboard' }
          })}>

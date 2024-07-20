@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const generateUserId = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -11,24 +11,37 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   date_of_registration: { type: Date, default: Date.now },
   active_hours: { type: Number, default: 0 },
-  courses: [{
-    course_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
-    no_of_modules_completed: { type: Number, default: 0 },
-    date_of_course_enrollment: { type: Date, default: Date.now },
-    total_no_of_modules: { type: Number, default: 0 },
-    completed_submodules: { type: [String], default: [] }
-  }],
-  region: { type: String, default:'India' },
+
+  isProfileComplete: {
+    type: Boolean,
+    default: false,
+  },
+  hasCyberPeaceFoundation: {
+    type: Boolean,
+    default: false,
+  },
+  universityName: {
+    type: String,
+    default: "",
+  },
+  courses: [
+    {
+      course_id: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+      no_of_modules_completed: { type: Number, default: 0 },
+      date_of_course_enrollment: { type: Date, default: Date.now },
+      total_no_of_modules: { type: Number, default: 0 },
+      completed_submodules: { type: [String], default: [] },
+    },
+  ],
+  region: { type: String, default: "India" },
   userType: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
-    required: true  
-  }
+    enum: ["user", "admin"],
+    default: "user",
+    required: true,
+  },
 });
 
-
-
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 export default User;
