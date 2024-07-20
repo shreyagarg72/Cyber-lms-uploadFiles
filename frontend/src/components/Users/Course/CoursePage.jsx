@@ -534,6 +534,7 @@ import { useAuth } from "../../../auth/AuthProvider";
 const CoursePage = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
   const { auth } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -576,8 +577,28 @@ const CoursePage = () => {
       }
     };
 
+    const fetchProfileStatus = async () => {
+      if (auth.isAuthenticated && auth.token) {
+        try {
+          const response = await axios.get(
+            'http://localhost:5000/api/userProfileStatus',
+            {
+              headers: {
+                Authorization: `Bearer ${auth.token}`,
+              },
+            }
+          );
+          setIsProfileComplete(response.data.isProfileComplete);
+        } catch (error) {
+          console.error('Failed to fetch profile status:', error);
+        }
+      }
+    };
+
     checkEnrollmentStatus();
+    fetchProfileStatus();
   }, [auth, course, navigate]);
+
 
   const handleEnroll = async () => {
     if (!auth.isAuthenticated || !auth.token) {
@@ -588,6 +609,11 @@ const CoursePage = () => {
 
     if (!course || !course._id) {
       console.error("Course ID is not available");
+      return;
+    }
+    if (!isProfileComplete) {
+      alert("Please complete your profile before enrolling in the course.");
+      navigate('/profile');
       return;
     }
 

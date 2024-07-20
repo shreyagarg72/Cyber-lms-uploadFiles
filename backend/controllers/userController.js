@@ -241,7 +241,21 @@ const checkEnrollmentStatus = async (req, res) => {
   }
 };
 
-export { login, register, getUser, getEnrolledCourses, checkEnrollmentStatus,loginAuth };
+const getProfileStatus = async (req, res) => {
+  try {
+    const userId = req.userId; // Assuming you have the user ID from authentication middleware
+    const user = await User.findById(userId).select('isProfileComplete');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ isProfileComplete: user.isProfileComplete });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+export { login, register, getUser, getEnrolledCourses, checkEnrollmentStatus,loginAuth,getProfileStatus };
 
 
 export default {
@@ -250,5 +264,5 @@ export default {
   getUser,
   getEnrolledCourses,
   checkEnrollmentStatus,
-  loginAuth
+  loginAuth,getProfileStatus
 };

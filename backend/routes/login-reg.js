@@ -106,7 +106,7 @@ router.get(
 //     res.status(500).send("Server Error");
 //   }
 // });
-
+router.get('/userProfileStatus',verifyToken,authController.getProfileStatus);
 router.get('/comments', async (req, res) => {
   try {
     // Fetch comments and populate the replies' user details
