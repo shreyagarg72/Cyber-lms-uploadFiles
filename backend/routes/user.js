@@ -2,7 +2,7 @@
 import express from 'express';
 const router = express.Router();
 import User from '../models/user.js'; // Adjust path as necessary
-
+import verifyToken from "../middlewares/authMiddleware.js";
 router.get('/registrations-per-month', async (req, res) => {
   try {
     const users = await User.aggregate([
@@ -50,6 +50,17 @@ router.get('/users/total-count', async (req, res) => {
     res.status(500).json({ error: 'Error fetching total users' });
   }
 });
-
+router.get('/users/cpf', verifyToken, async (req, res) => {
+  try {
+    const users = await User.aggregate([
+      { $match: { hasCyberPeaceFoundation: 'Yes' } },
+      { $group: { _id: '$universityName', userCount: { $sum: 1 } } },
+      { $project: { _id: 0, universityName: '$_id', userCount: 1 } }
+    ]);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 export default router;

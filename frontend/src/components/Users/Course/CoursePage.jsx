@@ -543,7 +543,7 @@ const CoursePage = () => {
   useEffect(() => {
     if (!course) {
       console.error("No course data available");
-      navigate('/courses'); // Redirect to courses page if no course data
+      navigate('/course'); // Redirect to courses page if no course data
       return;
     }
 
@@ -577,27 +577,49 @@ const CoursePage = () => {
       }
     };
 
-    const fetchProfileStatus = async () => {
-      if (auth.isAuthenticated && auth.token) {
-        try {
-          const response = await axios.get(
-            'http://localhost:5000/api/userProfileStatus',
-            {
-              headers: {
-                Authorization: `Bearer ${auth.token}`,
-              },
-            }
-          );
-          setIsProfileComplete(response.data.isProfileComplete);
-        } catch (error) {
-          console.error('Failed to fetch profile status:', error);
-        }
-      }
-    };
+    // const fetchProfileStatus = async () => {
+    //   if (auth.isAuthenticated && auth.token) {
+    //     try {
+    //       const response = await axios.get(
+    //         'http://localhost:5000/api/userProfileStatus',
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${auth.token}`,
+    //           },
+    //         }
+    //       );
+    //       setIsProfileComplete(response.data.isProfileComplete);
+    //     } catch (error) {
+    //       console.error('Failed to fetch profile status:', error);
+    //     }
+    //   }
+    // };
 
-    checkEnrollmentStatus();
-    fetchProfileStatus();
+     checkEnrollmentStatus();
+    //fetchProfileStatus();
   }, [auth, course, navigate]);
+
+useEffect(()=>{
+  const fetchProfileStatus = async () => {
+    if (auth.isAuthenticated && auth.token) {
+      try {
+        const response = await axios.get(
+          'http://localhost:5000/api/userProfileStatus',
+          {
+            headers: {
+              Authorization: `Bearer ${auth.token}`,
+            },
+          }
+        );
+        setIsProfileComplete(response.data.isProfileComplete);
+      } catch (error) {
+        console.error('Failed to fetch profile status:', error);
+      }
+    }
+  };
+  fetchProfileStatus();
+
+},[auth, course]);
 
 
   const handleEnroll = async () => {

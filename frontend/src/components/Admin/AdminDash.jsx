@@ -29,7 +29,7 @@ import { useAuth } from "../../auth/AuthProvider";
 import Notification from "../Users/Notification";
 import ToggleProfile from "../Users/ToggleProfile";
 import { useMediaQuery } from "react-responsive";
-import axios from "axios";
+import Axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -55,21 +55,21 @@ const AdminDashboard = () => {
         },
         title: {
           display: true,
-          text: 'Courses',
+          text: "Courses",
         },
       },
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Number of Enrollments',
+          text: "Number of Enrollments",
         },
       },
     },
     barPercentage: 0.5, // Adjust this to change the bar width (0.5 is 50% of the available space)
     categoryPercentage: 0.8, // Adjust this to control the spacing between bars
   };
-  
+
   const { auth } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [pieData, setPieData] = useState({ labels: [], datasets: [] });
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
   const isTablet = useMediaQuery({ maxWidth: 768 });
   const [totalUsers, setTotalUsers] = useState(0);
   const [freeCourses, setFreeCourses] = useState(0);
-
+  const [universityData, setUniversityData] = useState([]);
   const toggleProfile = () => {
     setShowProfile(!showProfile);
   };
@@ -101,8 +101,10 @@ const AdminDashboard = () => {
     const fetchEnrollmentData = async () => {
       try {
         const token = auth.token;
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/enrollment-count`,
+        const response = await Axios.get(
+          `${
+            import.meta.env.VITE_BACKEND_BASEURL
+          }/api/courses/enrollment-count`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -114,34 +116,36 @@ const AdminDashboard = () => {
           // Adjust the logic here as needed (e.g., using the first few characters)
           return name.length > 15 ? `${name.substring(0, 15)}...` : name;
         };
-  
-        const labels = enrollmentData.map(data =>shortenCourseName(data.courseName));
-        const counts = enrollmentData.map(data => data.count);
+
+        const labels = enrollmentData.map((data) =>
+          shortenCourseName(data.courseName)
+        );
+        const counts = enrollmentData.map((data) => data.count);
 
         setBarData({
           labels,
           datasets: [
             {
-              label: 'Number of Enrollments',
+              label: "Number of Enrollments",
               data: counts,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderColor: "rgba(75, 192, 192, 1)",
               borderWidth: 1,
             },
           ],
         });
       } catch (error) {
-        console.error('Error fetching enrollment data:', error);
+        console.error("Error fetching enrollment data:", error);
       }
     };
 
     fetchEnrollmentData();
   }, []);
-  
+
   useEffect(() => {
     const fetchFreeCourses = async () => {
       try {
-        const response = await axios.get(
+        const response = await Axios.get(
           `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses/free-count`
         );
         const freeCourseCount = response.data.freeCourses; // Adjust based on your API response structure
@@ -155,9 +159,32 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = auth.token; // Adjust according to your token storage
+        const response = await Axios.get(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/users/cpf`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setUniversityData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError(
+          error.response ? error.response.data.message : "An error occurred"
+        );
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(
+        const response = await Axios.get(
           `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`
         );
         const courses = response.data;
@@ -209,7 +236,7 @@ const AdminDashboard = () => {
     const fetchUsersPerMonth = async () => {
       try {
         const token = auth.token; // Adjust based on your auth context
-        const response = await axios.get(
+        const response = await Axios.get(
           `${import.meta.env.VITE_BACKEND_BASEURL}/api/users/monthly-count`,
           {
             headers: {
@@ -248,7 +275,7 @@ const AdminDashboard = () => {
     const fetchTotalUsers = async () => {
       try {
         const token = auth.token; // Adjust based on your auth context
-        const response = await axios.get(
+        const response = await Axios.get(
           `${import.meta.env.VITE_BACKEND_BASEURL}/api/users/total-count`,
           {
             headers: {
@@ -343,10 +370,61 @@ const AdminDashboard = () => {
               <Pie data={pieData} />
             </div>
             <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
-              <h2 className="text-center text-lg font-bold mb-4">
-                Enrollment Types
-              </h2>
-              {/* <Pie data={pieData} /> */}
+              <div className="chart-section">
+                <div className="chart-container">
+                  <h3>Users by University with CyberPeace Foundation</h3>
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr
+                        style={{
+                          backgroundColor: "#f2f2f2",
+                          borderBottom: "2px solid #ddd",
+                        }}
+                      >
+                        <th
+                          style={{ padding: "12px", border: "1px solid #ddd" }}
+                        >
+                          University
+                        </th>
+                        <th
+                          style={{ padding: "12px", border: "1px solid #ddd" }}
+                        >
+                          Number of Users
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {universityData.map((university, index) => (
+                        <tr
+                          key={university.universityName}
+                          style={{
+                            backgroundColor:
+                              index % 2 === 0 ? "#fafafa" : "#ffffff",
+                            borderBottom: "1px solid #ddd",
+                          }}
+                        >
+                          <td
+                            style={{
+                              padding: "12px",
+                              border: "1px solid #ddd",
+                            }}
+                          >
+                            {university.universityName}
+                          </td>
+                          <td
+                            style={{
+                              padding: "12px",
+                              border: "1px solid #ddd",
+                            }}
+                          >
+                            {university.userCount}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
