@@ -30,6 +30,7 @@ import Notification from "../Users/Notification";
 import ToggleProfile from "../Users/ToggleProfile";
 import { useMediaQuery } from "react-responsive";
 import Axios from "axios";
+import CpfUser from "./CpfUser";
 
 ChartJS.register(
   CategoryScale,
@@ -370,61 +371,7 @@ const AdminDashboard = () => {
               <Pie data={pieData} />
             </div>
             <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
-              <div className="chart-section">
-                <div className="chart-container">
-                  <h3>Users by University with CyberPeace Foundation</h3>
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead>
-                      <tr
-                        style={{
-                          backgroundColor: "#f2f2f2",
-                          borderBottom: "2px solid #ddd",
-                        }}
-                      >
-                        <th
-                          style={{ padding: "12px", border: "1px solid #ddd" }}
-                        >
-                          University
-                        </th>
-                        <th
-                          style={{ padding: "12px", border: "1px solid #ddd" }}
-                        >
-                          Number of Users
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {universityData.map((university, index) => (
-                        <tr
-                          key={university.universityName}
-                          style={{
-                            backgroundColor:
-                              index % 2 === 0 ? "#fafafa" : "#ffffff",
-                            borderBottom: "1px solid #ddd",
-                          }}
-                        >
-                          <td
-                            style={{
-                              padding: "12px",
-                              border: "1px solid #ddd",
-                            }}
-                          >
-                            {university.universityName}
-                          </td>
-                          <td
-                            style={{
-                              padding: "12px",
-                              border: "1px solid #ddd",
-                            }}
-                          >
-                            {university.userCount}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <CpfUser universityData={universityData} />
             </div>
           </div>
         </div>
