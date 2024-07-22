@@ -230,7 +230,7 @@ const DashboardContent = () => {
                             <h3><FontAwesomeIcon icon={faCalendarDays} className='text-sm mx-2 text-gray-500' /> {date}</h3>
                             <p className="text-gray-500 text-sm"><FontAwesomeIcon icon={faClock} className='mx-2' />{event.timeFrom} - {event.timeTo} <br /> <br /> Prof {event.instructor}</p>
                           </div>
-                          <button className="bg-blue-900 text-white py-0.5 px-3.5 rounded-full">Join</button>
+                          <a href={event.link} target="_blank" className="bg-blue-900 text-white py-0.5 px-3.5 rounded-full">Join</a>
                         </div>
                       </div>
                     </div>

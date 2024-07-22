@@ -35,14 +35,14 @@ import { notifyClients } from '../index.js'; // Ensure this path is correct
 
 // Function to create a new event and notify clients
 export const createEvent = async (req, res) => {
-  const { date, timeFrom, timeTo, title, instructor } = req.body;
-  const event = new Event({ date, timeFrom, timeTo, title, instructor });
+  const { date, timeFrom, timeTo, title, instructor, link } = req.body;
+  const event = new Event({ date, timeFrom, timeTo, title, instructor,link });
 
   try {
     const newEvent = await event.save();
 
     // Save notification to the database
-    const notification = new Notification({ date, timeFrom, timeTo, title, instructor, createdAt: newEvent.createdAt });
+    const notification = new Notification({ date, timeFrom, timeTo, title, instructor, createdAt: newEvent.createdAt, link});
     await notification.save();
 
     // Notify clients about the new event
