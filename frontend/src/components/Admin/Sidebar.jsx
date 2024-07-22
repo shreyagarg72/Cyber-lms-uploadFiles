@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBook,
@@ -11,11 +11,11 @@ import {
 import dashlogo from "../../assets/dashboard.svg";
 import image01 from "../../assets/CyberPeace Logo Verticle-03.png";
 import { useMediaQuery } from "react-responsive";
-
+import LowerBar from "../Users/LowerBar";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -23,8 +23,13 @@ const Sidebar = () => {
   const closeSidebar = () => {
     setIsOpen(false);
   };
+  const handleNavigation = (path) => {
+    navigate(path);
+    closeSidebar();
+  };
 
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useMediaQuery({ maxWidth: 1024 });
+
 
   const navItems = [
     { to: "/AdminDashboard", icon: dashlogo, label: "Dashboard" },
@@ -34,71 +39,124 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="relative">
-      {isMobile && (
-        <button
-          className="md:hidden bg-blue-500 hover:bg-blue-600 text-white p-1 rounded-sm absolute top-2 left-0 ml-2 border-black z-20"
-          onClick={toggleSidebar}
-        >
-          <FontAwesomeIcon
-            icon={isOpen ? faTimes : faBars}
-            className="text-lg"
-          />
-        </button>
-      )}
-      {(isOpen || !isMobile) && (
-        <div
-          className={`bg-gray-800 text-white w-56 flex flex-col rounded-3xl ${
-            isMobile
-              ? "absolute top-0 left-0 h-full z-50"
-              : "fixed top-0 bottom-0 mx-3 my-4"
-          }`}
-        >
-          <div className="p-3 flex justify-center ">
-            <img src={image01} alt="logo" className="mt-3 w-4/5" />
-          </div>
-          <nav className="flex-1 mt-8">
-            <ul>
-              {navItems.map(({ to, icon, label }) => (
-                <li key={to}>
-                  <Link to={to} className="block mb-5" onClick={closeSidebar}>
-                    <div
-                      className={`flex items-center px-4 py-3 cursor-pointer rounded-full mx-5 ${
-                        location.pathname.startsWith(to)
-                          ? "bg-white text-gray-800 "
-                          : "hover:bg-gray-600 "
-                      } transition-colors`}
-                    >
-                      {typeof icon === "string" ? (
-                        <img
-                          src={icon}
-                          alt={label}
-                          className="h-5 w-5 mr-3"
-                          style={{
-                            filter: location.pathname.startsWith(to)
-                              ? "invert(0%)"
-                              : "invert(100%)",
-                          }}
-                        />
-                      ) : (
-                        <FontAwesomeIcon icon={icon} className="h-5 w-5 mr-3" />
-                      )}
-                      <span
-                        className={`${
-                          location.pathname.startsWith(to) ? "text-lg" : ""
-                        }`}
-                      >
-                        {label}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+    // <div className="relative">
+    //   {isMobile && (
+    //     <button
+    //       className="md:hidden bg-blue-500 hover:bg-blue-600 text-white p-1 rounded-sm absolute top-2 left-0 ml-2 border-black z-20"
+    //       onClick={toggleSidebar}
+    //     >
+    //       <FontAwesomeIcon
+    //         icon={isOpen ? faTimes : faBars}
+    //         className="text-lg"
+    //       />
+    //     </button>
+    //   )}
+    //   {(isOpen || !isMobile) && (
+    //     <div
+    //       className={`bg-gray-800 text-white w-56 flex flex-col rounded-3xl ${
+    //         isMobile
+    //           ? "absolute top-0 left-0 h-full z-50"
+    //           : "fixed top-0 bottom-0 mx-3 my-4"
+    //       }`}
+    //     >
+    //       <div className="p-3 flex justify-center ">
+    //         <img src={image01} alt="logo" className="mt-3 w-4/5" />
+    //       </div>
+    //       <nav className="flex-1 mt-8">
+    //         <ul>
+    //           {navItems.map(({ to, icon, label }) => (
+    //             <li key={to}>
+    //               <Link to={to} className="block mb-5" onClick={closeSidebar}>
+    //                 <div
+    //                   className={`flex items-center px-4 py-3 cursor-pointer rounded-full mx-5 ${
+    //                     location.pathname.startsWith(to)
+    //                       ? "bg-white text-gray-800 "
+    //                       : "hover:bg-gray-600 "
+    //                   } transition-colors`}
+    //                 >
+    //                   {typeof icon === "string" ? (
+    //                     <img
+    //                       src={icon}
+    //                       alt={label}
+    //                       className="h-5 w-5 mr-3"
+    //                       style={{
+    //                         filter: location.pathname.startsWith(to)
+    //                           ? "invert(0%)"
+    //                           : "invert(100%)",
+    //                       }}
+    //                     />
+    //                   ) : (
+    //                     <FontAwesomeIcon icon={icon} className="h-5 w-5 mr-3" />
+    //                   )}
+    //                   <span
+    //                     className={`${
+    //                       location.pathname.startsWith(to) ? "text-lg" : ""
+    //                     }`}
+    //                   >
+    //                     {label}
+    //                   </span>
+    //                 </div>
+    //               </Link>
+    //             </li>
+    //           ))}
+    //         </ul>
+    //       </nav>
+    //     </div>
+    //   )}
+    // </div>
+    <div className="flex">
+    {(isOpen || !isMobile) && (
+      <div
+        className={`bg-gray-800 text-white w-56 flex flex-col rounded-3xl ${
+  isMobile
+    ? "absolute top-0 left-0 h-full z-50"
+    : "fixed top-0 bottom-0 mx-3 my-4"
+}`}
+      >
+        <div className="p-3 flex justify-center ">
+          <img src={image01} alt="logo" className="mt-3 w-4/5" />
         </div>
-      )}
-    </div>
+        <nav className="flex-1 mt-8">
+          <ul>
+            {navItems.map(({ to, icon, label }) => (
+              <li key={to}>
+                <div className="block mb-5" onClick={() => handleNavigation(to)}>
+                  <div
+                      className={`flex items-center px-4 py-3 cursor-pointer rounded-full mx-5 ${
+                      location.pathname.startsWith(to)
+                        ? "bg-white text-gray-800 "
+                        : "hover:bg-gray-600 "
+                    } transition-colors`}
+                  >
+                    {typeof icon === "string" ? (
+                      <img src={icon} alt={label} className="h-5 w-5 mr-3" style={{
+                          filter: location.pathname.startsWith(to)
+                            ? "invert(0%)"
+                            : "invert(100%)",
+                        }}/>
+                    ) : (
+                      <FontAwesomeIcon icon={icon} className="h-5 w-5 mr-3" />
+                    )}
+                    <span
+                      className={`${
+                        location.pathname.startsWith(to) ? "text-lg" : ""
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    )}
+
+    {isMobile && !isOpen && (
+      <LowerBar navItems={navItems} handleNavigation={handleNavigation} />
+    )}
+  </div>
   );
 };
 
