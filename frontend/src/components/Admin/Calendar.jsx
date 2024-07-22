@@ -28,6 +28,7 @@ const AdminCalendar = () => {
     timeTo: "",
     title: "",
     instructor: "",
+    link:"",
   });
 
   useEffect(() => {
@@ -123,6 +124,7 @@ const AdminCalendar = () => {
                   : "bg-white"
                 : ""
             }`}
+            onClick={() => openModal(isoDate)}
           >
             <div className="flex justify-between">
               <span
@@ -195,6 +197,7 @@ const AdminCalendar = () => {
       timeTo: "",
       title: "",
       instructor: "",
+      link:"",
     });
   };
 
@@ -214,6 +217,7 @@ const AdminCalendar = () => {
       timeTo: formValues.timeTo,
       title: formValues.title,
       instructor: formValues.instructor,
+      link: formValues.link,
     };
 
     try {
@@ -349,6 +353,20 @@ const AdminCalendar = () => {
                     value={formValues.instructor}
                     onChange={handleFormChange}
                     placeholder="Instructor Name"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Link
+                  </label>
+                  <input
+                    type="text"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    name="link"
+                    value={formValues.link}
+                    onChange={handleFormChange}
+                    placeholder="Meeting Link"
                     required
                   />
                 </div>

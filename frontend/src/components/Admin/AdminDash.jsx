@@ -11,6 +11,7 @@ import {
   faSearch,
   faUser,
   faBell,
+  faCalendarDays,
 } from "@fortawesome/free-solid-svg-icons";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import {
@@ -31,6 +32,7 @@ import ToggleProfile from "../Users/ToggleProfile";
 import { useMediaQuery } from "react-responsive";
 import Axios from "axios";
 import CpfUser from "./CpfUser";
+import { format, isAfter, parseISO } from "date-fns";
 
 ChartJS.register(
   CategoryScale,
@@ -84,6 +86,8 @@ const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [freeCourses, setFreeCourses] = useState(0);
   const [universityData, setUniversityData] = useState([]);
+  const [events, setEvents] = useState({});
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const toggleProfile = () => {
     setShowProfile(!showProfile);
   };
@@ -298,6 +302,52 @@ const AdminDashboard = () => {
     maintainAspectRatio: false,
   };
 
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem("events"));
+    if (storedEvents) {
+      setEvents(storedEvents);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [currentMonth]);
+
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(events));
+  }, [events]);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await Axios.get(
+        `${import.meta.env.VITE_BACKEND_BASEURL}/api/event`,
+        {
+          params: {
+            month: format(currentMonth, "yyyy-MM"),
+          },
+        }
+      );
+      const fetchedEvents = response.data.reduce((acc, event) => {
+        const date = event.date;
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(event);
+        return acc;
+      }, {});
+      setEvents(fetchedEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  const today = new Date();
+  const sortedEventDate = Object.keys(events)
+    .filter((date) =>
+      isAfter(parseISO(date), today || date === format(today, "yyyy-MM-dd"))
+    )
+    .sort((a, b) => parseISO(a) - parseISO(b));
+
   return (
     <div>
       <div className={`flex justify-center ${isMobile ? "p-2" : "py-2"}`}></div>
@@ -371,7 +421,7 @@ const AdminDashboard = () => {
               <Pie data={pieData} />
             </div>
             <div className="mt-2 bg-white p-4 rounded-lg shadow-xl">
-            <CpfUser universityData={universityData} />
+              <CpfUser universityData={universityData} />
             </div>
           </div>
         </div>
@@ -388,26 +438,41 @@ const AdminDashboard = () => {
             </Link>
           </div>
           <div className="flex flex-col">
-            {["Ethical Hacking", "Ethical Hacking", "Ethical Hacking"].map(
-              (course, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 p-4 rounded-lg mb-2 flex justify-between items-center"
-                >
-                  <div>
-                    <h3 className="font-bold">{course}</h3>
-                    <p className="text-gray-500 text-sm">
-                      <FontAwesomeIcon icon={faClock} className="mx-2" />
-                      3:00-4:00pm <br /> <br /> Prof Raj Sharma
-                    </p>
-                    <p className="text-gray-500">Prof Raj Sharma</p>
+            {/* the events  */}
+            {sortedEventDate.slice(0, 4).map((date) => (
+              <div key={date} >
+                {events[date].map((event) => (
+                  <div key={event.id}>
+                    <div className="flex flex-col">
+                      <div className="bg-gray-100 p-4 rounded-lg mb-2 flex justify-between items-center">
+                        <div>
+                          <h3 className="text-md font-bold">{event.title}</h3>
+                          <h3>
+                            <FontAwesomeIcon
+                              icon={faCalendarDays}
+                              className="text-sm mx-2 text-gray-500"
+                            />{" "}
+                            {date}
+                          </h3>
+                          <p className="text-gray-500 text-sm">
+                            <FontAwesomeIcon icon={faClock} className="mx-2" />
+                            {event.timeFrom} - {event.timeTo} <br /> <br /> Prof{" "}
+                            {event.instructor}
+                          </p>
+                        </div>
+                        <a
+                          href={event.link}
+                          target="_blank"
+                          className="bg-blue-900 text-white py-0.5 px-3.5 rounded-full"
+                        >
+                          Join
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                  <button className="bg-blue-900 text-white py-1 px-7 rounded-full">
-                    Join
-                  </button>
-                </div>
-              )
-            )}
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>
