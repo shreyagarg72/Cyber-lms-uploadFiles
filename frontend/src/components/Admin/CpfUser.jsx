@@ -125,11 +125,155 @@
 // };
 
 // export default CpfUser;
-import React from "react";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+// import React from "react";
+// import { Bar } from "react-chartjs-2";
+// import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+// ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+// const CpfUser = ({ universityData }) => {
+//   // Prepare data for the chart
+//   const labels = universityData.map((university) => university.universityName);
+//   const userCounts = universityData.map((university) => university.userCount);
+
+//   // Define bold colors
+//   const boldColors = [
+//     "rgba(255, 99, 132, 0.8)", // Red
+//     "rgba(54, 162, 235, 0.8)", // Blue
+//     "rgba(255, 206, 86, 0.8)", // Yellow
+//     "rgba(75, 192, 192, 0.8)", // Green
+//     "rgba(153, 102, 255, 0.8)", // Purple
+//     "rgba(255, 159, 64, 0.8)"  // Orange
+//   ];
+
+//   // Create arrays for background and border colors
+//   const backgroundColors = [];
+//   const borderColors = [];
+
+//   for (let i = 0; i < userCounts.length; i++) {
+//     const color = boldColors[i % boldColors.length];
+//     backgroundColors.push(color);
+//     borderColors.push(color.replace('0.8', '1'));
+//   }
+
+//   const data = {
+//     labels,
+//     datasets: [
+//       {
+//         label: "Number of Users",
+//         data: userCounts,
+//         backgroundColor: backgroundColors,
+//         borderColor: borderColors,
+//         borderWidth: 1,
+//       },
+//     ],
+//   };
+
+//   // Options for the chart
+//   const options = {
+//     responsive: true,
+//     plugins: {
+//       legend: {
+//         position: "top",
+//       },
+//       title: {
+//         display: true,
+//         text: "Users by University with CyberPeace Foundation",
+//       },
+//     },
+//     scales: {
+//       x: {
+//         beginAtZero: true,
+//       },
+//       y: {
+//         beginAtZero: true,
+//       },
+//     },
+//   };
+
+//   return (
+//     <div className="chart-section">
+//       <div className="chart-container">
+//         <h3>Users by University with CyberPeace Foundation</h3>
+//         <Bar data={data} options={options} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CpfUser;
+// import React from "react";
+// import { Pie } from "react-chartjs-2";
+// import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// ChartJS.register(ArcElement, Tooltip, Legend);
+
+// const CpfUser = ({ universityData }) => {
+//   // Prepare data for the chart
+//   const labels = universityData.map((university) => university.universityName);
+//   const userCounts = universityData.map((university) => university.userCount);
+
+//   // Define bold colors
+//   const boldColors = [
+//     "rgba(204, 0, 0, 0.8)", // Red
+//     "rgba(0, 0, 204, 0.8)", // Blue
+//     "rgba(240, 240, 43, 0.8)", // Yellow
+//     "rgba(204, 0, 102, 0.8)", // Green
+//     "rgba(153, 0, 153, 0.8)", // Purple
+//     "rgba(255, 159, 64, 0.8)"  // Orange
+//   ];
+
+//   // Create arrays for background and border colors
+//   const backgroundColors = [];
+//   const borderColors = [];
+
+//   for (let i = 0; i < userCounts.length; i++) {
+//     const color = boldColors[i % boldColors.length];
+//     backgroundColors.push(color);
+//     borderColors.push(color.replace('0.8', '1'));
+//   }
+
+//   const data = {
+//     labels,
+//     datasets: [
+//       {
+//         data: userCounts,
+//         backgroundColor: backgroundColors,
+//         borderColor: borderColors,
+//         borderWidth: 1,
+//       },
+//     ],
+//   };
+
+//   // Options for the chart
+//   const options = {
+//     responsive: true,
+//     plugins: {
+//       legend: {
+//         position: "top",
+//       },
+//       title: {
+//         display: true,
+//         text: "Users by University with CyberPeace Foundation",
+//       },
+//     },
+//   };
+
+//   return (
+//     <div className="chart-section">
+//       <div className="chart-container">
+//         <Pie data={data} options={options} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CpfUser;
+import React from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CpfUser = ({ universityData }) => {
   // Prepare data for the chart
@@ -153,18 +297,17 @@ const CpfUser = ({ universityData }) => {
   for (let i = 0; i < userCounts.length; i++) {
     const color = boldColors[i % boldColors.length];
     backgroundColors.push(color);
-    borderColors.push(color.replace('0.8', '1'));
+    borderColors.push('#ffffff'); // White border for separation
   }
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Number of Users",
         data: userCounts,
         backgroundColor: backgroundColors,
         borderColor: borderColors,
-        borderWidth: 1,
+        borderWidth: 2, // Increase border width for better separation
       },
     ],
   };
@@ -177,25 +320,17 @@ const CpfUser = ({ universityData }) => {
         position: "top",
       },
       title: {
-        display: true,
-        text: "Users by University with CyberPeace Foundation",
-      },
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-      },
-      y: {
-        beginAtZero: true,
-      },
+                display: true,
+                text: "Users by University with CyberPeace Foundation",
+              },
     },
   };
 
   return (
     <div className="chart-section">
       <div className="chart-container">
-        <h3>Users by University with CyberPeace Foundation</h3>
-        <Bar data={data} options={options} />
+       
+        <Pie data={data} options={options} />
       </div>
     </div>
   );
