@@ -123,6 +123,7 @@ const AdminCalendar = () => {
                   : "bg-white"
                 : ""
             }`}
+            onClick={() => openModal(isoDate)}
           >
             <div className="flex justify-between">
               <span

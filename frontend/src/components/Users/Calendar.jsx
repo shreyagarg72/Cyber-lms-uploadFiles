@@ -180,7 +180,7 @@ const Calendar = () => {
           <div className="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
             <div className=" py-4 text-left px-6">
               <div className="flex justify-between items-center pb-3">
-                <h1 className="text-2xl font-semibold">Schedule Class</h1>
+                <h1 className="text-2xl font-semibold">Scheduled Classes</h1>
                 <div className="cursor-pointer z-50" onClick={closeModal}>
                   <FontAwesomeIcon icon={faMultiply} />
                 </div>
