@@ -183,11 +183,11 @@ const CoursePreviewPage = () => {
     <>
       <div className="max-w-7xl mx-auto p-6 bg-gray-100 mt-10">
         <div className="flex flex-col gap-6 md:flex-row">
-          <div className="w-2/3">
+          <div className="xl:w-2/3 sm:w-full">
             <h2 className="mb-4 text-gray-800 font-semibold">
               {course.courseName}
             </h2>
-            <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md">
+            <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md ">
               <div className="relative">
                 {showAssignment ? (
                   <AssignmentSection assignments={selectedAssignment} />
