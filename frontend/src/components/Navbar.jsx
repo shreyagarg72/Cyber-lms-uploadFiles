@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -30,7 +30,73 @@ const Navbar = () => {
   const [showSearchBar, setShowSearchBar] = useState(false); // New state for search bar visibility
   const isMobile = useMediaQuery({ maxWidth: 450 });
   const isMobileandTablet = useMediaQuery({ maxWidth: 1024 });
+  const [search,setSearch]= useState("");
+  const [searchData,setSearchData]= useState([]);
+  const [selectedItem,setSelectedItem]= useState(-1);
+
   const { auth } = useAuth();
+
+  const navigate = useNavigate();
+
+  const handleSearchChange = e=>{
+    setSearch(e.target.value);
+   
+  }
+
+  const handleSearchClose = e=>{
+    setSearch("");
+    setSearchData([]);
+  };
+
+  const handleKeyDown = e=>{
+    const key = e.key;
+    if(selectedItem<searchData.length){
+      if(key === "ArrowUp" && selectedItem>0){
+        setSelectedItem(prev=>prev-1);
+      }
+      else if(key === "ArrowDown" && selectedItem<searchData.length-1){
+        setSelectedItem(prev=>prev+1);
+      }
+      else if(key === "Enter" && selectedItem>=0){
+        navigate('/course/coursePage', { state: { course: searchData[selectedItem] } });
+        setSearchData([]);
+      }
+    }else{
+      setSelectedItem(-1);
+    }
+    
+  }
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_BASEURL}/api/courses`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const newFilterData= data.filter(
+            course=>{
+              console.log(search);
+              return course.courseName.includes(search)
+            }
+          )
+          setSearchData(newFilterData);
+        } else {
+          const errorData = await response.text();
+          console.error("Error fetching courses:", errorData);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    if(search!==""){
+      fetchCourses();
+    }
+    else{
+      setSearchData([]);
+    }
+  }, [search]);
 
   useEffect(() => {
     const fetchProfileStatus = async () => {
@@ -123,23 +189,40 @@ const Navbar = () => {
               isMobile ? "w-52" : "w-80"
             } m-0`}
           >
-            <FontAwesomeIcon icon={faSearch} className="text-gray-500 mr-2" />
+            <FontAwesomeIcon icon={search ? faTimes : faSearch} onClick={handleSearchClose} className="text-gray-500 mr-2" />
             <input
               type="text"
               placeholder="Search"
               className="w-full bg-transparent focus:outline-none"
+              onChange={handleSearchChange}
+              value={search}
+              onKeyDown={handleKeyDown}
             />
           </div>
         )}
         {showSearchBar && isMobile && (
-          <div className="flex items-center bg-gray-200 rounded-3xl px-4 py-2 h-12 w-64 absolute top-0 left-0 z-20">
+          <div className="flex items-center bg-white rounded-3xl px-4 py-2 h-12 w-64 absolute top-0 left-0 z-20">
             <input
               type="text"
               placeholder="Search"
               className="w-full bg-transparent focus:outline-none"
+              onChange={handleSearchChange}
+              value={search}
             />
           </div>
         )}
+        <div className="search-results absolute w-80 bg-white top-12  rounded flex flex-col shadow-md">
+        {/* map through search data and display its contents */}
+         {searchData.map((course,index)=>{
+         return  <Link
+                key={course._id}
+                to="/course/coursePage"
+                state={{course:course}}
+                className={selectedItem=== index? "bg-gray-200  px-4 py-3":"  px-4 py-3"}
+              >{course.courseName}</Link>
+         })}
+          
+        </div>
         <div className="flex items-center space-x-4 md:space-x-6 lg:space-x-8">
           <Link onClick={toggleNotifications} className="relative">
             <FontAwesomeIcon

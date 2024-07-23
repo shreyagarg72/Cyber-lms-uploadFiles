@@ -132,7 +132,7 @@ const Navbar = () => {
           </div>
         )}
         {showSearchBar && isMobile && (
-          <div className="flex items-center bg-gray-200 rounded-3xl px-4 py-2 h-12 w-64 absolute top-0 left-0 z-20">
+          <div className="flex items-center bg-white  rounded-3xl px-4 py-2 h-12 w-64 absolute top-0 left-0 z-20">
             <input
               type="text"
               placeholder="Search"
