@@ -171,15 +171,15 @@ const AdminCourse = () => {
 
   return (
     <div className="min-h-screen p-6">
-      <div className="flex justify-center"></div>
+     
       <div
         className={`bg-white mt-6 rounded-3xl shadow-md p-2 mb-4 ${
           isMobile ? "" : ""
         }`}
       >
         <div
-          className={`flex justify-between items-center ${
-            isMobile ? "w-full" : ""
+          className={`flex  items-center flex-wrap ${
+            isMobile ? "w-full justify-center" : "justify-between"
           }`}
         >
           <div className="flex space-x-4">
