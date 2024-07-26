@@ -150,7 +150,7 @@
 // export default AssignmentSection;
 import React, { useState, useEffect } from "react";
 
-const AssignmentSection = ({ assignments }) => {
+const AssignmentSection = ({ assignments, onAssignmentSubmit }) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showResult, setShowResult] = useState({});
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
@@ -181,6 +181,10 @@ const AssignmentSection = ({ assignments }) => {
 
   const handleClosePopup = () => {
     setShowPopup(false); // Hide popup
+
+    if (onAssignmentSubmit) {
+      onAssignmentSubmit();
+    }
   };
 
   return (
