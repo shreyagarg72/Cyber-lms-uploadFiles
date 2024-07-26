@@ -300,8 +300,8 @@ const CoursePreviewPage = () => {
               </div>
             </div>
           </div>
-
-          <div className="sticky top-0 w-full md:w-1/3">
+                  <div className="relative w-full md:w-1/3">
+          <div className="sticky top-32 ">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Course Content
@@ -375,6 +375,7 @@ const CoursePreviewPage = () => {
                 Final Assignment
               </button>
             </div>
+          </div>
           </div>
         </div>
       </div>
