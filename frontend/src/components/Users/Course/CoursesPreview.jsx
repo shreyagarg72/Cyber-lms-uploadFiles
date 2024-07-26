@@ -47,7 +47,9 @@ const CoursePreviewPage = () => {
   const [selectedSubmodule, setSelectedSubmodule] = useState(
     weekContent[0].submodules[0]
   );
-
+  const [isAssignmentSubmitted, setIsAssignmentSubmitted] = useState(false);
+  const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
+  const [currentSubmoduleIndex, setCurrentSubmoduleIndex] = useState(0);
   const [checkedSubmodules, setCheckedSubmodules] = useState(new Set());
   const [showProfile, setShowProfile] = useState(false);
   const [showAssignment, setShowAssignment] = useState(false);
@@ -71,7 +73,9 @@ const CoursePreviewPage = () => {
     setShowNotifications(!showNotifications);
   };
 
-  const handleSubmoduleClick = (submodule) => {
+  const handleSubmoduleClick = (submodule, weekIndex, index) => {
+    setCurrentModuleIndex(weekIndex);
+    setCurrentSubmoduleIndex(index);
     setSelectedSubmodule(submodule);
     setShowAssignment(false);
   };
@@ -179,6 +183,52 @@ const CoursePreviewPage = () => {
     };
   }
 
+  const handleAssignmentSubmit = () => {
+    setIsAssignmentSubmitted(true);
+  };
+  const handleNextSubmodule = () => {
+    if (currentSubmoduleIndex < weekContent[currentModuleIndex].submodules.length - 1) {
+      // Move to the next submodule within the current module
+      const nextIndex = currentSubmoduleIndex + 1;
+      setSelectedSubmodule(weekContent[currentModuleIndex].submodules[nextIndex]);
+      setCurrentSubmoduleIndex(nextIndex);
+    } else if (currentSubmoduleIndex === weekContent[currentModuleIndex].submodules.length - 1) {
+      // Check if the assignment is submitted
+      if (!isAssignmentSubmitted) {
+        // Display the assignment for the current module
+        setSelectedAssignment(weekContent[currentModuleIndex].assignment.questions);
+        setShowAssignment(true);
+        setSelectedSubmodule([]); // Clear selected submodule
+      } else if (currentModuleIndex < weekContent.length - 1) {
+        // Move to the next module and reset submodule index
+        const nextModuleIndex = currentModuleIndex + 1;
+        setCurrentModuleIndex(nextModuleIndex);
+        setSelectedSubmodule(weekContent[nextModuleIndex].submodules[0]);
+        setCurrentSubmoduleIndex(0);
+        setShowAssignment(false); // Hide assignment view when moving to a new module
+        setIsAssignmentSubmitted(false);
+      }
+    }
+  };
+  
+
+  const handlePrevSubmodule = () => {
+    if (currentSubmoduleIndex > 0) {
+      const prevIndex = currentSubmoduleIndex - 1;
+      setSelectedSubmodule(
+        weekContent[currentModuleIndex].submodules[prevIndex]
+      );
+      setCurrentSubmoduleIndex(prevIndex);
+    } else if (currentModuleIndex > 0) {
+      const prevModuleIndex = currentModuleIndex - 1;
+      setCurrentModuleIndex(prevModuleIndex);
+      const prevModuleSubmodules = weekContent[prevModuleIndex].submodules;
+      const lastSubmoduleIndex = prevModuleSubmodules.length - 1;
+      setSelectedSubmodule(prevModuleSubmodules[lastSubmoduleIndex]);
+      setCurrentSubmoduleIndex(lastSubmoduleIndex);
+    }
+  };
+
   return (
     <>
       <div className="max-w-7xl mx-auto p-6 bg-gray-100 mt-10">
@@ -190,7 +240,10 @@ const CoursePreviewPage = () => {
             <div className="bg-white p-3 pt-5 pb-7 rounded-lg shadow-md ">
               <div className="relative">
                 {showAssignment ? (
-                  <AssignmentSection assignments={selectedAssignment} />
+                  <AssignmentSection
+                    assignments={selectedAssignment}
+                    onAssignmentSubmit={handleAssignmentSubmit}
+                  />
                 ) : (
                   <>
                     {selectedSubmodule && selectedSubmodule.docUrl ? (
@@ -221,22 +274,44 @@ const CoursePreviewPage = () => {
                     )}
                   </>
                 )}
-              
-
-              
+              </div>
+              <div className="flex justify-between mt-4 mx-4">
+                <button
+                  className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full"
+                  onClick={handlePrevSubmodule}
+                  disabled={
+                    currentModuleIndex === 0 && currentSubmoduleIndex === 0
+                  }
+                >
+                  <FontAwesomeIcon icon={faBackward} className="mr-1" />{" "}
+                  Previous
+                </button>
+                <button
+                  className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-full"
+                  onClick={handleNextSubmodule}
+                  disabled={
+                    currentModuleIndex === weekContent.length - 1 &&
+                    currentSubmoduleIndex ===
+                      weekContent[currentModuleIndex].submodules.length - 1
+                  }
+                >
+                  Next <FontAwesomeIcon icon={faForward} className="ml-1" />
+                </button>
               </div>
             </div>
-
-            
           </div>
-          <div className="w-full md:w-1/3">
+
+          <div className="sticky top-0 w-full md:w-1/3">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Course Content
               </h2>
               <div className="space-y-4">
-                {weekContent.map((week, index) => (
-                  <details key={index} className="p-4 bg-gray-100 rounded-lg">
+                {weekContent.map((week, weekIndex) => (
+                  <details
+                    key={weekIndex}
+                    className="p-4 bg-gray-100 rounded-lg"
+                  >
                     <summary className="font-semibold text-gray-800 cursor-pointer">
                       {week.title}
                     </summary>
@@ -255,7 +330,9 @@ const CoursePreviewPage = () => {
                           />
 
                           <button
-                            onClick={() => handleSubmoduleClick(item)}
+                            onClick={() =>
+                              handleSubmoduleClick(item, weekIndex, index)
+                            }
                             className={`pl-2 pr-2 rounded ${
                               selectedSubmodule === item
                                 ? "bg-blue-500 text-white border border-blue-500"
@@ -268,11 +345,11 @@ const CoursePreviewPage = () => {
                       ))}
                       <li>
                         <button
-                        className={`mt-3 pl-2 pr-2 border rounded ${
-                              selectedAssignment === week.assignment.questions
-                                ? "bg-blue-500 text-white border border-blue-500"
-                                : "hover:bg-gray-300 text-gray-600"
-                            }`}
+                          className={`mt-3 pl-2 pr-2 border rounded ${
+                            selectedAssignment === week.assignment.questions
+                              ? "bg-blue-500 text-white border border-blue-500"
+                              : "hover:bg-gray-300 text-gray-600"
+                          }`}
                           onClick={() =>
                             handleModuleAssignment(week.assignment)
                           }
@@ -289,10 +366,10 @@ const CoursePreviewPage = () => {
               <button
                 // className="hover:bg-gray-300 text-gray-600 pl-2 pr-2 pt-1 pb-1 border rounded-lg "
                 className={`pl-2 pr-2 pt-1 pb-1 border rounded-lg ${
-                             selectedAssignment === finalAssignment 
-                                ? "bg-blue-500 text-white border border-blue-500"
-                                : "hover:bg-gray-300 text-gray-600"
-                            }`}
+                  selectedAssignment === finalAssignment
+                    ? "bg-blue-500 text-white border border-blue-500"
+                    : "hover:bg-gray-300 text-gray-600"
+                }`}
                 onClick={handleAssignment}
               >
                 Final Assignment

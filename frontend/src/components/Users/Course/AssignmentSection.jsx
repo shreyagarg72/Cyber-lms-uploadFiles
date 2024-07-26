@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AssignmentSection = ({ assignments }) => {
+const AssignmentSection = ({ assignments, onAssignmentSubmit }) => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [showResult, setShowResult] = useState({});
 
@@ -25,6 +25,10 @@ const AssignmentSection = ({ assignments }) => {
       return acc;
     }, {});
     setShowResult(updatedShowResult);
+
+    if (onAssignmentSubmit) {
+      onAssignmentSubmit();
+    }
   };
 
   return (
