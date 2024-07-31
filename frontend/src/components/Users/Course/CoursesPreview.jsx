@@ -30,9 +30,10 @@ import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import AssignmentSection from "./AssignmentSection";
 import Axios from "../../../helper/Axios";
 import FileReader from "./FileReader";
-
+import { useNavigate } from 'react-router-dom';
 const CoursePreviewPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { course } = location.state || {}; // Default to an empty object if state is undefined
 
@@ -78,6 +79,10 @@ const CoursePreviewPage = () => {
     setCurrentSubmoduleIndex(index);
     setSelectedSubmodule(submodule);
     setShowAssignment(false);
+  };
+
+  const redirectToGuacamole= () => {
+    navigate('/guacamoleTerminal', { state: { token } });
   };
 
   useEffect(() => {
@@ -374,6 +379,7 @@ const CoursePreviewPage = () => {
               >
                 Final Assignment
               </button>
+              <button onClick={redirectToGuacamole}>Lab Testing</button>
             </div>
           </div>
           </div>

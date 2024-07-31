@@ -7,7 +7,7 @@ const GuacamoleTerminal = () => {
   return (
     <div>
         <iframe
-          src={"http://115.113.39.74:65531/#/"}
+          src={`http://115.113.39.74:65531/#/?token=${token}`}
           title="Guacamole Terminal"
           width="100%"
           height="400px"
